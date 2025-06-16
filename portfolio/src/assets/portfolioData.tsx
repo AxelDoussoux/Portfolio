@@ -3,19 +3,18 @@ const PORTFOLIO_CONFIG = {
   name: "Axel DOUSSOUX",
   title: "Game Developer & 3D Artist",
   email: "votre.email@example.com",
-  github: "https://github.com/votre-username",
-  linkedin: "https://linkedin.com/in/votre-profile",
+  github: "https://github.com/AxelDoussoux",
+  linkedin: "https://www.linkedin.com/in/axeldoussoux/",
   bio: "Développeur passionné spécialisé dans la création de jeux vidéo et la modélisation 3D. Expert en Unity, Blender et technologies web modernes.",
   
   skills: [
-    { name: "Unity 3D", level: 95, icon: "🎮", category: "Game Engine" },
-    { name: "Unreal Engine", level: 88, icon: "🎯", category: "Game Engine" },
-    { name: "Blender", level: 92, icon: "🎨", category: "3D Modeling" },
-    { name: "C#", level: 90, icon: "💻", category: "Programming" },
-    { name: "C++", level: 85, icon: "⚡", category: "Programming" },
-    { name: "JavaScript", level: 88, icon: "🚀", category: "Programming" },
-    { name: "React", level: 85, icon: "⚛️", category: "Web Dev" },
-    { name: "Three.js", level: 80, icon: "🌐", category: "Web 3D" }
+    { name: "Unity 3D", icon: "🎮", category: "Game Engine" },
+    { name: "Blender", level: 90, icon: "🎨", category: "3D Modeling" },
+    { name: "C#", level: 80, icon: "💻", category: "Programming" },
+    { name: "Java", level: 40, icon: "☕", category: "Programming" },
+    { name: "TypeScript", level: 75, icon: "🚀", category: "Programming" },
+    { name: "React", level: 90, icon: "⚛️", category: "Web Dev" },
+    { name: "Three.js", level: 70, icon: "🌐", category: "Web 3D" }
   ],
   
   projects: [

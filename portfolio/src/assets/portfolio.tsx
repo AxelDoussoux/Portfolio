@@ -1,89 +1,267 @@
 import React, { useState, useEffect, useRef } from 'react';
 import * as THREE from 'three';
-import { ChevronDown, Github, ExternalLink, Mail, Linkedin, Play, Pause, Code, Gamepad2, Box, Cpu, Zap, Trophy, Star, Eye } from 'lucide-react';
+import { ChevronDown, Github, ExternalLink, Mail, Linkedin, Play, Pause, Code, Gamepad2, Box, Zap, Star, Eye } from 'lucide-react';
 import PORTFOLIO_CONFIG from './portfolioData';
 
-// Composant pour l'arrière-plan 3D animé
-const AnimatedBackground: React.FC = () => {
+// Composant pour l'arrière-plan 3D animé - Galaxie spirale améliorée
+const GalaxyBackground: React.FC = () => {
   const mountRef = useRef<HTMLDivElement>(null);
-  
+  const sceneRef = useRef<THREE.Scene | null>(null);
+  const rendererRef = useRef<THREE.WebGLRenderer | null>(null);
+  const animationRef = useRef<number>(0);
+
   useEffect(() => {
     if (!mountRef.current) return;
-    
+
+    // Configuration de la scène
     const scene = new THREE.Scene();
+    scene.fog = new THREE.Fog(0x000000, 10, 100); // Effet de brouillard pour la profondeur
+    
     const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
-    const renderer = new THREE.WebGLRenderer({ alpha: true, antialias: true });
-    
-    renderer.setSize(window.innerWidth, window.innerHeight);
-    renderer.setClearColor(0x000000, 0);
-    mountRef.current.appendChild(renderer.domElement);
-    
-    // Création des particules flottantes
-    const geometry = new THREE.BufferGeometry();
-    const vertices = [];
-    const colors = [];
-    
-    for (let i = 0; i < 1000; i++) {
-      vertices.push(
-        (Math.random() - 0.5) * 2000,
-        (Math.random() - 0.5) * 2000,
-        (Math.random() - 0.5) * 2000
-      );
-      
-      const color = new THREE.Color();
-      color.setHSL(0.6 + Math.random() * 0.2, 0.8, 0.5);
-      colors.push(color.r, color.g, color.b);
-    }
-    
-    geometry.setAttribute('position', new THREE.Float32BufferAttribute(vertices, 3));
-    geometry.setAttribute('color', new THREE.Float32BufferAttribute(colors, 3));
-    
-    const material = new THREE.PointsMaterial({
-      size: 3,
-      vertexColors: true,
-      transparent: true,
-      opacity: 0.8
+    const renderer = new THREE.WebGLRenderer({ 
+      alpha: true, 
+      antialias: true,
+      powerPreference: "high-performance"
     });
     
-    const particles = new THREE.Points(geometry, material);
-    scene.add(particles);
-    
-    camera.position.z = 500;
-    
-    let animationId: number;
-    const animate = () => {
-      animationId = requestAnimationFrame(animate);
+    renderer.setSize(window.innerWidth, window.innerHeight);
+    renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+    renderer.setClearColor(0x000000, 0);
+    mountRef.current.appendChild(renderer.domElement);
+
+    sceneRef.current = scene;
+    rendererRef.current = renderer;
+
+    // Création de la galaxie spirale
+    const galaxyGeometry = new THREE.BufferGeometry();
+
+    // Paramètres de la galaxie spirale améliorée
+    const particlesCount = 50000;
+    const positions = new Float32Array(particlesCount * 3);
+    const colors = new Float32Array(particlesCount * 3);
+    const scales = new Float32Array(particlesCount);
+    const randomness = new Float32Array(particlesCount);    // Couleurs pour la galaxie (adaptées au thème du site)
+    const colorCore = new THREE.Color('#ffffff'); // Centre blanc brillant
+    const colorArm1 = new THREE.Color('#a855f7'); // purple-500
+    const colorArm2 = new THREE.Color('#8b5cf6'); // purple-400
+    const colorArm3 = new THREE.Color('#60a5fa'); // blue-400
+    const colorOuter = new THREE.Color('#6366f1'); // indigo-500 (transition)
+    const colorDust = new THREE.Color('#c084fc'); // purple-300 (poussière d'étoiles)
+
+    // Paramètres de la spirale
+    const arms = 3;
+    const spin = 3;
+    const randomnessPower = 3;
+    const insideRadius = 1.5;
+    const outsideRadius = 15;
+
+    for (let i = 0; i < particlesCount; i++) {
+      const i3 = i * 3;
+
+      // Position en spirale logarithmique
+      const radius = Math.random() * outsideRadius + insideRadius;
+      const spinAngle = radius * spin;
+      const branchAngle = (i % arms) / arms * Math.PI * 2;
+
+      // Randomness plus prononcé pour les bras
+      const randomX = Math.pow(Math.random(), randomnessPower) * (Math.random() < 0.5 ? 1 : -1) * randomnessPower * radius * 0.1;
+      const randomY = Math.pow(Math.random(), randomnessPower) * (Math.random() < 0.5 ? 1 : -1) * randomnessPower * radius * 0.05;
+      const randomZ = Math.pow(Math.random(), randomnessPower) * (Math.random() < 0.5 ? 1 : -1) * randomnessPower * radius * 0.1;
+
+      positions[i3] = Math.cos(branchAngle + spinAngle) * radius + randomX;
+      positions[i3 + 1] = randomY;
+      positions[i3 + 2] = Math.sin(branchAngle + spinAngle) * radius + randomZ;
+
+      // Couleurs plus complexes et brillantes
+      let mixedColor = new THREE.Color();
+      const distanceFromCenter = radius / outsideRadius;
       
-      particles.rotation.x += 0.001;
-      particles.rotation.y += 0.002;
+      // Couleur en fonction du bras et de la distance
+      const armIndex = i % arms;
+      if (armIndex === 0) {
+        mixedColor = colorArm1.clone();
+      } else if (armIndex === 1) {
+        mixedColor = colorArm2.clone();
+      } else if (armIndex === 2) {
+        mixedColor = colorArm3.clone();
+      } else {
+        mixedColor = colorDust.clone();
+      }
+
+      // Mélange avec le centre et l'extérieur
+      if (distanceFromCenter < 0.1) {
+        mixedColor.lerp(colorCore, 1 - distanceFromCenter * 10);
+      } else if (distanceFromCenter > 0.7) {
+        mixedColor.lerp(colorOuter, (distanceFromCenter - 0.7) / 0.3);
+      }      // Réduction de la luminosité pour améliorer la lisibilité
+      mixedColor.multiplyScalar(0.6 + Math.random() * 0.3);
+
+      colors[i3] = mixedColor.r;
+      colors[i3 + 1] = mixedColor.g;
+      colors[i3 + 2] = mixedColor.b;      // Échelle variable réduite pour créer de la diversité sans gêner la lisibilité
+      scales[i] = Math.random() * 1.2 + 0.3;
+      randomness[i] = Math.random();
+    }
+
+    galaxyGeometry.setAttribute('position', new THREE.BufferAttribute(positions, 3));
+    galaxyGeometry.setAttribute('color', new THREE.BufferAttribute(colors, 3));
+    galaxyGeometry.setAttribute('aScale', new THREE.BufferAttribute(scales, 1));
+    galaxyGeometry.setAttribute('aRandomness', new THREE.BufferAttribute(randomness, 1));
+
+    // Shader material amélioré avec effet de profondeur et brillance
+    const vertexShader = `
+      uniform float uTime;
+      uniform float uSize;
+      attribute float aScale;
+      attribute float aRandomness;
+      varying vec3 vColor;
+      varying float vDistance;
+      varying float vRandomness;
+
+      void main() {
+        vec4 modelPosition = modelMatrix * vec4(position, 1.0);
+        
+        // Rotation différentielle de la galaxie (plus réaliste)
+        float angle = atan(modelPosition.x, modelPosition.z);
+        float distanceToCenter = length(modelPosition.xz);
+        float rotationSpeed = (1.0 / (distanceToCenter + 1.0)) * 0.3;
+        float angleOffset = rotationSpeed * uTime;
+        
+        modelPosition.x = cos(angle + angleOffset) * distanceToCenter;
+        modelPosition.z = sin(angle + angleOffset) * distanceToCenter;
+        
+        // Oscillation verticale subtile
+        modelPosition.y += sin(uTime * 0.5 + aRandomness * 10.0) * 0.2;
+        
+        vec4 viewPosition = viewMatrix * modelPosition;
+        vec4 projectedPosition = projectionMatrix * viewPosition;
+        
+        gl_Position = projectedPosition;
+        
+        // Taille basée sur la distance et l'échelle
+        float sizeAttenuation = 1.0 / -viewPosition.z;
+        gl_PointSize = uSize * aScale * sizeAttenuation * (0.5 + aRandomness * 0.5);
+        
+        vColor = color;
+        vDistance = -viewPosition.z;
+        vRandomness = aRandomness;
+      }
+    `;
+
+    const fragmentShader = `
+      varying vec3 vColor;
+      varying float vDistance;
+      varying float vRandomness;
+      uniform float uTime;
+      
+      void main() {
+        // Forme circulaire avec glow
+        vec2 uv = gl_PointCoord - 0.5;
+        float distance = length(uv);
+          // Glow effect plus subtil pour la lisibilité
+        float strength = 1.0 - distance;
+        strength = pow(strength, 1.5);
+        
+        // Scintillement des étoiles plus discret
+        float twinkle = sin(uTime * 2.0 + vRandomness * 15.0) * 0.05 + 0.8;
+        
+        // Effet de profondeur (flou)
+        float depthFade = smoothstep(30.0, 15.0, vDistance);
+        
+        // Intensité finale plus douce
+        float alpha = strength * twinkle * depthFade * 0.7;
+        
+        // Couleur finale moins brillante
+        vec3 finalColor = vColor * (0.8 + strength * 0.2);
+        
+        gl_FragColor = vec4(finalColor, alpha);
+      }
+    `;    const galaxyMaterialShader = new THREE.ShaderMaterial({
+      uniforms: {
+        uTime: { value: 0 },
+        uSize: { value: 35 * renderer.getPixelRatio() } // Taille réduite
+      },
+      vertexShader,
+      fragmentShader,
+      transparent: true,
+      blending: THREE.AdditiveBlending,
+      depthWrite: false,
+      vertexColors: true
+    });
+
+    const galaxy = new THREE.Points(galaxyGeometry, galaxyMaterialShader);
+    scene.add(galaxy);
+
+    // Position de la caméra optimisée
+    camera.position.set(12, 8, 12);
+    camera.lookAt(0, 0, 0);
+
+    // Animation améliorée
+    const clock = new THREE.Clock();
+    
+    const animate = () => {
+      const elapsedTime = clock.getElapsedTime();
+      
+      // Mise à jour du shader
+      galaxyMaterialShader.uniforms.uTime.value = elapsedTime;
+      
+      // Rotation lente et fluide de la galaxie
+      galaxy.rotation.y = elapsedTime * 0.05;
+      galaxy.rotation.x = Math.sin(elapsedTime * 0.02) * 0.1;
+      
+      // Mouvement de caméra plus dynamique
+      const radius = 10 + Math.sin(elapsedTime * 0.1) * 2;
+      camera.position.x = Math.cos(elapsedTime * 0.05) * radius;
+      camera.position.z = Math.sin(elapsedTime * 0.05) * radius;
+      camera.position.y = 8 + Math.sin(elapsedTime * 0.03) * 3;
+      camera.lookAt(0, 0, 0);
       
       renderer.render(scene, camera);
+      animationRef.current = requestAnimationFrame(animate);
     };
+
     animate();
-    
+
+    // Gestion du redimensionnement
     const handleResize = () => {
+      if (!rendererRef.current) return;
+      
       camera.aspect = window.innerWidth / window.innerHeight;
       camera.updateProjectionMatrix();
-      renderer.setSize(window.innerWidth, window.innerHeight);
+      rendererRef.current.setSize(window.innerWidth, window.innerHeight);
+      rendererRef.current.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+        // Mise à jour de la taille des particules (réduite)
+      galaxyMaterialShader.uniforms.uSize.value = 35 * rendererRef.current.getPixelRatio();
     };
-    
+
     window.addEventListener('resize', handleResize);
-    
+
+    // Nettoyage
     return () => {
       window.removeEventListener('resize', handleResize);
-      cancelAnimationFrame(animationId);
+      if (animationRef.current) {
+        cancelAnimationFrame(animationRef.current);
+      }
       if (mountRef.current && renderer.domElement) {
         mountRef.current.removeChild(renderer.domElement);
       }
+      galaxyGeometry.dispose();
+      galaxyMaterialShader.dispose();
       renderer.dispose();
     };
   }, []);
-  
-  return <div ref={mountRef} className="fixed inset-0 z-0" />;
+  return (
+    <div 
+      ref={mountRef} 
+      className="fixed inset-0 z-0 pointer-events-none"
+      style={{ background: 'radial-gradient(ellipse at center, #1e1b4b 0%, #111827 50%, #000000 100%)', opacity: 0.8 }}
+    />
+  );
 };
 
+
 // Composant pour les projets avec media
-const ProjectCard: React.FC<{ project: typeof PORTFOLIO_CONFIG.projects[0], index: number }> = ({ project, index }) => {
+const ProjectCard: React.FC<{ project: typeof PORTFOLIO_CONFIG.projects[0] }> = ({ project }) => {
   const [isVideoPlaying, setIsVideoPlaying] = useState(false);
   const [showVideo, setShowVideo] = useState(false);
   const videoRef = useRef<HTMLVideoElement>(null);
@@ -227,10 +405,10 @@ const Portfolio: React.FC = () => {
       element.scrollIntoView({ behavior: 'smooth' });
     }
   };
-  
-  return (
+    return (
     <div className="min-h-screen bg-gradient-to-br from-gray-900 via-purple-900 to-black text-white relative overflow-x-hidden">
-      <AnimatedBackground />
+      {/* Arrière-plan galaxie 3D */}
+      <GalaxyBackground />
       
       {/* Navigation */}
       <nav className="fixed top-0 left-0 right-0 z-50 bg-black/20 backdrop-blur-md border-b border-purple-500/30">
@@ -311,7 +489,7 @@ const Portfolio: React.FC = () => {
                   Passion Gaming & 3D
                 </h3>
                 <p className="text-gray-300 leading-relaxed mb-6">
-                  Depuis plus de 5 ans, je développe des expériences interactives immersives. Ma passion pour les jeux vidéo et la modélisation 3D m'a mené à maîtriser les outils les plus avancés de l'industrie.
+                  Depuis plus de 2 ans, je développe des expériences interactives immersives. Ma passion pour les jeux vidéo et la modélisation 3D m'a mené à maîtriser les outils les plus avancés de l'industrie.
                 </p>
                 <p className="text-gray-300 leading-relaxed">
                   J'aime créer des mondes virtuels qui captivent et inspirent, en alliant technique et créativité pour donner vie à des concepts uniques.
@@ -325,7 +503,7 @@ const Portfolio: React.FC = () => {
                   <Code className="text-blue-400" />
                   <h4 className="text-xl font-semibold">Développement</h4>
                 </div>
-                <p className="text-gray-300">Unity, Unreal Engine, C#, C++, JavaScript</p>
+                <p className="text-gray-300">Unity, C#, TypeScript</p>
               </div>
               
               <div className="bg-gray-900/50 backdrop-blur-sm border border-purple-500/30 rounded-xl p-6">
@@ -333,7 +511,7 @@ const Portfolio: React.FC = () => {
                   <Box className="text-green-400" />
                   <h4 className="text-xl font-semibold">Modélisation 3D</h4>
                 </div>
-                <p className="text-gray-300">Blender, Maya, Substance Suite, PBR Workflow</p>
+                <p className="text-gray-300">Blender, Unreal Engine</p>
               </div>
               
               <div className="bg-gray-900/50 backdrop-blur-sm border border-purple-500/30 rounded-xl p-6">
@@ -341,7 +519,7 @@ const Portfolio: React.FC = () => {
                   <Zap className="text-yellow-400" />
                   <h4 className="text-xl font-semibold">Technologies Web</h4>
                 </div>
-                <p className="text-gray-300">React, Three.js, WebGL, Node.js</p>
+                <p className="text-gray-300">React, Three.js, WebGL, Symfony</p>
               </div>
             </div>
           </div>
@@ -362,16 +540,6 @@ const Portfolio: React.FC = () => {
                   <div className="text-4xl mb-3">{skill.icon}</div>
                   <h3 className="text-lg font-semibold mb-2">{skill.name}</h3>
                   <p className="text-sm text-purple-300 mb-4">{skill.category}</p>
-                  
-                  <div className="relative">
-                    <div className="w-full bg-gray-700 rounded-full h-2">
-                      <div 
-                        className="bg-gradient-to-r from-purple-500 to-blue-500 h-2 rounded-full transition-all duration-1000 group-hover:from-purple-400 group-hover:to-blue-400"
-                        style={{ width: `${skill.level}%` }}
-                      />
-                    </div>
-                    <span className="text-sm text-gray-400 mt-1 block">{skill.level}%</span>
-                  </div>
                 </div>
               </div>
             ))}
@@ -385,10 +553,9 @@ const Portfolio: React.FC = () => {
           <h2 className="text-4xl font-bold text-center mb-16 bg-gradient-to-r from-purple-400 to-blue-400 bg-clip-text text-transparent">
             Portfolio
           </h2>
-          
-          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
-            {PORTFOLIO_CONFIG.projects.map((project, index) => (
-              <ProjectCard key={project.id} project={project} index={index} />
+            <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+            {PORTFOLIO_CONFIG.projects.map((project) => (
+              <ProjectCard key={project.id} project={project} />
             ))}
           </div>
         </div>
@@ -428,7 +595,7 @@ const Portfolio: React.FC = () => {
       {/* Footer */}
       <footer className="py-8 text-center border-t border-purple-500/30 relative z-10">
         <p className="text-gray-400">
-          © 2025 {PORTFOLIO_CONFIG.name}. Créé avec React, TypeScript & Three.js
+          © 2025 {PORTFOLIO_CONFIG.name}. Tous droits réservés. | Développé avec ❤️ par <a href={PORTFOLIO_CONFIG.github} className="text-purple-400 hover:underline" target="_blank" rel="noopener noreferrer">{PORTFOLIO_CONFIG.name}</a>
         </p>
       </footer>
     </div>
