@@ -1,4 +1,8 @@
-// Configuration du portfolio - MODIFIEZ ICI VOS DONNÉES
+
+
+// Configuration du portfolio
+
+
 const PORTFOLIO_CONFIG = {
   name: "Axel DOUSSOUX",
   title: "Game Developer & 3D Artist",
@@ -9,12 +13,14 @@ const PORTFOLIO_CONFIG = {
   
   skills: [
     { name: "Unity 3D", icon: "🎮", category: "Game Engine" },
-    { name: "Blender", level: 90, icon: "🎨", category: "3D Modeling" },
-    { name: "C#", level: 80, icon: "💻", category: "Programming" },
-    { name: "Java", level: 40, icon: "☕", category: "Programming" },
-    { name: "TypeScript", level: 75, icon: "🚀", category: "Programming" },
-    { name: "React", level: 90, icon: "⚛️", category: "Web Dev" },
-    { name: "Three.js", level: 70, icon: "🌐", category: "Web 3D" }
+    { name: "Blender", icon: "🎨", category: "3D Modeling" },
+    { name: "C#", icon: "💻", category: "Programming" },
+    { name: "Java", icon: "☕", category: "Programming" },
+    { name: "TypeScript", icon: "🚀", category: "Programming" },
+    { name: "React", icon: "⚛️", category: "Web Dev" },
+    { name: "Git", icon: "🐙", category: "Version Control" },
+    { name: "Three.js", icon: "🌐", category: "Web 3D" }
+
   ],
   
   projects: [
@@ -23,7 +29,7 @@ const PORTFOLIO_CONFIG = {
       title: "Cyberpunk Racing Game",
       description: "Jeu de course futuriste développé avec Unity, featuring des effets de particules avancés et un système physique réaliste.",
       image: "https://images.unsplash.com/photo-1542751371-adc38448a05e?w=800&h=600&fit=crop",
-      video: "https://www.w3schools.com/html/mov_bbb.mp4", // Remplacez par vos vidéos
+      video: "https://www.w3schools.com/html/mov_bbb.mp4",
       technologies: ["Unity", "C#", "Shader Graph", "Post-Processing"],
       github: "https://github.com/votre-username/cyberpunk-racing",
       demo: "https://votre-demo.com",
