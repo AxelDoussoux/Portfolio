@@ -116,13 +116,13 @@ const Portfolio: React.FC = () => {
               <div className="bg-gray-900/50 backdrop-blur-sm border border-purple-500/30 rounded-xl p-8">
                 <h3 className="text-2xl font-bold mb-4 flex items-center gap-3">
                   <Gamepad2 className="text-purple-400" />
-                  Passion Gaming & 3D
+                  En bref
                 </h3>
                 <p className="text-gray-300 leading-relaxed mb-6">
                   Depuis plus de 2 ans, je développe des expériences interactives immersives. Ma passion pour les jeux vidéo et la modélisation 3D m'a mené à maîtriser les outils les plus avancés de l'industrie.
                 </p>
                 <p className="text-gray-300 leading-relaxed">
-                  J'aime créer des mondes virtuels qui captivent et inspirent, en alliant technique et créativité pour donner vie à des concepts uniques.
+                  J'aime créer des univers qui captivent et inspirent, en alliant technique et créativité pour donner vie à des concepts uniques.
                 </p>
               </div>
             </div>
@@ -131,25 +131,25 @@ const Portfolio: React.FC = () => {
               <div className="bg-gray-900/50 backdrop-blur-sm border border-purple-500/30 rounded-xl p-6">
                 <div className="flex items-center gap-3 mb-3">
                   <Code className="text-blue-400" />
-                  <h4 className="text-xl font-semibold">Développement</h4>
+                  <h4 className="text-xl font-semibold">Développement & Web</h4>
                 </div>
-                <p className="text-gray-300">Unity, C#, TypeScript</p>
+                <p className="text-gray-300">Unity, C#, TypeScript, React, Three.js, Pixi.js</p>
               </div>
               
               <div className="bg-gray-900/50 backdrop-blur-sm border border-purple-500/30 rounded-xl p-6">
                 <div className="flex items-center gap-3 mb-3">
                   <Box className="text-green-400" />
-                  <h4 className="text-xl font-semibold">Modélisation 3D</h4>
+                  <h4 className="text-xl font-semibold">3D & 2D Art</h4>
                 </div>
-                <p className="text-gray-300">Blender, Unreal Engine</p>
+                <p className="text-gray-300">Blender, Unreal Engine, Krita</p>
               </div>
               
               <div className="bg-gray-900/50 backdrop-blur-sm border border-purple-500/30 rounded-xl p-6">
                 <div className="flex items-center gap-3 mb-3">
                   <Zap className="text-yellow-400" />
-                  <h4 className="text-xl font-semibold">Technologies Web</h4>
+                  <h4 className="text-xl font-semibold">Création de contenu</h4>
                 </div>
-                <p className="text-gray-300">React, Three.js, WebGL, Symfony</p>
+                <p className="text-gray-300">Adobe Suite, DaVinci Resolve, Photo & Vidéo</p>
               </div>
             </div>
           </div>
@@ -162,17 +162,22 @@ const Portfolio: React.FC = () => {
           <h2 className="text-4xl font-bold text-center mb-16 bg-gradient-to-r from-purple-400 to-blue-400 bg-clip-text text-transparent">
             Compétences
           </h2>
-          
-          <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
-            {PORTFOLIO_CONFIG.skills.map((skill, index) => (
-              <div key={index} className="bg-gray-900/50 backdrop-blur-sm border border-purple-500/30 rounded-xl p-6 hover:border-purple-400/60 transition-all duration-300 group">
-                <div className="text-center">
-                  <div className="text-4xl mb-3">{skill.icon}</div>
-                  <h3 className="text-lg font-semibold mb-2">{skill.name}</h3>
-                  <p className="text-sm text-purple-300 mb-4">{skill.category}</p>
+            <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
+            {PORTFOLIO_CONFIG.skills.map((skill, index) => {
+              const IconComponent = skill.icon;
+              return (
+                <div key={index} className="bg-gray-900/50 backdrop-blur-sm border border-purple-500/30 rounded-xl p-6 hover:border-purple-400/60 transition-all duration-300 group">
+                  <div className="text-center">
+                    <div className="flex justify-center mb-3">
+                      <IconComponent size={48} className="text-purple-400 group-hover:text-purple-300 transition-colors" />
+                    </div>
+                    <h3 className="text-lg font-semibold mb-2">{skill.name}</h3>
+                    <p className="text-sm text-purple-300 mb-4">{skill.category}</p>
+                  
+                  </div>
                 </div>
-              </div>
-            ))}
+              );
+            })}
           </div>
         </div>
       </section>

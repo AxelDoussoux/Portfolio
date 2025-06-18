@@ -1,26 +1,43 @@
 
+import { 
+  Gamepad2, 
+  Palette, 
+  Code, 
+  Coffee, 
+  Zap, 
+  Atom, 
+  GitBranch, 
+  Globe,
+  Layers,
+  Camera,
+  Video,
+  FileX,
+  Music
+} from 'lucide-react';
 
 // Configuration du portfolio
-
 
 const PORTFOLIO_CONFIG = {
   name: "Axel DOUSSOUX",
   title: "Game Developer & 3D Artist",
-  email: "votre.email@example.com",
+  email: "contact@axeldoussoux.fr",
   github: "https://github.com/AxelDoussoux",
   linkedin: "https://www.linkedin.com/in/axeldoussoux/",
   bio: "Développeur passionné spécialisé dans la création de jeux vidéo et la modélisation 3D. Expert en Unity, Blender et technologies web modernes.",
   
   skills: [
-    { name: "Unity 3D", icon: "🎮", category: "Game Engine" },
-    { name: "Blender", icon: "🎨", category: "3D Modeling" },
-    { name: "C#", icon: "💻", category: "Programming" },
-    { name: "Java", icon: "☕", category: "Programming" },
-    { name: "TypeScript", icon: "🚀", category: "Programming" },
-    { name: "React", icon: "⚛️", category: "Web Dev" },
-    { name: "Git", icon: "🐙", category: "Version Control" },
-    { name: "Three.js", icon: "🌐", category: "Web 3D" }
-
+    { name: "Unity", icon: Gamepad2, category: "Game Engine" },
+    { name: "Blender", icon: Palette, category: "3D Modeling" },
+    { name: "C#", icon: Code, category: "Programming" },
+    { name: "Java", icon: Coffee, category: "Programming" },
+    { name: "Git", icon: GitBranch, category: "Version Control" },
+    { name: "TypeScript", icon: Zap, category: "Web Dev" },
+    { name: "React", icon: Atom, category: "Web Dev" },
+    { name: "Three.js", icon: Globe, category: "Web 3D" },
+    { name: "Pixi.js", icon: FileX, category: "Web 2D" },
+    { name: "Adobe Suite", icon: Layers, category: "Content Creator" },
+    { name: "DaVinci Resolve", icon: Video, category: "Content Creator" },
+    { name: "FL Studio", icon: Music, category: "Music Production" },
   ],
   
   projects: [
