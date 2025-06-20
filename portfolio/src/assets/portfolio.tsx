@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { ChevronDown, Github, Mail, Linkedin, Code, Gamepad2, Box, Zap } from 'lucide-react';
+import { ChevronDown, Github, Mail, Linkedin, Code, Gamepad2, Box, Zap, Briefcase, Calendar, MapPin, CheckCircle } from 'lucide-react';
 import PORTFOLIO_CONFIG from './portfolioData';
 import GalaxyBackground from './galaxyBackground'; // Import du composant pour l'arrière-plan 3D animé
 import ProjectCard from './projectCard'; // Import du composant pour les cartes de projet
@@ -7,10 +7,9 @@ import ProjectCard from './projectCard'; // Import du composant pour les cartes 
 // Composant principal
 const Portfolio: React.FC = () => {
   const [activeSection, setActiveSection] = useState('hero');
-  
-  useEffect(() => {
+    useEffect(() => {
     const handleScroll = () => {
-      const sections = ['hero', 'about', 'skills', 'portfolio', 'contact'];
+      const sections = ['hero', 'about', 'skills', 'portfolio', 'experience', 'contact'];
       const scrollPosition = window.scrollY + 100;
       
       for (const section of sections) {
@@ -47,9 +46,8 @@ const Portfolio: React.FC = () => {
             <div className="text-2xl font-bold bg-gradient-to-r from-purple-400 to-blue-400 bg-clip-text text-transparent">
               {PORTFOLIO_CONFIG.name}
             </div>
-            
-            <div className="hidden md:flex space-x-8">
-              {['hero', 'about', 'skills', 'portfolio', 'contact'].map((section) => (
+              <div className="hidden md:flex space-x-8">
+              {['hero', 'about', 'skills', 'portfolio', 'experience', 'contact'].map((section) => (
                 <button
                   key={section}
                   onClick={() => scrollToSection(section)}
@@ -57,7 +55,11 @@ const Portfolio: React.FC = () => {
                     activeSection === section ? 'text-purple-400' : 'text-gray-300 hover:text-white'
                   }`}
                 >
-                  {section === 'hero' ? 'Accueil' : section === 'about' ? 'À propos' : section === 'skills' ? 'Compétences' : section === 'portfolio' ? 'Portfolio' : 'Contact'}
+                  {section === 'hero' ? 'Accueil' : 
+                   section === 'about' ? 'À propos' : 
+                   section === 'skills' ? 'Compétences' : 
+                   section === 'portfolio' ? 'Portfolio' : 
+                   section === 'experience' ? 'Expérience' : 'Contact'}
                 </button>
               ))}
             </div>
@@ -191,6 +193,73 @@ const Portfolio: React.FC = () => {
             <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
             {PORTFOLIO_CONFIG.projects.map((project) => (
               <ProjectCard key={project.id} project={project} />
+            ))}
+          </div>
+        </div>      </section>
+
+      {/* Experience Section */}
+      <section id="experience" className="py-20 relative z-10">
+        <div className="max-w-6xl mx-auto px-6">
+          <h2 className="text-4xl font-bold text-center mb-16 bg-gradient-to-r from-purple-400 to-blue-400 bg-clip-text text-transparent">
+            Expérience Professionnelle
+          </h2>
+          
+          <div className="space-y-8">
+            {PORTFOLIO_CONFIG.experiences.map((experience) => (
+              <div key={experience.id} className="bg-gray-900/50 backdrop-blur-sm border border-purple-500/30 rounded-xl p-8 hover:border-purple-400/60 transition-all duration-300">
+                <div className="grid md:grid-cols-3 gap-6">
+                  {/* Info principale */}
+                  <div className="md:col-span-2">
+                    <div className="flex flex-wrap items-start gap-4 mb-4">
+                      <div className="flex items-center gap-2">
+                        <Briefcase className="text-purple-400" size={20} />
+                        <h3 className="text-2xl font-bold text-white">{experience.role}</h3>
+                      </div>
+                      <div className="flex items-center gap-2 text-purple-300">
+                        <MapPin size={16} />
+                        <span className="font-semibold">{experience.company}</span>
+                      </div>
+                    </div>
+                    
+                    <div className="flex items-center gap-2 mb-4 text-gray-300">
+                      <Calendar size={16} />
+                      <span>{experience.period}</span>
+                    </div>
+                    
+                    <p className="text-gray-300 mb-6 leading-relaxed">
+                      {experience.description}
+                    </p>
+                    
+                    {/* Technologies */}
+                    <div className="mb-6">
+                      <h4 className="text-lg font-semibold mb-3 text-purple-300">Technologies utilisées</h4>
+                      <div className="flex flex-wrap gap-2">
+                        {experience.technologies.map((tech, techIndex) => (
+                          <span key={techIndex} className="px-3 py-1 bg-purple-600/20 border border-purple-500/30 text-purple-300 rounded-full text-sm">
+                            {tech}
+                          </span>
+                        ))}
+                      </div>
+                    </div>
+                  </div>
+                  
+                  {/* Réalisations */}
+                  <div className="md:col-span-1">
+                    <h4 className="text-lg font-semibold mb-4 text-purple-300 flex items-center gap-2">
+                      <CheckCircle size={18} />
+                      Réalisations clés
+                    </h4>
+                    <ul className="space-y-3">
+                      {experience.achievements.map((achievement, achIndex) => (
+                        <li key={achIndex} className="flex items-start gap-2 text-gray-300">
+                          <div className="w-2 h-2 bg-purple-400 rounded-full mt-2 flex-shrink-0"></div>
+                          <span className="text-sm leading-relaxed">{achievement}</span>
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+                </div>
+              </div>
             ))}
           </div>
         </div>

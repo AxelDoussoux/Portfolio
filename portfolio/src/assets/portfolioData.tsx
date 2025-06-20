@@ -9,7 +9,6 @@ import {
   GitBranch, 
   Globe,
   Layers,
-  Camera,
   Video,
   FileX,
   Music
@@ -76,8 +75,49 @@ const PORTFOLIO_CONFIG = {
       description: "Outil de génération procédurale de terrains avec interface web interactive utilisant Three.js.",
       image: "https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=800&h=600&fit=crop",
       technologies: ["Three.js", "React", "WebGL", "Noise Functions"],
-      github: "https://github.com/votre-username/terrain-generator",
-      demo: "https://votre-demo.com"
+      github: "https://github.com/votre-username/terrain-generator",      demo: "https://votre-demo.com"
+    }
+  ],
+
+  experiences: [
+    {
+      id: 1,
+      role: "Game Developer",
+      company: "Indie Studio",
+      period: "2023 - Présent",
+      description: "Développement de jeux vidéo indie utilisant Unity et C#. Création d'expériences interactives immersives.",
+      technologies: ["Unity", "C#", "Shader Graph"],
+      achievements: [
+        "Développement d'un jeu de course cyberpunk avec système physique avancé",
+        "Optimisation des performances pour différentes plateformes",
+        "Intégration d'effets visuels et de post-processing"
+      ]
+    },
+    {
+      id: 2,
+      role: "3D Artist",
+      company: "Freelance",
+      period: "2022 - 2023",
+      description: "Création d'assets 3D et d'environnements pour projets de jeux vidéo et visualisation architecturale.",
+      technologies: ["Blender", "Substance Painter", "PBR Workflow"],
+      achievements: [
+        "Modélisation d'environnements médiévaux détaillés",
+        "Création de textures PBR haute qualité",
+        "Optimisation d'assets pour moteurs de jeu"
+      ]
+    },
+    {
+      id: 3,
+      role: "Web Developer",
+      company: "Tech Solutions",
+      period: "2021 - 2022",
+      description: "Développement d'applications web interactives avec focus sur les technologies 3D web.",
+      technologies: ["React", "Three.js", "TypeScript"],
+      achievements: [
+        "Développement d'outils de génération procédurale",
+        "Intégration de WebGL pour expériences 3D",
+        "Optimisation des performances web"
+      ]
     }
   ]
 };
