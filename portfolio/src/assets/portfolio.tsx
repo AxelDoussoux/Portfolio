@@ -121,7 +121,7 @@ const Portfolio: React.FC = () => {
                   En bref
                 </h3>
                 <p className="text-gray-300 leading-relaxed mb-6">
-                  Depuis plus de 2 ans, je développe des expériences interactives immersives. Ma passion pour les jeux vidéo et la modélisation 3D m'a mené à maîtriser les outils les plus avancés de l'industrie.
+                  Depuis plus de 2 ans, je développe et  des jeux vidéo. Ma passion pour les jeux vidéo et la modélisation 3D m'a mené à maîtriser les outils les plus avancés de l'industrie.
                 </p>
                 <p className="text-gray-300 leading-relaxed">
                   J'aime créer des univers qui captivent et inspirent, en alliant technique et créativité pour donner vie à des concepts uniques.
