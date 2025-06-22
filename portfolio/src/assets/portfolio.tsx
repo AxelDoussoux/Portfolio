@@ -133,9 +133,8 @@ const Portfolio: React.FC = () => {
               <div className="bg-gray-900/50 backdrop-blur-sm border border-purple-500/30 rounded-xl p-6">
                 <div className="flex items-center gap-3 mb-3">
                   <Code className="text-blue-400" />
-                  <h4 className="text-xl font-semibold">Développement & Web</h4>
+                  <h4 className="text-xl font-semibold">Développement de Jeu Vidéo & Web</h4>
                 </div>
-                <p className="text-gray-300">Unity, C#, TypeScript, React, Three.js, Pixi.js</p>
               </div>
               
               <div className="bg-gray-900/50 backdrop-blur-sm border border-purple-500/30 rounded-xl p-6">
@@ -143,7 +142,6 @@ const Portfolio: React.FC = () => {
                   <Box className="text-green-400" />
                   <h4 className="text-xl font-semibold">3D & 2D Art</h4>
                 </div>
-                <p className="text-gray-300">Blender, Unreal Engine, Krita</p>
               </div>
               
               <div className="bg-gray-900/50 backdrop-blur-sm border border-purple-500/30 rounded-xl p-6">
@@ -151,7 +149,6 @@ const Portfolio: React.FC = () => {
                   <Zap className="text-yellow-400" />
                   <h4 className="text-xl font-semibold">Création de contenu</h4>
                 </div>
-                <p className="text-gray-300">Adobe Suite, DaVinci Resolve, Photo & Vidéo</p>
               </div>
             </div>
           </div>
@@ -175,7 +172,6 @@ const Portfolio: React.FC = () => {
                     </div>
                     <h3 className="text-lg font-semibold mb-2">{skill.name}</h3>
                     <p className="text-sm text-purple-300 mb-4">{skill.category}</p>
-                  
                   </div>
                 </div>
               );

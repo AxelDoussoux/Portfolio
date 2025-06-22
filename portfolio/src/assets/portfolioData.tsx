@@ -18,7 +18,7 @@ import {
 
 const PORTFOLIO_CONFIG = {
   name: "Axel DOUSSOUX",
-  title: "Game Developer & 3D Artist",
+  title: "Développeur de Jeu Vidéo & Artist 3D",
   email: "contact@axeldoussoux.fr",
   github: "https://github.com/AxelDoussoux",
   linkedin: "https://www.linkedin.com/in/axeldoussoux/",
@@ -82,41 +82,41 @@ const PORTFOLIO_CONFIG = {
   experiences: [
     {
       id: 1,
-      role: "Game Developer",
-      company: "Indie Studio",
-      period: "2023 - Présent",
-      description: "Développement de jeux vidéo indie utilisant Unity et C#. Création d'expériences interactives immersives.",
-      technologies: ["Unity", "C#", "Shader Graph"],
+      role: "Assistant Développeur de Jeu Vidéo",
+      company: "BD CRAFT",
+      period: "Mai - Juillet 2025",
+      description: "Aide au développement d'un jeux vidéo indie multijoueur utilisant Unity et C#.",
+      technologies: ["Unity", "C#", "Blender"],
       achievements: [
-        "Développement d'un jeu de course cyberpunk avec système physique avancé",
-        "Optimisation des performances pour différentes plateformes",
+        "Narration et dialogue pour les personnages",
+        "Modélisation d'assets 3D et animations",
         "Intégration d'effets visuels et de post-processing"
       ]
     },
     {
       id: 2,
-      role: "3D Artist",
-      company: "Freelance",
-      period: "2022 - 2023",
-      description: "Création d'assets 3D et d'environnements pour projets de jeux vidéo et visualisation architecturale.",
-      technologies: ["Blender", "Substance Painter", "PBR Workflow"],
+      role: "Développeur Web",
+      company: "MusicBrainTraining Company",
+      period: "Mars - Mai 2025",
+      description: "Migration de l'architecture graphique du site en CSS vers une architecture Pixi.js, avec intégration de fonctionnalités interactives.",
+      technologies: ["TypeScript", "React", "Pixi.js"],
       achievements: [
-        "Modélisation d'environnements médiévaux détaillés",
-        "Création de textures PBR haute qualité",
-        "Optimisation d'assets pour moteurs de jeu"
+        "Migration de l'architecture graphique",
+        "Optimisation des performances sur mobile et tablette",
+        "Documentation complète du processus"
       ]
     },
     {
       id: 3,
-      role: "Web Developer",
-      company: "Tech Solutions",
-      period: "2021 - 2022",
-      description: "Développement d'applications web interactives avec focus sur les technologies 3D web.",
-      technologies: ["React", "Three.js", "TypeScript"],
+      role: "Concepteur de support de communication",
+      company: "MOBIVIE - Transdev Vichy",
+      period: "Janvier - Mars 2024",
+      description: "Concepteur de support de communication pour la promotion des services de transport public, incluant la création de visuels et de vidéos.",
+      technologies: ["Suite Adobe", "DaVinci Resolve", "Captation photo et vidéo"],
       achievements: [
-        "Développement d'outils de génération procédurale",
-        "Intégration de WebGL pour expériences 3D",
-        "Optimisation des performances web"
+        "Conception d'affiches et flyers",
+        "Publicité en Motion Design",
+        "Production de publicité vidéo pour les réseaux sociaux"
       ]
     }
   ]
