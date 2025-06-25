@@ -71,10 +71,11 @@ const PORTFOLIO_CONFIG = {
     },
     {
       id: 4,
-      title: "Procedural Terrain Generator",
-      description: "Outil de génération procédurale de terrains avec interface web interactive utilisant Three.js.",
-      image: "https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=800&h=600&fit=crop",
-      technologies: ["Three.js", "React", "WebGL", "Noise Functions"],
+      title: "Scène 3D sur Blender",
+      description: "Scène 3D créée sur Blender, mettant en avant des techniques avancées de modélisation et d'éclairage.",
+      image: "../images/blender_1.png",
+      video: "https://www.w3schools.com/html/mov_bbb.mp4",
+      technologies: ["Blender"],
       github: "https://github.com/votre-username/terrain-generator",      demo: "https://votre-demo.com"
     }
   ],
@@ -90,7 +91,7 @@ const PORTFOLIO_CONFIG = {
       achievements: [
         "Narration et dialogue pour les personnages",
         "Modélisation d'assets 3D et animations",
-        "Intégration d'effets visuels et de post-processing"
+        "Création d'un monde procédural avec un system de grille et de tiles pour la génération de terrain"
       ]
     },
     {
