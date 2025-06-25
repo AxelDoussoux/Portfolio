@@ -84,8 +84,8 @@ const ProjectCard: React.FC<{ project: typeof PORTFOLIO_CONFIG.projects[0] }> = 
         )}
       </div>
       
-      <div className="p-6">
-        <h3 className="text-xl font-bold mb-2 text-white group-hover:text-purple-300 transition-colors">
+      <div className="p-6 relative bottom-0">
+        <h3 className="text-xl font-bold mb-2 text-white group-hover:text-purple-300 transition-colors ">
           {project.title}
         </h3>
         <p className="text-gray-300 mb-4 leading-relaxed">{project.description}</p>

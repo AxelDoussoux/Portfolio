@@ -228,7 +228,7 @@ const Portfolio: React.FC = () => {
                     
                     {/* Technologies */}
                     <div className="mb-6">
-                      <h4 className="text-lg font-semibold mb-3 text-purple-300">Technologies utilisées</h4>
+                      <h4 className="text-lg font-semibold mb-3 text-purple-300">Compétences utilisées</h4>
                       <div className="flex flex-wrap gap-2">
                         {experience.technologies.map((tech, techIndex) => (
                           <span key={techIndex} className="px-3 py-1 bg-purple-600/20 border border-purple-500/30 text-purple-300 rounded-full text-sm">

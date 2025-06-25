@@ -11,7 +11,11 @@ import {
   Layers,
   Video,
   FileX,
-  Music
+  Music,
+  Blocks,
+  Brush,
+  Waves,
+  LayoutTemplate
 } from 'lucide-react';
 
 // Configuration du portfolio
@@ -27,22 +31,27 @@ const PORTFOLIO_CONFIG = {
   skills: [
     { name: "Unity", icon: Gamepad2, category: "Game Engine" },
     { name: "Blender", icon: Palette, category: "3D Modeling" },
+    { name: "Aseprite", icon: Blocks, category: "2D Art" },
+    { name: "Krita", icon: Brush, category: "2D Art" },
     { name: "C#", icon: Code, category: "Programming" },
     { name: "Java", icon: Coffee, category: "Programming" },
     { name: "Git", icon: GitBranch, category: "Version Control" },
     { name: "TypeScript", icon: Zap, category: "Web Dev" },
     { name: "React", icon: Atom, category: "Web Dev" },
+    { name: "TailWindCSS", icon: Waves, category: "Web Dev" },
+    { name: "Figma", icon: LayoutTemplate, category: "UI/UX Design" },
     { name: "Three.js", icon: Globe, category: "Web 3D" },
     { name: "Pixi.js", icon: FileX, category: "Web 2D" },
     { name: "Adobe Suite", icon: Layers, category: "Content Creator" },
     { name: "DaVinci Resolve", icon: Video, category: "Content Creator" },
     { name: "FL Studio", icon: Music, category: "Music Production" },
+
   ],
   
   projects: [
     {
       id: 1,
-      title: "Cyberpunk Racing Game",
+      title: "Dream Bounds",
       description: "Jeu de course futuriste développé avec Unity, featuring des effets de particules avancés et un système physique réaliste.",
       image: "https://images.unsplash.com/photo-1542751371-adc38448a05e?w=800&h=600&fit=crop",
       video: "https://www.w3schools.com/html/mov_bbb.mp4",
@@ -53,15 +62,6 @@ const PORTFOLIO_CONFIG = {
     },
     {
       id: 2,
-      title: "Medieval Castle - 3D Environment",
-      description: "Environnement 3D médiéval complet créé avec Blender, optimisé pour les moteurs de jeu avec textures PBR.",
-      image: "https://images.unsplash.com/photo-1518709268805-4e9042af2176?w=800&h=600&fit=crop",
-      technologies: ["Blender", "Substance Painter", "PBR Texturing"],
-      github: "https://github.com/votre-username/medieval-castle",
-      featured: true
-    },
-    {
-      id: 3,
       title: "Puzzle Platformer",
       description: "Jeu de plateforme avec mécaniques de puzzle innovantes, développé en équipe lors d'une game jam.",
       image: "https://images.unsplash.com/photo-1556075798-4825dfaaf498?w=800&h=600&fit=crop",
@@ -70,13 +70,44 @@ const PORTFOLIO_CONFIG = {
       demo: "https://votre-demo.com"
     },
     {
-      id: 4,
+      id: 3,
       title: "Scène 3D sur Blender",
       description: "Scène 3D créée sur Blender, mettant en avant des techniques avancées de modélisation et d'éclairage.",
       image: "../images/blender_1.png",
-      video: "https://www.w3schools.com/html/mov_bbb.mp4",
       technologies: ["Blender"],
-      github: "https://github.com/votre-username/terrain-generator",      demo: "https://votre-demo.com"
+    },
+    {
+      id: 4,
+      title: "Medieval Castle - 3D Environment",
+      description: "Environnement 3D médiéval complet créé avec Blender, optimisé pour les moteurs de jeu avec textures PBR.",
+      image: "https://images.unsplash.com/photo-1518709268805-4e9042af2176?w=800&h=600&fit=crop",
+      technologies: ["Blender", "Substance Painter", "PBR Texturing"],
+      github: "https://github.com/votre-username/medieval-castle",
+      featured: true
+    },
+    {
+      id: 5,
+      title: "Porte 3D sur Blender",
+      description: "Porte 3D créée sur Blender, mettant en avant des l'utilisation des shading et .",
+      image: "../images/blender_2.png",
+      video: "../videos/blender_2.mp4",
+      technologies: ["Blender", "Shading"],
+    },
+    {
+      id: 6,
+      title: "Porte 3D sur Blender",
+      description: "Porte 3D créée sur Blender, mettant en avant des l'utilisation des shading et .",
+      image: "../images/blender_2.png",
+      video: "../videos/blender_2.mp4",
+      technologies: ["Blender", "Shading"],
+    },
+    {
+      id: 7,
+      title: "Porte 3D sur Blender",
+      description: "Porte 3D créée sur Blender, mettant en avant des l'utilisation des shading et .",
+      image: "../images/blender_2.png",
+      video: "../videos/blender_2.mp4",
+      technologies: ["Blender", "Shading"],
     }
   ],
 

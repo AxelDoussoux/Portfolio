@@ -41,7 +41,7 @@ const GalaxyBackground: React.FC = () => {
     const positions = new Float32Array(particlesCount * 3);
     const colors = new Float32Array(particlesCount * 3);
     const scales = new Float32Array(particlesCount);
-    const randomness = new Float32Array(particlesCount);    // Couleurs pour la galaxie (adaptées au thème du site)
+    const randomness = new Float32Array(particlesCount);    // Couleurs pour la galaxie
     const colorCore = new THREE.Color('#ffffff'); // Centre blanc brillant
     const colorArm1 = new THREE.Color('#a855f7'); // purple-500
     const colorArm2 = new THREE.Color('#8b5cf6'); // purple-400
