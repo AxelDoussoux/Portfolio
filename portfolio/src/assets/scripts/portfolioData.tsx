@@ -52,10 +52,10 @@ const PORTFOLIO_CONFIG = {
     {
       id: 1,
       title: "Dream Bounds",
-      description: "Jeu de course futuriste développé avec Unity, featuring des effets de particules avancés et un système physique réaliste.",
-      image: "https://images.unsplash.com/photo-1542751371-adc38448a05e?w=800&h=600&fit=crop",
-      video: "https://www.w3schools.com/html/mov_bbb.mp4",
-      technologies: ["Unity", "C#", "Shader Graph", "Post-Processing"],
+      description: "Jeu multijoueur coopératif en ligne en 3D développé avec Unity. Intègre une architecture client-serveur basée sur Unity Netcode, des effets de particules avancés et des assets 3D originaux modélisés avec Blender.",
+      image: "../images/Unity_1.png",
+      video: "https://www.youtube.com/watch?v=VhiG8OI3nHk",
+      technologies: ["Unity", "C#", "Shader Graph", "NetCode", "Blender"],
       github: "https://github.com/votre-username/cyberpunk-racing",
       demo: "https://votre-demo.com",
       featured: true

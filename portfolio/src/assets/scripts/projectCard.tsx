@@ -2,14 +2,30 @@ import { useRef, useState } from "react";
 import type PORTFOLIO_CONFIG from "./portfolioData";
 import { ExternalLink, Eye, Github, Pause, Play, Star } from "lucide-react";
 
+// Fonction pour convertir une URL YouTube en URL embed
+const getYouTubeEmbedUrl = (url: string): string | null => {
+  const regex = /(?:youtube\.com\/(?:[^\/]+\/.+\/|(?:v|e(?:mbed)?)\/|.*[?&]v=)|youtu\.be\/)([^"&?\/\s]{11})/;
+  const match = url.match(regex);
+  if (match && match[1]) {
+    return `https://www.youtube.com/embed/${match[1]}?autoplay=1&mute=1&loop=1&playlist=${match[1]}`;
+  }
+  return null;
+};
+
+// Fonction pour vérifier si c'est une URL YouTube
+const isYouTubeUrl = (url: string): boolean => {
+  return url.includes('youtube.com') || url.includes('youtu.be');
+};
 
 // Composant pour les projets avec media
-
-
 const ProjectCard: React.FC<{ project: typeof PORTFOLIO_CONFIG.projects[0] }> = ({ project }) => {
   const [isVideoPlaying, setIsVideoPlaying] = useState(false);
   const [showVideo, setShowVideo] = useState(false);
   const videoRef = useRef<HTMLVideoElement>(null);
+  const iframeRef = useRef<HTMLIFrameElement>(null);
+  
+  const isYouTube = project.video && isYouTubeUrl(project.video);
+  const youtubeEmbedUrl = isYouTube ? getYouTubeEmbedUrl(project.video!) : null;
   
   const toggleVideo = () => {
     if (project.video) {
@@ -21,7 +37,16 @@ const ProjectCard: React.FC<{ project: typeof PORTFOLIO_CONFIG.projects[0] }> = 
   };
   
   const togglePlayPause = () => {
-    if (videoRef.current) {
+    if (isYouTube && iframeRef.current) {
+      // Pour YouTube, on ne peut pas contrôler directement le play/pause via l'API embed basique
+      // On peut récharger l'iframe pour "redémarrer" la vidéo
+      if (isVideoPlaying) {
+        iframeRef.current.src = youtubeEmbedUrl!.replace('autoplay=1', 'autoplay=0');
+      } else {
+        iframeRef.current.src = youtubeEmbedUrl!;
+      }
+      setIsVideoPlaying(!isVideoPlaying);
+    } else if (videoRef.current) {
       if (isVideoPlaying) {
         videoRef.current.pause();
       } else {
@@ -35,18 +60,30 @@ const ProjectCard: React.FC<{ project: typeof PORTFOLIO_CONFIG.projects[0] }> = 
     <div className={`group relative bg-gray-900/50 backdrop-blur-sm border border-purple-500/30 rounded-xl overflow-hidden hover:border-purple-400/60 transition-all duration-500 ${project.featured ? 'lg:col-span-2' : ''}`}>
       <div className="relative aspect-video overflow-hidden">
         {showVideo && project.video ? (
-          <div className="relative">
-            <video
-              ref={videoRef}
-              src={project.video}
-              className="w-full h-full object-cover"
-              loop
-              muted
-              autoPlay
-            />
+          <div className="relative w-full h-full">
+            {isYouTube && youtubeEmbedUrl ? (
+              <iframe
+                ref={iframeRef}
+                src={youtubeEmbedUrl}
+                className="w-full h-full"
+                frameBorder="0"
+                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                allowFullScreen
+                title={project.title}
+              />
+            ) : (
+              <video
+                ref={videoRef}
+                src={project.video}
+                className="w-full h-full object-cover"
+                loop
+                muted
+                autoPlay
+              />
+            )}
             <button
               onClick={togglePlayPause}
-              className="absolute top-4 right-4 bg-black/50 hover:bg-black/70 text-white p-2 rounded-full transition-colors"
+              className="absolute top-4 right-4 bg-black/50 hover:bg-black/70 text-white p-2 rounded-full transition-colors z-10"
             >
               {isVideoPlaying ? <Pause size={20} /> : <Play size={20} />}
             </button>
