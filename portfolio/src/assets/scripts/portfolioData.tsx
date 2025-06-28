@@ -27,6 +27,7 @@ const PORTFOLIO_CONFIG = {
   github: "https://github.com/AxelDoussoux",
   linkedin: "https://www.linkedin.com/in/axeldoussoux/",
   instagram: "https://www.instagram.com/axel_in_the_pict/",
+  cvVideo: "https://youtu.be/uiMLm_isuGs",
   bio: "Développeur passionné spécialisé dans la création de jeux vidéo et la modélisation 3D. Expert en Unity, Blender et technologies web modernes.",
   
   skills: [

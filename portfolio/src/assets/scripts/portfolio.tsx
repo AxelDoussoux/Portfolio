@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { ChevronDown, Github, Mail, Linkedin, Code, Gamepad2, Box, Briefcase, Calendar, MapPin, CheckCircle, Camera, Instagram, Menu, X } from 'lucide-react';
+import { ChevronDown, Github, Mail, Linkedin, Code, Gamepad2, Box, Briefcase, Calendar, MapPin, CheckCircle, Camera, Instagram, Menu, X, Video } from 'lucide-react';
 import PORTFOLIO_CONFIG from './portfolioData';
 import GalaxyBackground from './galaxyBackground';
 import ProjectCard from './projectCard';
@@ -243,9 +243,22 @@ const Portfolio: React.FC = () => {
                 <p className="text-gray-300 leading-relaxed mb-6">
                   Depuis plus de 2 ans, je développe des <strong>jeux vidéo</strong> et fais de la <strong>modélisation 3D</strong>. Ma passion pour le jeu vidéo m'a mené à maîtriser les outils les plus tendance de l'industrie.
                 </p>
-                <p className="text-gray-300 leading-relaxed">
+                <p className="text-gray-300 leading-relaxed mb-6">
                   Je suis actuellement en phase de terminer mon <strong className="text-white font-bold">BUT Métiers du Multimédia et de l'Internet</strong> option <strong>Développement Web et Dispositifs Intéractifs</strong>, où j'ai pu approfondir mes compétences en développement, modélisation 3D et création de contenu.
                 </p>
+                
+                {/* Bouton CV Vidéo */}
+                <div className="mt-6">
+                  <a
+                    href={PORTFOLIO_CONFIG.cvVideo}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="inline-flex items-center gap-3 px-6 py-3 bg-gradient-to-r from-purple-500 to-blue-600 hover:from-purple-600 hover:to-blue-700 text-white rounded-xl transition-all duration-300 font-semibold shadow-lg hover:shadow-xl transform hover:scale-105"
+                  >
+                    <Video size={20} />
+                    Voir mon CV Vidéo
+                  </a>
+                </div>
               </div>
             </div>
             
@@ -411,22 +424,34 @@ const Portfolio: React.FC = () => {
           <InstagramCarousel />
           
           {/* Boutons de contact */}
-          <div className="flex justify-center gap-8 mb-12">
+          <div className="flex flex-wrap justify-center gap-4 sm:gap-8 mb-12">
             <a 
               href={`mailto:${PORTFOLIO_CONFIG.email}`}
-              className="flex items-center gap-3 px-8 py-4 bg-purple-600 hover:bg-purple-500 rounded-xl transition-colors text-lg"
+              className="flex items-center gap-3 px-6 sm:px-8 py-3 sm:py-4 bg-purple-600 hover:bg-purple-500 rounded-xl transition-colors text-base sm:text-lg"
             >
-              <Mail size={24} />
+              <Mail size={20} className="sm:hidden" />
+              <Mail size={24} className="hidden sm:block" />
               Email
             </a>
             <a 
               href={PORTFOLIO_CONFIG.linkedin}
-              className="flex items-center gap-3 px-8 py-4 bg-blue-600 hover:bg-blue-500 rounded-xl transition-colors text-lg"
+              className="flex items-center gap-3 px-6 sm:px-8 py-3 sm:py-4 bg-blue-600 hover:bg-blue-500 rounded-xl transition-colors text-base sm:text-lg"
               target="_blank"
               rel="noopener noreferrer"
             >
-              <Linkedin size={24} />
+              <Linkedin size={20} className="sm:hidden" />
+              <Linkedin size={24} className="hidden sm:block" />
               LinkedIn
+            </a>
+            <a 
+              href={PORTFOLIO_CONFIG.cvVideo}
+              className="flex items-center gap-3 px-6 sm:px-8 py-3 sm:py-4 bg-gradient-to-r from-purple-500 to-blue-600 hover:from-purple-600 hover:to-blue-700 rounded-xl transition-colors text-base sm:text-lg text-white font-semibold"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              <Video size={20} className="sm:hidden" />
+              <Video size={24} className="hidden sm:block" />
+              CV Vidéo
             </a>
           </div>
         </div>
