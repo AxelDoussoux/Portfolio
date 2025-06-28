@@ -241,7 +241,7 @@ const Portfolio: React.FC = () => {
                   En bref
                 </h3>
                 <p className="text-gray-300 leading-relaxed mb-6">
-                  Depuis plus de 2 ans, je développe des <strong>jeux vidéo</strong> et fait de la <strong>modélisation 3D</strong>. Ma passions pour le jeu vidéo m'a mené à maîtriser les outils les plus tendances de l'industrie.
+                  Depuis plus de 2 ans, je développe des <strong>jeux vidéo</strong> et fais de la <strong>modélisation 3D</strong>. Ma passion pour le jeu vidéo m'a mené à maîtriser les outils les plus tendance de l'industrie.
                 </p>
                 <p className="text-gray-300 leading-relaxed">
                   Je viens actuellement de terminer mon <strong className="text-white font-bold">BUT Métiers du Multimédia et de l'Internet</strong>, où j'ai pu approfondir mes compétences en développement, modélisation 3D et création de contenu.

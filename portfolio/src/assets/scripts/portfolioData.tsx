@@ -52,7 +52,7 @@ const PORTFOLIO_CONFIG = {
     {
     id: 1,
     title: "Dream Bounds",
-    description: "Jeu de plateforme 3D réalisé sur Unity avec composante multijoueur en ligne grace à Netcode. Ce porjet a été réalisé avec 2 autres personnes dans le cadre d'une SAE (Projet Universitaire) du 5ème semestre de mon BUT Métier du Multimédia et de l'Internet.",
+    description: "Jeu de plateforme 3D réalisé sur Unity avec composante multijoueur en ligne grâce à Netcode. Ce projet a été réalisé avec 2 autres personnes dans le cadre d'une SAE (Projet Universitaire) du 5ème semestre de mon BUT Métiers du Multimédia et de l'Internet.",
     image: "/images/Unity_1.png",
     video: "https://www.youtube.com/watch?v=VhiG8OI3nHk",
     technologies: ["Unity", "C#", "Blender", "FL Studio", "Netcode", "Shader Graph", "UI Toolkit", "Git"],
@@ -93,7 +93,7 @@ const PORTFOLIO_CONFIG = {
   },
   {
     id: 4,
-    title: "Génération de terrain procédural sur Untiy",
+    title: "Génération de terrain procédural sur Unity",
     description: "Génération procédurale de terrain sur Unity avec un système de grille et de tiles pour créer des mondes vastes et variés. Réalisé dans le cadre d'un stage d'apprentissage chez BDCRAFT.",
     image: "/images/Unity_2.png",
     video: "/videos/Unity_2.mp4",
@@ -138,7 +138,7 @@ const PORTFOLIO_CONFIG = {
     image: "/images/blender_3.png",
     technologies: ["Blender", "Rigging", "Animation"],
     featured: false,
-    year: "2025",
+    year: "2024",
   }
   ],
 
@@ -149,12 +149,12 @@ const PORTFOLIO_CONFIG = {
       company: "BD CRAFT",
       logo: "/images/bdcraft_logo.png",
       period: "Mai - Juillet 2025",
-      description: "Aide au développement d'un jeux vidéo indie multijoueur utilisant Unity et C#.",
+      description: "Aide au développement d'un jeu vidéo indie multijoueur utilisant Unity et C#.",
       technologies: ["Unity", "C#", "Blender"],
       achievements: [
         "Narration et dialogue pour les personnages",
         "Modélisation d'assets 3D et animations",
-        "Création d'un monde procédural avec un system de grille et de tiles pour la génération de terrain"
+        "Création d'un monde procédural avec un système de grille et de tiles pour la génération de terrain"
       ]
     },
     {
