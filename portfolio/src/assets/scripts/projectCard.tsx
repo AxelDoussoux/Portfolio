@@ -121,7 +121,7 @@ const ProjectModal: React.FC<{
                   <iframe
                     ref={iframeRef}
                     src={youtubeEmbedUrl}
-                    className="w-full h-auto auspect-video"
+                    className="w-full h-auto aspect-video"
                     allow=" autoplay; encrypted-media; gyroscope; picture-in-picture"
                     allowFullScreen
                     frameBorder="1"
