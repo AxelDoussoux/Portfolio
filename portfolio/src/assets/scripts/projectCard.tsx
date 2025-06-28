@@ -87,7 +87,7 @@ const ProjectModal: React.FC<{
       onClick={handleBackdropClick}
     >
       <div 
-        className="bg-gray-900 rounded-2xl max-w-5xl w-full max-h-[90vh] overflow-y-auto border border-purple-500/30"
+        className="bg-gray-900 rounded-2xl max-w-5xl w-full max-h-[85vh] overflow-y-auto border border-purple-500/30"
         onClick={(e) => e.stopPropagation()}
       >
         {/* Header */}
@@ -102,7 +102,7 @@ const ProjectModal: React.FC<{
                 </div>
               )}
             </div>
-            <p className="text-gray-400">{project.description}</p>
+            <p className="text-gray-300">{project.description}</p>
           </div>
           <button
             onClick={onClose}
@@ -114,24 +114,24 @@ const ProjectModal: React.FC<{
 
         {/* Media Section */}
         <div className="p-6">
-          <div className="relative aspect-video rounded-xl overflow-hidden mb-6">
+          <div className="relative aspect-auto rounded-xl overflow-hidden mb-6">
             {showVideo && project.video ? (
               <div className="relative w-full h-full">
                 {isYouTube && youtubeEmbedUrl ? (
                   <iframe
                     ref={iframeRef}
                     src={youtubeEmbedUrl}
-                    className="w-full h-full"
-                    frameBorder="0"
-                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                    className="w-full h-auto auspect-video"
+                    allow=" autoplay; encrypted-media; gyroscope; picture-in-picture"
                     allowFullScreen
+                    frameBorder="1"
                     title={project.title}
                   />
                 ) : (
                   <video
                     ref={videoRef}
                     src={project.video}
-                    className="w-full h-full object-cover"
+                    className="w-full h-full object-contain"
                     loop
                     muted
                     autoPlay
@@ -145,7 +145,7 @@ const ProjectModal: React.FC<{
                 </button>
               </div>
             ) : (
-              <img src={project.image} alt={project.title} className="w-full h-full object-cover" />
+              <img src={project.image} alt={project.title} className="w-full h-full object-contain bg-gray-900 group-hover:scale-105 transition-transform duration-500" />
             )}
             
             {project.video && (
@@ -187,7 +187,7 @@ const ProjectModal: React.FC<{
               </div>
               {/* Action Buttons */}
               <div className="flex gap-4 mt-8 pt-6">
-                {project.github && (
+                {/* {project.github && (
                   <a
                     href={project.github}
                     className="flex items-center gap-2 px-6 py-3 bg-gray-800 hover:bg-gray-700 text-white rounded-lg transition-colors flex-1 justify-center"
@@ -197,7 +197,7 @@ const ProjectModal: React.FC<{
                     <Github size={20} />
                     Voir le code
                   </a>
-                )}
+                )} */}
                 {project.demo && (
                   <a
                     href={project.demo}
@@ -296,10 +296,10 @@ const ProjectCard: React.FC<{ project: typeof PORTFOLIO_CONFIG.projects[0] }> = 
   return (
     <>
       <div 
-        className={`group relative bg-gray-900/50 backdrop-blur-sm border border-purple-500/30 rounded-xl overflow-hidden hover:border-purple-400/60 transition-all duration-500 ${project.featured ? 'cursor-pointer' : ''} ${project.featured ? 'lg:col-span-2' : ''}`}
+        className={`group relative bg-gray-900/50 backdrop-blur-sm border border-purple-500/30 rounded-xl overflow-hidden hover:border-purple-400/60 transition-all duration-500 ${project.featured ? 'cursor-pointer' : ''} ${project.featured ? 'lg:col-span-2' : ''} flex flex-col`}
         onClick={handleCardClick}
       >
-        <div className="relative aspect-video overflow-hidden">
+        <div className="relative aspect-auto overflow-hidden flex-shrink-0">
           {showVideo && project.video ? (
             <div className="relative w-full h-full">
               {isYouTube && youtubeEmbedUrl ? (
@@ -316,7 +316,7 @@ const ProjectCard: React.FC<{ project: typeof PORTFOLIO_CONFIG.projects[0] }> = 
                 <video
                   ref={videoRef}
                   src={project.video}
-                  className="w-full h-full object-cover"
+                  className="w-full h-full object-contain bg-black"
                   loop
                   muted
                   autoPlay
@@ -330,7 +330,7 @@ const ProjectCard: React.FC<{ project: typeof PORTFOLIO_CONFIG.projects[0] }> = 
               </button>
             </div>
           ) : (
-            <img src={project.image} alt={project.title} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
+            <img src={project.image} alt={project.title} className="w-full h-full object-contain bg-gray-900 group-hover:scale-105 transition-transform duration-500" />
           )}
           
           <div className="absolute inset-0 bg-gradient-to-t from-black/80 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
@@ -373,49 +373,47 @@ const ProjectCard: React.FC<{ project: typeof PORTFOLIO_CONFIG.projects[0] }> = 
               Featured
             </div>
           )}
-          
         </div>
         
-        <div className="p-6 relative bottom-0">
+        <div className="p-6 flex flex-col flex-grow">
           <div className="flex justify-between items-start mb-2">
             <h3 className="text-xl font-bold text-white group-hover:text-purple-300 transition-colors flex-1">
               {project.title}
             </h3>
-            
-            {project.featured && (
-              <span className="text-purple-400 text-sm ml-2">Cliquez pour plus de détails</span>
-            )}
-          </div>
-          <p className="text-gray-300 mb-4 leading-relaxed line-clamp-2">{project.description}</p>
-          
-          <div className="flex gap-3">
-            {project.github && (
-              <a
-                href={project.github}
-                className="flex items-center gap-2 px-4 py-2 bg-gray-800 hover:bg-gray-700 text-white rounded-lg transition-colors"
-                target="_blank"
-                rel="noopener noreferrer"
-                onClick={(e) => e.stopPropagation()}
-              >
-                <Github size={16} />
-                Code
-              </a>
-            )}
-            {project.demo && (
-              <a
-                href={project.demo}
-                className="flex items-center gap-2 px-4 py-2 bg-purple-600 hover:bg-purple-500 text-white rounded-lg transition-colors"
-                target="_blank"
-                rel="noopener noreferrer"
-                onClick={(e) => e.stopPropagation()}
-              >
-                <ExternalLink size={16} />
-                Demo
-              </a>
-            )}
 
-            {/* Badge Année */}
-            <div className="bg-gray-800/80 text-white rounded-full  px-2 text-xs font-semibold">
+          </div>
+          <p className="text-gray-300 mb-4 leading-relaxed line-clamp-2 flex-grow">{project.description}</p>
+          
+          <div className="flex justify-between items-end mt-auto">
+            <div className="flex gap-3">
+              {/* {project.github && (
+                <a
+                  href={project.github}
+                  className="flex items-center gap-2 px-4 py-2 bg-gray-800 hover:bg-gray-700 text-white rounded-lg transition-colors"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  onClick={(e) => e.stopPropagation()}
+                >
+                  <Github size={16} />
+                  Code
+                </a>
+              )} */}
+              {project.demo && (
+                <a
+                  href={project.demo}
+                  className="flex items-center gap-2 px-4 py-2 bg-purple-600 hover:bg-purple-500 text-white rounded-lg transition-colors"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  onClick={(e) => e.stopPropagation()}
+                >
+                  <ExternalLink size={16} />
+                  Demo
+                </a>
+              )}
+            </div>
+            
+            {/* Badge Année - aligné avec les boutons */}
+            <div className="bg-gray-800/80 text-white rounded-full px-3 py-1 text-xs font-semibold">
               {project.year}
             </div>
           </div>

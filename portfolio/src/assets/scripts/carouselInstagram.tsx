@@ -2,12 +2,28 @@ import { useEffect, useState } from "react";
 import PORTFOLIO_CONFIG from "./portfolioData";
 import { ChevronLeft, ChevronRight, Instagram } from "lucide-react";
 
-
 // Composant Carousel Instagram avec embeds
 const InstagramCarousel: React.FC = () => {
   const [currentIndex, setCurrentIndex] = useState(0);
   const [isAutoPlaying, setIsAutoPlaying] = useState(true);
-  const postsPerView = 3; // Nombre de posts visibles à la fois
+  const [postsPerView, setPostsPerView] = useState(3);
+
+  // Détection de la taille d'écran
+  useEffect(() => {
+    const updatePostsPerView = () => {
+      if (window.innerWidth < 640) { // smartphone
+        setPostsPerView(1);
+      } else if (window.innerWidth < 1024) { // tablette
+        setPostsPerView(2);
+      } else { // desktop
+        setPostsPerView(3);
+      }
+    };
+
+    updatePostsPerView();
+    window.addEventListener('resize', updatePostsPerView);
+    return () => window.removeEventListener('resize', updatePostsPerView);
+  }, []);
 
   // Auto-play du carousel
   useEffect(() => {
@@ -20,7 +36,7 @@ const InstagramCarousel: React.FC = () => {
     }, 5000); // 5 secondes pour laisser le temps de voir les embeds
 
     return () => clearInterval(interval);
-  }, [isAutoPlaying]);
+  }, [isAutoPlaying, postsPerView]);
 
   const nextSlide = () => {
     setCurrentIndex((prevIndex) => 
@@ -39,10 +55,10 @@ const InstagramCarousel: React.FC = () => {
   };
 
   return (
-    <div className="bg-gray-900/30 backdrop-blur-sm border border-purple-500/20 rounded-2xl p-8 mb-12">
-      <div className="flex items-center justify-center gap-3 mb-8">
+    <div className="bg-gray-900/30 backdrop-blur-sm border border-purple-500/20 rounded-2xl p-4 sm:p-8 mb-12">
+      <div className="flex items-center justify-center gap-3 mb-6 sm:mb-8">
         <Instagram className="text-pink-400" size={32} />
-        <h3 className="text-2xl font-bold bg-gradient-to-r from-pink-400 to-purple-400 bg-clip-text text-transparent">
+        <h3 className="text-xl sm:text-2xl font-bold bg-gradient-to-r from-pink-400 to-purple-400 bg-clip-text text-transparent text-center">
           Mes dernières créations
         </h3>
       </div>
@@ -57,16 +73,24 @@ const InstagramCarousel: React.FC = () => {
           style={{ transform: `translateX(-${currentIndex * (100 / postsPerView)}%)` }}
         >
           {PORTFOLIO_CONFIG.instagramPosts.map((post) => (
-            <div key={post.id} className="w-1/3 flex-shrink-0 px-2">
+            <div 
+              key={post.id} 
+              className={`flex-shrink-0 px-1 sm:px-2 ${
+                postsPerView === 1 ? 'w-full' : 
+                postsPerView === 2 ? 'w-1/2' : 'w-1/3'
+              }`}
+            >
               <div className="bg-gray-800/50 rounded-xl overflow-hidden border border-purple-500/20 hover:border-purple-400/40 transition-all duration-300">
                 <div className="aspect-square">
                   <iframe
-                    src={post.embedUrl}
+                    src={`${post.embedUrl}?autoplay=0&muted=1`}
                     className="w-full h-full border-0"
                     frameBorder="0"
                     scrolling="no"
                     allowTransparency={true}
+                    allow="encrypted-media"
                     title={`Instagram post ${post.id}`}
+                    sandbox="allow-scripts allow-same-origin allow-popups allow-popups-to-escape-sandbox"
                   />
                 </div>
               </div>
@@ -77,26 +101,28 @@ const InstagramCarousel: React.FC = () => {
         {/* Boutons de navigation */}
         <button
           onClick={prevSlide}
-          className="absolute left-2 top-1/2 -translate-y-1/2 bg-black/70 hover:bg-black/90 text-white p-3 rounded-full transition-colors z-10 shadow-lg"
+          className="absolute left-1 sm:left-2 top-1/2 -translate-y-1/2 bg-black/70 hover:bg-black/90 text-white p-2 sm:p-3 rounded-full transition-colors z-10 shadow-lg"
         >
-          <ChevronLeft size={20} />
+          <ChevronLeft size={16} className="sm:hidden" />
+          <ChevronLeft size={20} className="hidden sm:block" />
         </button>
         
         <button
           onClick={nextSlide}
-          className="absolute right-2 top-1/2 -translate-y-1/2 bg-black/70 hover:bg-black/90 text-white p-3 rounded-full transition-colors z-10 shadow-lg"
+          className="absolute right-1 sm:right-2 top-1/2 -translate-y-1/2 bg-black/70 hover:bg-black/90 text-white p-2 sm:p-3 rounded-full transition-colors z-10 shadow-lg"
         >
-          <ChevronRight size={20} />
+          <ChevronRight size={16} className="sm:hidden" />
+          <ChevronRight size={20} className="hidden sm:block" />
         </button>
       </div>
       
       {/* Indicateurs de pagination */}
-      <div className="flex justify-center gap-2 mt-6">
+      <div className="flex justify-center gap-2 mt-4 sm:mt-6">
         {Array.from({ length: Math.ceil(PORTFOLIO_CONFIG.instagramPosts.length / postsPerView) }).map((_, index) => (
           <button
             key={index}
             onClick={() => goToSlide(index)}
-            className={`w-3 h-3 rounded-full transition-all duration-300 ${
+            className={`w-2 h-2 sm:w-3 sm:h-3 rounded-full transition-all duration-300 ${
               Math.floor(currentIndex / postsPerView) === index 
                 ? 'bg-purple-400 scale-110' 
                 : 'bg-gray-600 hover:bg-gray-500'
@@ -106,14 +132,15 @@ const InstagramCarousel: React.FC = () => {
       </div>
       
       {/* Lien vers Instagram */}
-      <div className="text-center mt-8">
+      <div className="text-center mt-6 sm:mt-8">
         <a
           href={PORTFOLIO_CONFIG.instagram}
           target="_blank"
           rel="noopener noreferrer"
-          className="inline-flex items-center gap-3 px-8 py-4 bg-gradient-to-r from-pink-500 to-purple-500 hover:from-pink-600 hover:to-purple-600 rounded-xl transition-all duration-300 text-white font-semibold shadow-lg hover:shadow-xl transform hover:scale-105"
+          className="inline-flex items-center gap-2 sm:gap-3 px-6 sm:px-8 py-3 sm:py-4 bg-gradient-to-r from-pink-500 to-purple-500 hover:from-pink-600 hover:to-purple-600 rounded-xl transition-all duration-300 text-white font-semibold shadow-lg hover:shadow-xl transform hover:scale-105 text-sm sm:text-base"
         >
-          <Instagram size={24} />
+          <Instagram size={20} className="sm:hidden" />
+          <Instagram size={24} className="hidden sm:block" />
           Suivez-moi sur Instagram
         </a>
       </div>

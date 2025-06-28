@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { ChevronDown, Github, Mail, Linkedin, Code, Gamepad2, Box, Briefcase, Calendar, MapPin, CheckCircle, Camera, Instagram } from 'lucide-react';
+import { ChevronDown, Github, Mail, Linkedin, Code, Gamepad2, Box, Briefcase, Calendar, MapPin, CheckCircle, Camera, Instagram, Menu, X } from 'lucide-react';
 import PORTFOLIO_CONFIG from './portfolioData';
 import GalaxyBackground from './galaxyBackground';
 import ProjectCard from './projectCard';
@@ -8,6 +8,7 @@ import InstagramCarousel from './carouselInstagram';
 // Composant principal
 const Portfolio: React.FC = () => {
   const [activeSection, setActiveSection] = useState('hero');
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   
   useEffect(() => {
     const handleScroll = () => {
@@ -29,13 +30,40 @@ const Portfolio: React.FC = () => {
     window.addEventListener('scroll', handleScroll);
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
+
+  // Empêcher le scroll quand le menu mobile est ouvert
+  useEffect(() => {
+    if (isMobileMenuOpen) {
+      document.body.style.overflow = 'hidden';
+    } else {
+      document.body.style.overflow = 'unset';
+    }
+
+    return () => {
+      document.body.style.overflow = 'unset';
+    };
+  }, [isMobileMenuOpen]);
   
   const scrollToSection = (sectionId: string) => {
     const element = document.getElementById(sectionId);
     if (element) {
       element.scrollIntoView({ behavior: 'smooth' });
+      setIsMobileMenuOpen(false); // Fermer le menu après navigation
     }
   };
+
+  const toggleMobileMenu = () => {
+    setIsMobileMenuOpen(!isMobileMenuOpen);
+  };
+
+  const navigationItems = [
+    { id: 'hero', label: 'Accueil' },
+    { id: 'about', label: 'À propos' },
+    { id: 'skills', label: 'Compétences' },
+    { id: 'portfolio', label: 'Portfolio' },
+    { id: 'experience', label: 'Expérience' },
+    { id: 'contact', label: 'Contact' }
+  ];
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-900 via-purple-900 to-black text-white relative overflow-x-hidden">
@@ -46,35 +74,114 @@ const Portfolio: React.FC = () => {
       <nav className="fixed top-0 left-0 right-0 z-50 bg-black/20 backdrop-blur-md border-b border-purple-500/30">
         <div className="max-w-6xl mx-auto px-6 py-4">
           <div className="flex justify-between items-center">
+            {/* Logo */}
             <div className="text-2xl font-bold bg-gradient-to-r from-purple-400 to-blue-400 bg-clip-text text-transparent">
               {PORTFOLIO_CONFIG.name}
             </div>
+            
+            {/* Navigation Desktop */}
             <div className="hidden md:flex space-x-8">
-              {['hero', 'about', 'skills', 'portfolio', 'experience', 'contact'].map((section) => (
+              {navigationItems.map((item) => (
                 <button
-                  key={section}
-                  onClick={() => scrollToSection(section)}
-                  className={`capitalize transition-colors ${
-                    activeSection === section ? 'text-purple-400' : 'text-gray-300 hover:text-white'
+                  key={item.id}
+                  onClick={() => scrollToSection(item.id)}
+                  className={`transition-colors duration-300 hover:text-purple-300 ${
+                    activeSection === item.id ? 'text-purple-400' : 'text-gray-300'
                   }`}
                 >
-                  {section === 'hero' ? 'Accueil' : 
-                   section === 'about' ? 'À propos' : 
-                   section === 'skills' ? 'Compétences' : 
-                   section === 'portfolio' ? 'Portfolio' : 
-                   section === 'experience' ? 'Expérience' : 'Contact'}
+                  {item.label}
                 </button>
               ))}
+            </div>
+
+            {/* Bouton Menu Burger */}
+            <button
+              onClick={toggleMobileMenu}
+              className="md:hidden p-2 rounded-lg bg-purple-600/20 hover:bg-purple-600/40 transition-colors"
+              aria-label="Toggle mobile menu"
+            >
+              {isMobileMenuOpen ? <X size={24} /> : <Menu size={24} />}
+            </button>
+          </div>
+        </div>
+
+        {/* Menu Mobile */}
+        <div className={`md:hidden absolute top-full left-0 right-0 bg-black/95 backdrop-blur-md border-b border-purple-500/30 transition-all duration-300 ${
+          isMobileMenuOpen ? 'opacity-100 visible' : 'opacity-0 invisible'
+        }`}>
+          <div className="max-w-6xl mx-auto px-6 py-4">
+            <div className="flex flex-col space-y-4">
+              {navigationItems.map((item) => (
+                <button
+                  key={item.id}
+                  onClick={() => scrollToSection(item.id)}
+                  className={`text-left py-3 px-4 rounded-lg transition-all duration-300 ${
+                    activeSection === item.id 
+                      ? 'text-purple-400 bg-purple-600/20' 
+                      : 'text-gray-300 hover:text-white hover:bg-purple-600/10'
+                  }`}
+                >
+                  {item.label}
+                </button>
+              ))}
+              
+              {/* Liens sociaux dans le menu mobile */}
+              <div className="pt-4 mt-4 border-t border-purple-500/30">
+                <div className="flex justify-center gap-4">
+                  <a 
+                    href={PORTFOLIO_CONFIG.github} 
+                    className="p-3 bg-gray-800/50 hover:bg-gray-700/50 rounded-full transition-colors"
+                    target="_blank" 
+                    rel="noopener noreferrer"
+                    onClick={() => setIsMobileMenuOpen(false)}
+                  >
+                    <Github size={20} />
+                  </a>
+                  <a 
+                    href={PORTFOLIO_CONFIG.instagram} 
+                    className="p-3 bg-gray-800/50 hover:bg-gray-700/50 rounded-full transition-colors"
+                    target="_blank" 
+                    rel="noopener noreferrer"
+                    onClick={() => setIsMobileMenuOpen(false)}
+                  >
+                    <Instagram size={20} />
+                  </a>
+                  <a 
+                    href={PORTFOLIO_CONFIG.linkedin} 
+                    className="p-3 bg-gray-800/50 hover:bg-gray-700/50 rounded-full transition-colors"
+                    target="_blank" 
+                    rel="noopener noreferrer"
+                    onClick={() => setIsMobileMenuOpen(false)}
+                  >
+                    <Linkedin size={20} />
+                  </a>
+                  <a 
+                    href={`mailto:${PORTFOLIO_CONFIG.email}`} 
+                    className="p-3 bg-gray-800/50 hover:bg-gray-700/50 rounded-full transition-colors"
+                    onClick={() => setIsMobileMenuOpen(false)}
+                  >
+                    <Mail size={20} />
+                  </a>
+                </div>
+              </div>
             </div>
           </div>
         </div>
       </nav>
+
+      {/* Overlay pour fermer le menu en cliquant à l'extérieur */}
+      {isMobileMenuOpen && (
+        <div 
+          className="fixed inset-0 bg-black/50 z-40 md:hidden" 
+          onClick={() => setIsMobileMenuOpen(false)}
+        />
+      )}
       
       {/* Hero Section */}
       <section id="hero" className="min-h-screen flex items-center justify-center relative z-10">
         <div className="text-center max-w-4xl mx-auto px-6">
           <div className="mb-8">
-            <div className="w-64 h-64 bg-gray-900/20 backdrop-blur-sm rounded-full mx-auto p-1 mb-6 flex items-center justify-center relative">
+            <div className="w-32 h-32 sm:w-48 sm:h-48 md:w-64 md:h-64 bg-gray-900/20 backdrop-blur-sm rounded-full mx-auto p-1 mb-6 flex items-center justify-center relative">
               {/* Contour en fade avec gradient */}
               <div className="absolute inset-0 rounded-full bg-gradient-to-r from-purple-500/60 via-blue-500/60 to-purple-500/60 blur-sm"></div>
               <div className="absolute inset-1 rounded-full bg-gradient-to-r from-purple-500/40 via-blue-500/40 to-purple-500/40"></div>
@@ -136,11 +243,8 @@ const Portfolio: React.FC = () => {
                 <p className="text-gray-300 leading-relaxed mb-6">
                   Depuis plus de 2 ans, je développe des <strong>jeux vidéo</strong> et fait de la <strong>modélisation 3D</strong>. Ma passions pour le jeu vidéo m'a mené à maîtriser les outils les plus tendances de l'industrie.
                 </p>
-                <p className="text-gray-300 leading-relaxed mb-6">
-                  J'aime créer des univers qui captivent et inspirent, en alliant technique et créativité pour donner vie à des concepts uniques.
-                </p>
                 <p className="text-gray-300 leading-relaxed">
-                  Je viens actuellement de terminer mon <strong>BUT Métiers du Multimédia et de l'Internet</strong>, où j'ai pu approfondir mes compétences en développement, modélisation 3D et création de contenu.
+                  Je viens actuellement de terminer mon <strong className="text-white font-bold">BUT Métiers du Multimédia et de l'Internet</strong>, où j'ai pu approfondir mes compétences en développement, modélisation 3D et création de contenu.
                 </p>
               </div>
             </div>
@@ -223,14 +327,15 @@ const Portfolio: React.FC = () => {
                 <div className="grid md:grid-cols-3 gap-6">
                   {/* Info principale */}
                   <div className="md:col-span-2">
-                    <div className="flex flex-wrap items-start gap-4 mb-4">
-                      <div className="flex items-center gap-2">
+                    <div className="flex flex-wrap items-start gap-4 mb-1">
+                      <div className="flex items-center gap-3">
                         <Briefcase className="text-purple-400" size={20} />
                         <h3 className="text-2xl font-bold text-white">{experience.role}</h3>
                       </div>
-                      <div className="flex items-center gap-2 text-purple-300">
+                      <div className="flex mt-2 items-top gap-3 text-purple-300">
                         <MapPin size={16} />
                         <span className="font-semibold">{experience.company}</span>
+                        
                       </div>
                     </div>
                     
@@ -242,6 +347,17 @@ const Portfolio: React.FC = () => {
                     <p className="text-gray-300 mb-6 leading-relaxed">
                       {experience.description}
                     </p>
+
+                    {/* Logo de l'entreprise */}
+                    {experience.logo && (
+                    <div className="absolute top-20 md:top-3 right-4 w-16 h-16 md:w-20 md:h-20 p-1 flex items-center justify-center">
+                      <img 
+                        src={experience.logo} 
+                        alt={`${experience.company} logo`}
+                        className="w-full h-full object-contain"
+                      />
+                    </div>
+                    )}
                     
                     {/* Technologies */}
                     <div className="mb-6">
@@ -265,12 +381,13 @@ const Portfolio: React.FC = () => {
                     <ul className="space-y-3">
                       {experience.achievements.map((achievement, achIndex) => (
                         <li key={achIndex} className="flex items-start gap-2 text-gray-300">
-                          <div className="w-2 h-2 bg-purple-400 rounded-full mt-2 flex-shrink-0"></div>
+                          <div className="w-2 h-2 bg-purple-400 mt-2 flex-shrink-0"></div>
                           <span className="text-sm leading-relaxed">{achievement}</span>
                         </li>
                       ))}
                     </ul>
                   </div>
+                  
                 </div>
               </div>
             ))}
