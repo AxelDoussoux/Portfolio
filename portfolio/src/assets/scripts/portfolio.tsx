@@ -453,6 +453,16 @@ const Portfolio: React.FC = () => {
               <Video size={24} className="hidden sm:block" />
               CV Vidéo
             </a>
+            <a 
+              href={PORTFOLIO_CONFIG.github}
+              className="flex items-center gap-3 px-6 sm:px-8 py-3 sm:py-4 bg-gray-800 hover:bg-gray-700 rounded-xl transition-colors text-base sm:text-lg"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              <Github size={20} className="sm:hidden" />
+              <Github size={24} className="hidden sm:block" />
+              GitHub
+            </a>
           </div>
         </div>
       </section>
