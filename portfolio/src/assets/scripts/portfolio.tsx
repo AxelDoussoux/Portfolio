@@ -1,13 +1,15 @@
 import React, { useState, useEffect } from 'react';
-import { ChevronDown, Github, Mail, Linkedin, Code, Gamepad2, Box, Zap, Briefcase, Calendar, MapPin, CheckCircle } from 'lucide-react';
+import { ChevronDown, Github, Mail, Linkedin, Code, Gamepad2, Box, Briefcase, Calendar, MapPin, CheckCircle, Camera, Instagram } from 'lucide-react';
 import PORTFOLIO_CONFIG from './portfolioData';
-import GalaxyBackground from './galaxyBackground'; // Import du composant pour l'arrière-plan 3D animé
-import ProjectCard from './projectCard'; // Import du composant pour les cartes de projet
+import GalaxyBackground from './galaxyBackground';
+import ProjectCard from './projectCard';
+import InstagramCarousel from './carouselInstagram';
 
 // Composant principal
 const Portfolio: React.FC = () => {
   const [activeSection, setActiveSection] = useState('hero');
-    useEffect(() => {
+  
+  useEffect(() => {
     const handleScroll = () => {
       const sections = ['hero', 'about', 'skills', 'portfolio', 'experience', 'contact'];
       const scrollPosition = window.scrollY + 100;
@@ -34,7 +36,8 @@ const Portfolio: React.FC = () => {
       element.scrollIntoView({ behavior: 'smooth' });
     }
   };
-    return (
+
+  return (
     <div className="min-h-screen bg-gradient-to-br from-gray-900 via-purple-900 to-black text-white relative overflow-x-hidden">
       {/* Arrière-plan galaxie 3D */}
       <GalaxyBackground />
@@ -46,7 +49,7 @@ const Portfolio: React.FC = () => {
             <div className="text-2xl font-bold bg-gradient-to-r from-purple-400 to-blue-400 bg-clip-text text-transparent">
               {PORTFOLIO_CONFIG.name}
             </div>
-              <div className="hidden md:flex space-x-8">
+            <div className="hidden md:flex space-x-8">
               {['hero', 'about', 'skills', 'portfolio', 'experience', 'contact'].map((section) => (
                 <button
                   key={section}
@@ -71,10 +74,17 @@ const Portfolio: React.FC = () => {
       <section id="hero" className="min-h-screen flex items-center justify-center relative z-10">
         <div className="text-center max-w-4xl mx-auto px-6">
           <div className="mb-8">
-            <div className="w-32 h-32 bg-gradient-to-r from-purple-500 to-blue-500 rounded-full mx-auto mb-6 flex items-center justify-center text-6xl">
-              🎮
+            <div className="w-64 h-64 bg-gray-900/20 backdrop-blur-sm rounded-full mx-auto p-1 mb-6 flex items-center justify-center relative">
+              {/* Contour en fade avec gradient */}
+              <div className="absolute inset-0 rounded-full bg-gradient-to-r from-purple-500/60 via-blue-500/60 to-purple-500/60 blur-sm"></div>
+              <div className="absolute inset-1 rounded-full bg-gradient-to-r from-purple-500/40 via-blue-500/40 to-purple-500/40"></div>
+              
+              {/* Image */}
+              <div className="relative w-full h-full ">
+                <img src={PORTFOLIO_CONFIG.avatar} alt="Avatar" className="rounded-full w-full h-full object-cover relative z-10" />
+              </div>
             </div>
-            <h1 className="text-6xl md:text-8xl font-bold mb-4 bg-gradient-to-r from-purple-400 via-blue-400 to-purple-600 bg-clip-text text-transparent animate-pulse">
+            <h1 className="text-6xl md:text-8xl font-bold mb-4 bg-gradient-to-r from-purple-400 via-blue-400 to-purple-600 bg-clip-text text-transparent">
               {PORTFOLIO_CONFIG.name}
             </h1>
             <h2 className="text-2xl md:text-3xl text-purple-300 mb-6">
@@ -88,6 +98,9 @@ const Portfolio: React.FC = () => {
           <div className="flex justify-center gap-6 mb-12">
             <a href={PORTFOLIO_CONFIG.github} className="p-4 bg-gray-800/50 hover:bg-gray-700/50 rounded-full transition-colors backdrop-blur-sm" target="_blank" rel="noopener noreferrer">
               <Github size={24} />
+            </a>
+            <a href={PORTFOLIO_CONFIG.instagram} className="p-4 bg-gray-800/50 hover:bg-gray-700/50 rounded-full transition-colors backdrop-blur-sm" target="_blank" rel="noopener noreferrer">
+              <Instagram size={24} />
             </a>
             <a href={PORTFOLIO_CONFIG.linkedin} className="p-4 bg-gray-800/50 hover:bg-gray-700/50 rounded-full transition-colors backdrop-blur-sm" target="_blank" rel="noopener noreferrer">
               <Linkedin size={24} />
@@ -121,32 +134,35 @@ const Portfolio: React.FC = () => {
                   En bref
                 </h3>
                 <p className="text-gray-300 leading-relaxed mb-6">
-                  Depuis plus de 2 ans, je développe et  des jeux vidéo. Ma passion pour les jeux vidéo et la modélisation 3D m'a mené à maîtriser les outils les plus avancés de l'industrie.
+                  Depuis plus de 2 ans, je développe des <strong>jeux vidéo</strong> et fait de la <strong>modélisation 3D</strong>. Ma passions pour le jeu vidéo m'a mené à maîtriser les outils les plus tendances de l'industrie.
+                </p>
+                <p className="text-gray-300 leading-relaxed mb-6">
+                  J'aime créer des univers qui captivent et inspirent, en alliant technique et créativité pour donner vie à des concepts uniques.
                 </p>
                 <p className="text-gray-300 leading-relaxed">
-                  J'aime créer des univers qui captivent et inspirent, en alliant technique et créativité pour donner vie à des concepts uniques.
+                  Je viens actuellement de terminer mon <strong>BUT Métiers du Multimédia et de l'Internet</strong>, où j'ai pu approfondir mes compétences en développement, modélisation 3D et création de contenu.
                 </p>
               </div>
             </div>
             
             <div className="space-y-6">
               <div className="bg-gray-900/50 backdrop-blur-sm border border-purple-500/30 rounded-xl p-6">
-                <div className="flex items-center gap-3 mb-3">
+                <div className="flex items-center gap-3">
                   <Code className="text-blue-400" />
                   <h4 className="text-xl font-semibold">Développement de Jeu Vidéo & Web</h4>
                 </div>
               </div>
               
               <div className="bg-gray-900/50 backdrop-blur-sm border border-purple-500/30 rounded-xl p-6">
-                <div className="flex items-center gap-3 mb-3">
+                <div className="flex items-center gap-3">
                   <Box className="text-green-400" />
                   <h4 className="text-xl font-semibold">3D & 2D Art</h4>
                 </div>
               </div>
               
               <div className="bg-gray-900/50 backdrop-blur-sm border border-purple-500/30 rounded-xl p-6">
-                <div className="flex items-center gap-3 mb-3">
-                  <Zap className="text-yellow-400" />
+                <div className="flex items-center gap-3">
+                  <Camera className="text-yellow-400" />
                   <h4 className="text-xl font-semibold">Création de contenu</h4>
                 </div>
               </div>
@@ -181,7 +197,7 @@ const Portfolio: React.FC = () => {
       </section>
       
       {/* Portfolio Section */}
-      <section id="portfolio" className="py-20 relative z-10">
+      <section id="portfolio" className="py-20 relative z-15">
         <div className="max-w-7xl mx-auto px-6">
           <h2 className="text-4xl font-bold text-center mb-16 bg-gradient-to-r from-purple-400 to-blue-400 bg-clip-text text-transparent">
             Portfolio
@@ -191,7 +207,8 @@ const Portfolio: React.FC = () => {
               <ProjectCard key={project.id} project={project} />
             ))}
           </div>
-        </div>      </section>
+        </div>
+      </section>
 
       {/* Experience Section */}
       <section id="experience" className="py-20 relative z-10">
@@ -263,14 +280,20 @@ const Portfolio: React.FC = () => {
       
       {/* Contact Section */}
       <section id="contact" className="py-20 relative z-10">
-        <div className="max-w-4xl mx-auto px-6 text-center">
-          <h2 className="text-4xl font-bold mb-8 bg-gradient-to-r from-purple-400 to-blue-400 bg-clip-text text-transparent">
-            Contactez-moi
-          </h2>
-          <p className="text-xl text-gray-300 mb-12">
-            Prêt à collaborer sur votre prochain projet ? Parlons-en !
-          </p>
+        <div className="max-w-6xl mx-auto px-6">
+          <div className="text-center mb-16">
+            <h2 className="text-4xl font-bold mb-8 bg-gradient-to-r from-purple-400 to-blue-400 bg-clip-text text-transparent">
+              Contactez-moi
+            </h2>
+            <p className="text-xl text-gray-300 mb-12">
+              Prêt à collaborer sur votre prochain projet ? Parlons-en !
+            </p>
+          </div>
           
+          {/* Carousel Instagram */}
+          <InstagramCarousel />
+          
+          {/* Boutons de contact */}
           <div className="flex justify-center gap-8 mb-12">
             <a 
               href={`mailto:${PORTFOLIO_CONFIG.email}`}

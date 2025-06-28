@@ -1,8 +1,6 @@
-
 import { 
   Gamepad2, 
   Palette, 
-  Code, 
   Coffee, 
   Zap, 
   Atom, 
@@ -15,7 +13,8 @@ import {
   Blocks,
   Brush,
   Waves,
-  LayoutTemplate
+  LayoutTemplate,
+  HashIcon
 } from 'lucide-react';
 
 // Configuration du portfolio
@@ -23,92 +22,172 @@ import {
 const PORTFOLIO_CONFIG = {
   name: "Axel DOUSSOUX",
   title: "Développeur de Jeu Vidéo & Artist 3D",
+  avatar: "/images/pp.png",
   email: "contact@axeldoussoux.fr",
   github: "https://github.com/AxelDoussoux",
   linkedin: "https://www.linkedin.com/in/axeldoussoux/",
+  instagram: "https://www.instagram.com/axel_in_the_pict/",
   bio: "Développeur passionné spécialisé dans la création de jeux vidéo et la modélisation 3D. Expert en Unity, Blender et technologies web modernes.",
   
   skills: [
-    { name: "Unity", icon: Gamepad2, category: "Game Engine" },
-    { name: "Blender", icon: Palette, category: "3D Modeling" },
-    { name: "Aseprite", icon: Blocks, category: "2D Art" },
-    { name: "Krita", icon: Brush, category: "2D Art" },
-    { name: "C#", icon: Code, category: "Programming" },
-    { name: "Java", icon: Coffee, category: "Programming" },
-    { name: "Git", icon: GitBranch, category: "Version Control" },
-    { name: "TypeScript", icon: Zap, category: "Web Dev" },
-    { name: "React", icon: Atom, category: "Web Dev" },
-    { name: "TailWindCSS", icon: Waves, category: "Web Dev" },
-    { name: "Figma", icon: LayoutTemplate, category: "UI/UX Design" },
+    { name: "Unity", icon: Gamepad2, category: "Moteur de Jeu" },
+    { name: "Blender", icon: Palette, category: "Modélisation 3D" },
+    { name: "Aseprite", icon: Blocks, category: "Art 2D" },
+    { name: "Krita", icon: Brush, category: "Art 2D" },
+    { name: "C#", icon: HashIcon, category: "Programmation" },
+    { name: "Java", icon: Coffee, category: "Programmation" },
+    { name: "Git", icon: GitBranch, category: "Contrôle de Version" },
+    { name: "TypeScript", icon: Zap, category: "Développement Web" },
+    { name: "React", icon: Atom, category: "Développement Web" },
+    { name: "TailWindCSS", icon: Waves, category: "Développement Web" },
+    { name: "Figma", icon: LayoutTemplate, category: "Design UI/UX" },
     { name: "Three.js", icon: Globe, category: "Web 3D" },
     { name: "Pixi.js", icon: FileX, category: "Web 2D" },
-    { name: "Adobe Suite", icon: Layers, category: "Content Creator" },
-    { name: "DaVinci Resolve", icon: Video, category: "Content Creator" },
-    { name: "FL Studio", icon: Music, category: "Music Production" },
-
+    { name: "Adobe Suite", icon: Layers, category: "Création de Contenu" },
+    { name: "DaVinci Resolve", icon: Video, category: "Création de Contenu" },
+    { name: "FL Studio", icon: Music, category: "Production Musicale" },
   ],
   
   projects: [
     {
-      id: 1,
-      title: "Dream Bounds",
-      description: "Jeu multijoueur coopératif en ligne en 3D développé avec Unity. Intègre une architecture client-serveur basée sur Unity Netcode, des effets de particules avancés et des assets 3D originaux modélisés avec Blender.",
-      image: "../images/Unity_1.png",
-      video: "https://www.youtube.com/watch?v=VhiG8OI3nHk",
-      technologies: ["Unity", "C#", "Shader Graph", "NetCode", "Blender"],
-      github: "https://github.com/votre-username/cyberpunk-racing",
-      demo: "https://votre-demo.com",
-      featured: true
-    },
-    {
-      id: 2,
-      title: "Puzzle Platformer",
-      description: "Jeu de plateforme avec mécaniques de puzzle innovantes, développé en équipe lors d'une game jam.",
-      image: "https://images.unsplash.com/photo-1556075798-4825dfaaf498?w=800&h=600&fit=crop",
-      technologies: ["Unity", "C#", "Level Design", "UI/UX"],
-      github: "https://github.com/votre-username/puzzle-platformer",
-      demo: "https://votre-demo.com"
-    },
-    {
-      id: 3,
-      title: "Scène 3D sur Blender",
-      description: "Scène 3D créée sur Blender, mettant en avant des techniques avancées de modélisation et d'éclairage.",
-      image: "../images/blender_1.png",
-      technologies: ["Blender"],
-    },
-    {
-      id: 4,
-      title: "Medieval Castle - 3D Environment",
-      description: "Environnement 3D médiéval complet créé avec Blender, optimisé pour les moteurs de jeu avec textures PBR.",
-      image: "https://images.unsplash.com/photo-1518709268805-4e9042af2176?w=800&h=600&fit=crop",
-      technologies: ["Blender", "Substance Painter", "PBR Texturing"],
-      github: "https://github.com/votre-username/medieval-castle",
-      featured: true
-    },
-    {
-      id: 5,
-      title: "Porte 3D sur Blender",
-      description: "Porte 3D créée sur Blender, mettant en avant des l'utilisation des shading et .",
-      image: "../images/blender_2.png",
-      video: "../videos/blender_2.mp4",
-      technologies: ["Blender", "Shading"],
-    },
-    {
-      id: 6,
-      title: "Porte 3D sur Blender",
-      description: "Porte 3D créée sur Blender, mettant en avant des l'utilisation des shading et .",
-      image: "../images/blender_2.png",
-      video: "../videos/blender_2.mp4",
-      technologies: ["Blender", "Shading"],
-    },
-    {
-      id: 7,
-      title: "Porte 3D sur Blender",
-      description: "Porte 3D créée sur Blender, mettant en avant des l'utilisation des shading et .",
-      image: "../images/blender_2.png",
-      video: "../videos/blender_2.mp4",
-      technologies: ["Blender", "Shading"],
-    }
+    id: 1,
+    title: "Dream Bounds",
+    description: "Jeu de plateforme 3D réalisé sur Unity avec composante multijoueur en ligne grace à Netcode. Ce porjet a été réalisé avec 2 autres personnes dans le cadre d'une SAE (Projet Universitaire) du 5ème semestre de mon BUT Métier du Multimédia et de l'Internet.",
+    image: "/images/Unity_1.png",
+    video: "https://www.youtube.com/watch?v=VhiG8OI3nHk", // Exemple YouTube
+    technologies: ["Unity", "C#", "Blender", "FL Studio", "Netcode", "Shader Graph", "UI Toolkit"],
+    github: "https://github.com/username/platformer-game",
+    demo: "https://platformer-game-demo.com",
+    featured: true,
+    year: 2025,
+    duration: "5 mois",
+    type: "Projet universitaire / SAE",
+    status: "Terminé",
+    features: [
+      "Multijoueur en ligne avec relations Client-Serveur Netcode",
+      "3 niveaux de jeu avec environnements variés",
+      "Modélisation 3D et animations personnalisées sur Blender",
+      "Musique dynamique composée avec FL Studio",
+      "Optimisation graphiques et shader-graph personnalisés",
+      "Interface utilisateur intuitive avec UI-Toolkit"
+    ],
+    challenges: "La gestion de la synchronisation des états entre les clients et le serveur a été un défi majeur. J'ai dû implémenter des systèmes de réplication d'état et de gestion des collisions pour assurer une expérience fluide. De plus, l'optimisation des performances graphiques pour maintenir un framerate stable sur différents appareils a nécessité une attention particulière."
+  },
+  {
+    id: 2,
+    title: "Modélisation 3D",
+    description: "Scène 3D réalisée sur Blender, mettant en avant mes compétences en modélisation, texturing et animation.",
+    image: "/images/ecommerce-app.jpg",
+    technologies: ["React", "TypeScript", "Node.js", "MongoDB"],
+    github: "https://github.com/username/ecommerce-app",
+    demo: "https://ecommerce-demo.com",
+    featured: false,
+    year: 2025,
+    duration: "3 mois",
+    type: "Projet personnel",
+    status: "En cours",
+    features: [
+      "Authentification sécurisée JWT",
+      "Catalogue produits avec filtres avancés",
+      "Panier d'achat persistant",
+      "Système de paiement Stripe intégré",
+      "Panel d'administration complet",
+      "API REST complète documentée"
+    ],
+    challenges: "L'intégration sécurisée du système de paiement et la gestion des états complexes côté client ont été les principaux défis. J'ai utilisé Redux Toolkit pour une gestion d'état prévisible et implémenté des middlewares de sécurité robustes pour protéger les données sensibles."
+  },
+  {
+    id: 3,
+    title: "Visualisateur 3D Interactif",
+    description: "Un outil de visualisation 3D utilisant Three.js pour explorer des modèles complexes avec des interactions en temps réel.",
+    image: "/images/3d-visualizer.jpg",
+    video: "/videos/3d-visualizer-demo.mp4",
+    technologies: ["Three.js", "JavaScript", "WebGL", "GLSL"],
+    github: "https://github.com/username/3d-visualizer",
+    demo: "https://3d-visualizer-demo.com",
+    featured: false,
+    year: 2025,
+    duration: "5 mois",
+    type: "Projet professionnel",
+    status: "Terminé",
+    features: [
+      "Chargement de modèles 3D multiples formats (GLB, OBJ, FBX)",
+      "Système d'éclairage dynamique avec shadows",
+      "Contrôles de caméra intuitifs (orbit, fly, FPS)",
+      "Post-processing effects (bloom, SSAO)",
+      "Interface de debug et paramètres en temps réel",
+      "Export de captures haute résolution"
+    ],
+    challenges: "L'optimisation des performances pour les modèles haute poly et l'implémentation de shaders GLSL personnalisés ont été particulièrement challengeants. J'ai développé un système de LOD (Level of Detail) automatique et optimisé le pipeline de rendu pour supporter des scènes complexes à 60 FPS."
+  },
+  {
+    id: 4,
+    title: "API REST Microservices",
+    description: "Architecture microservices pour une application de gestion avec authentification, base de données et déploiement Docker.",
+    image: "/images/microservices-api.jpg",
+    technologies: ["Node.js", "Express", "PostgreSQL", "Docker", "AWS"],
+    github: "https://github.com/username/microservices-api",
+    featured: true,
+    year: 2025,
+    duration: "6 mois",
+    type: "Projet professionnel",
+    status: "En production",
+    features: [
+      "Architecture microservices découplée",
+      "Authentification JWT avec refresh tokens",
+      "Base de données PostgreSQL avec migrations",
+      "Documentation API automatique avec Swagger",
+      "Tests unitaires et d'intégration complets",
+      "Déploiement automatisé CI/CD"
+    ],
+    challenges: "La conception d'une architecture microservices scalable et la gestion de la communication inter-services ont été complexes. J'ai implémenté un système de message queues avec Redis et mis en place un monitoring complet avec logs centralisés pour faciliter le debugging en production."
+  },
+  {
+    id: 5,
+    title: "Application Mobile React Native",
+    description: "App mobile cross-platform pour la gestion de tâches avec synchronisation cloud et notifications push.",
+    image: "/images/mobile-app.jpg",
+    technologies: ["React Native", "TypeScript", "Firebase", "Expo"],
+    github: "https://github.com/username/mobile-task-app",
+    demo: "https://expo.dev/@username/task-app",
+    featured: true,
+    year: 2025,
+    duration: "3 mois",
+    type: "Projet personnel",
+    status: "Terminé",
+    features: [
+      "Interface native iOS et Android",
+      "Synchronisation temps réel avec Firebase",
+      "Notifications push personnalisées",
+      "Mode hors-ligne avec sync automatique",
+      "Thème sombre/clair adaptatif",
+      "Widgets et raccourcis système"
+    ],
+    challenges: "La gestion de la synchronisation offline/online et l'optimisation des performances sur différents devices ont été les principaux défis. J'ai implémenté un système de cache intelligent et optimisé les rendus pour maintenir une UX fluide même avec de grandes listes de tâches."
+  },
+  {
+    id: 6,
+    title: "Outil d'Animation 3D",
+    description: "Plugin Blender pour automatiser certaines tâches d'animation et améliorer le workflow des animateurs.",
+    image: "/images/blender-plugin.jpg",
+    video: "https://youtu.be/example123", // Exemple YouTube court
+    technologies: ["Python", "Blender API", "PyQt", "Git"],
+    github: "https://github.com/username/blender-animation-tools",
+    featured: false,
+    year: 2025,
+    duration: "2 mois",
+    type: "Open Source",
+    status: "Terminé",
+    features: [
+      "Interface utilisateur intuitive intégrée à Blender",
+      "Automatisation de tâches répétitives d'animation",
+      "Export batch vers différents formats",
+      "Système de presets sauvegardables",
+      "Compatible Blender 3.0+",
+      "Documentation complète utilisateur"
+    ],
+    challenges: "L'apprentissage approfondi de l'API Blender et la création d'une interface utilisateur cohérente avec l'UI native de Blender ont demandé beaucoup de recherche. J'ai dû gérer la compatibilité entre différentes versions de Blender et optimiser les scripts pour les grosses scènes."
+  }
   ],
 
   experiences: [
@@ -151,7 +230,41 @@ const PORTFOLIO_CONFIG = {
         "Production de publicité vidéo pour les réseaux sociaux"
       ]
     }
+  ],
+
+  instagramPosts: [
+    {
+      id: 1,
+      embedUrl: "https://www.instagram.com/p/DDFbY24tAvz/embed/",
+      link: "https://www.instagram.com/p/DDFbY24tAvz/"
+    },
+    {
+      id: 2,
+      embedUrl: "https://www.instagram.com/p/DCf1LgovgeC/embed/",
+      link: "https://www.instagram.com/p/DCf1LgovgeC/"
+    },
+    {
+      id: 3,
+      embedUrl: "https://www.instagram.com/p/DA3TZ6UPefm/embed/",
+      link: "https://www.instagram.com/p/DA3TZ6UPefm/"
+    },
+    {
+      id: 4,
+      embedUrl: "https://www.instagram.com/p/Ct145ebIogT/embed/",
+      link: "https://www.instagram.com/p/Ct145ebIogT/"
+    },
+    {
+      id: 5,
+      embedUrl: "https://www.instagram.com/p/Ctu7kkmoPWX/embed/",
+      link: "https://www.instagram.com/p/Ctu7kkmoPWX/"
+    },
+    {
+      id: 6,
+      embedUrl: "https://www.instagram.com/p/C1E997AtDca/embed/",
+      link: "https://www.instagram.com/p/C1E997AtDca/"
+    }
   ]
+
 };
 
 export default PORTFOLIO_CONFIG;
