@@ -119,7 +119,7 @@ const PORTFOLIO_CONFIG = {
     video: "/videos/mobivie.mp4",
     technologies: ["After Effect", "Illustrator", "Limber 2"],
     featured: true,
-    year: "2025",
+    year: "2024",
     duration: "2 mois",
     type: "Projet professionnel / MOBIVIE",
     status: "Terminé",
@@ -177,7 +177,7 @@ const PORTFOLIO_CONFIG = {
       company: "MOBIVIE - Transdev Vichy",
       logo: "/images/mobivie_logo.png",
       period: "Janvier - Mars 2024",
-      description: "Concepteur de support de communication pour la promotion des services de transport public, incluant la création de visuels et de vidéos.",
+      description: "Concepteur de support de communication pour la promotion des services de transport public de la communauté de commune de Vichy, incluant la création de visuels et de vidéos.",
       technologies: ["Suite Adobe", "DaVinci Resolve", "Captation photo et vidéo"],
       achievements: [
         "Conception d'affiches et flyers",
