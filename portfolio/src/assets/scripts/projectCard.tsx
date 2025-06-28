@@ -1,6 +1,6 @@
 import React, { useRef, useState } from "react";
 import type PORTFOLIO_CONFIG from "./portfolioData";
-import { ExternalLink, Eye, Github, Pause, Play, Star, X, Calendar, Code2, Users, Plus } from "lucide-react";
+import { ExternalLink, Eye, Pause, Play, Star, X, Calendar, Code2, Users, Plus } from "lucide-react";
 
 // Fonction pour convertir une URL YouTube en URL embed
 const getYouTubeEmbedUrl = (url: string): string | null => {

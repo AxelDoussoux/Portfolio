@@ -75,7 +75,7 @@ const PORTFOLIO_CONFIG = {
   {
     id: 2,
     title: "Modélisation scène 3D",
-    description: "Scène 3D réalisée sur Blender, mettant en avant mes compétences en modélisation, mise en scène, texturing et shading-procedural.",
+    description: "Scène 3D réalisée sur Blender, mettant en avant mes compétences en modélisation, mise en scène, texturing et shading-procedural. Réalisé dans le cadre de la formation BUT Métiers du Multimédia et de l'Internet.",
     image: "/images/blender_1.png",
     technologies: ["Blender", "Cycles", "Shading procédural", "Texturing"],
     featured: false,
