@@ -150,7 +150,7 @@ const PORTFOLIO_CONFIG = {
       logo: "/images/bdcraft_logo.png",
       period: "Mai - Juillet 2025",
       description: "Aide au développement d'un jeu vidéo indie multijoueur utilisant Unity et C#.",
-      technologies: ["Unity", "C#", "Blender"],
+      technologies: ["Unity", "C#", "Blender", "Git", "Game Design Document", ],
       achievements: [
         "Narration et dialogue pour les personnages",
         "Modélisation d'assets 3D et animations",
@@ -164,7 +164,7 @@ const PORTFOLIO_CONFIG = {
       logo: "/images/MBTC_logo.png",
       period: "Mars - Mai 2025",
       description: "Migration de l'architecture graphique du site en CSS vers une architecture Pixi.js, avec intégration de fonctionnalités interactives.",
-      technologies: ["TypeScript", "React", "Pixi.js"],
+      technologies: ["TypeScript", "React", "Pixi.js", "Git"],
       achievements: [
         "Migration de l'architecture graphique",
         "Optimisation des performances sur mobile et tablette",
