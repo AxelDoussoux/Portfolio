@@ -60,7 +60,7 @@ const PORTFOLIO_CONFIG = {
     demo: "https://drive.google.com/file/d/1DTC4VNG4U5xpOxZLhQES8vPdiv1EethW/view?usp=sharing",
     featured: true,
     year: "2024-2025",
-    duration: "2 semaines",
+    duration: "5 mois",
     type: "Projet universitaire / SAE",
     status: "Terminé",
     features: [
@@ -99,7 +99,7 @@ const PORTFOLIO_CONFIG = {
     image: "/images/Unity_2.png",
     video: "/videos/Unity_2.mp4",
     technologies: ["Unity",  "C#", "ScriptableObjects", "Git"],
-    featured: true,
+    featured: true, 
     year: "2025",
     duration: "1 mois",
     type: "Projet professionnel / BDCRAFT",
