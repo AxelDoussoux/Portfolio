@@ -37,15 +37,15 @@ const PORTFOLIO_CONFIG = {
     { name: "Krita", icon: Brush, category: "Art 2D" },
     { name: "C#", icon: HashIcon, category: "Programmation" },
     { name: "Java", icon: Coffee, category: "Programmation" },
-    { name: "Git", icon: GitBranch, category: "Contrôle de Version" },
+    { name: "Git", icon: GitBranch, category: "Contrôle de Versions" },
     { name: "TypeScript", icon: Zap, category: "Développement Web" },
     { name: "React", icon: Atom, category: "Développement Web" },
     { name: "TailWindCSS", icon: Waves, category: "Développement Web" },
     { name: "Figma", icon: LayoutTemplate, category: "Design UI/UX" },
     { name: "Three.js", icon: Globe, category: "Web 3D" },
     { name: "Pixi.js", icon: FileX, category: "Web 2D" },
-    { name: "Adobe Suite", icon: Layers, category: "Création de Contenu" },
-    { name: "DaVinci Resolve", icon: Video, category: "Création de Contenu" },
+    { name: "Adobe Suite", icon: Layers, category: "Création de Contenus" },
+    { name: "DaVinci Resolve", icon: Video, category: "Création de Contenus" },
     { name: "FL Studio", icon: Music, category: "Production Musicale" },
   ],
   
@@ -146,7 +146,7 @@ const PORTFOLIO_CONFIG = {
   experiences: [
     {
       id: 1,
-      role: "Assistant Développeur de Jeu Vidéo",
+      role: "Assistant Développeur de Jeux Vidéo",
       company: "BD CRAFT",
       logo: "/images/bdcraft_logo.png",
       period: "Mai - Juillet 2025",
@@ -174,7 +174,7 @@ const PORTFOLIO_CONFIG = {
     },
     {
       id: 3,
-      role: "Concepteur de support de communication",
+      role: "Concepteur de supports de communication",
       company: "MOBIVIE - Transdev Vichy",
       logo: "/images/mobivie_logo.png",
       period: "Janvier - Mars 2024",

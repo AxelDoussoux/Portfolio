@@ -269,7 +269,7 @@ const Portfolio: React.FC = () => {
               <div className="bg-gray-900/50 backdrop-blur-sm border border-purple-500/30 rounded-xl p-6">
                 <div className="flex items-center gap-3">
                   <Code className="text-blue-400" />
-                  <h4 className="text-xl font-semibold">Développement de Jeu Vidéo & Web</h4>
+                  <h4 className="text-xl font-semibold">Développement de Jeux Vidéo & Web</h4>
                 </div>
               </div>
               
@@ -473,7 +473,7 @@ const Portfolio: React.FC = () => {
       {/* Footer */}
       <footer className="py-8 text-center border-t border-purple-500/30 relative z-10">
         <p className="text-gray-400">
-          © 2025 {PORTFOLIO_CONFIG.name}. Tous droits réservés. | Développé avec ❤️ par <a href={PORTFOLIO_CONFIG.github} className="text-purple-400 hover:underline" target="_blank" rel="noopener noreferrer">{PORTFOLIO_CONFIG.name}</a>
+          © 2025 {PORTFOLIO_CONFIG.name}. Tous droits réservés. | Développé avec ❤️ par <a href={PORTFOLIO_CONFIG.github} className="text-purple-400 hover:underline" target="_blank" rel="noopener noreferrer">{PORTFOLIO_CONFIG.name}</a> avec React, Typescript, TailwindCSS et Three.JS
         </p>
       </footer>
     </div>
