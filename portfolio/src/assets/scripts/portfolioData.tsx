@@ -22,7 +22,7 @@ import {
 const PORTFOLIO_CONFIG = {
   name: "Axel DOUSSOUX",
   title: "Développeur de Jeu Vidéo & Artist 3D",
-  avatar: "/images/pp-min.png",
+  avatar: "/images/pp_min.png",
   email: "contact@axeldoussoux.fr",
   github: "https://github.com/AxelDoussoux",
   linkedin: "https://www.linkedin.com/in/axeldoussoux/",
