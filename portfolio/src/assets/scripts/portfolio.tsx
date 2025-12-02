@@ -244,7 +244,10 @@ const Portfolio: React.FC = () => {
                   Depuis plus de 2 ans, je développe des <strong>jeux vidéo</strong> et fais de la <strong>modélisation 3D</strong>. Ma passion pour le jeu vidéo m'a mené à maîtriser les outils les plus tendance de l'industrie.
                 </p>
                 <p className="text-gray-300 leading-relaxed mb-6">
-                  Je suis actuellement en phase de terminer mon <strong className="text-white font-bold">BUT Métiers du Multimédia et de l'Internet</strong> option <strong>Développement Web et Dispositifs Interactifs</strong>, où j'ai pu approfondir mes compétences en développement, modélisation 3D et création de contenu.
+                  Je suis actuellement en <strong className="text-white font-bold">Master en informatique</strong> à l'<strong>Université de Lyon 2</strong>, où j'approfondis mes compétences en développement, modélisation 3D et création de jeux vidéo.
+                </p>
+                <p className="text-gray-300 leading-relaxed mb-6">
+                  Ce diplôme fait suite à un <strong className="text-white font-bold">BUT Métiers du Multimédia et de l'Internet</strong> option <strong>Développement Web et Dispositifs Interactifs / Game Development</strong>, où j'ai acquis une solide base en développement de <strong>jeux vidéo</strong>.
                 </p>
                 <p className="text-gray-300 leading-relaxed">
                   Mon objectif à terme est de créer ou rejoindre un studio de développement de jeux vidéo, où je pourrai mettre à profit mes compétences et créer mes propres univers.
@@ -473,7 +476,7 @@ const Portfolio: React.FC = () => {
       {/* Footer */}
       <footer className="py-8 text-center border-t border-purple-500/30 relative z-10">
         <p className="text-gray-400">
-          © 2025 {PORTFOLIO_CONFIG.name}. Tous droits réservés. | Développé avec ❤️ par <a href={PORTFOLIO_CONFIG.github} className="text-purple-400 hover:underline" target="_blank" rel="noopener noreferrer">{PORTFOLIO_CONFIG.name}</a> avec React, Typescript, TailwindCSS et Three.JS
+          © 2025 {PORTFOLIO_CONFIG.name}. Tous droits réservés. | Développé avec ❤️ par <a href={PORTFOLIO_CONFIG.github} className="text-purple-400 hover:underline" target="_blank" rel="noopener noreferrer">{PORTFOLIO_CONFIG.name}</a> avec React, TypeScript, Tailwind CSS et Three.js
         </p>
       </footer>
     </div>
