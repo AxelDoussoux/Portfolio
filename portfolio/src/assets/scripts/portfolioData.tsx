@@ -21,29 +21,29 @@ import {
 
 const PORTFOLIO_CONFIG = {
   name: "Axel DOUSSOUX",
-  title: "Développeur de Jeux Vidéo & Artiste 3D",
+  title: "Développeur Web Fullstack & Artiste 3D",
   avatar: "/images/pp_min.png",
   email: "contact@axeldoussoux.fr",
   github: "https://github.com/AxelDoussoux",
   linkedin: "https://www.linkedin.com/in/axeldoussoux/",
   instagram: "https://www.instagram.com/axel_in_the_pict/",
   cvVideo: "https://youtu.be/uiMLm_isuGs",
-  bio: "Développeur passionné spécialisé dans la création de jeux vidéo et la modélisation 3D. Expert en Unity, Blender et technologies web modernes.",
+  bio: "Développeur web fullstack passionné, je conçois des expériences interactives du front-end au back-end, avec une spécialisation en UX Design et interface utilisateur.",
   
   skills: [
+    { name: "TypeScript", icon: Zap, category: "Développement Web" },
+    { name: "React", icon: Atom, category: "Développement Web" },
+    { name: "TailWindCSS", icon: Waves, category: "Développement Web" },
+    { name: "Java", icon: Coffee, category: "Programmation" },
+    { name: "C#", icon: HashIcon, category: "Programmation" },
+    { name: "Git", icon: GitBranch, category: "Contrôle de Versions" },
+    { name: "Figma", icon: LayoutTemplate, category: "Design UI/UX" },
+    { name: "Pixi.js", icon: FileX, category: "Web 2D" },
+    { name: "Three.js", icon: Globe, category: "Web 3D" },
     { name: "Unity", icon: Gamepad2, category: "Moteur de Jeu" },
     { name: "Blender", icon: Palette, category: "Modélisation 3D" },
     { name: "Aseprite", icon: Blocks, category: "Art 2D" },
     { name: "Krita", icon: Brush, category: "Art 2D" },
-    { name: "C#", icon: HashIcon, category: "Programmation" },
-    { name: "Java", icon: Coffee, category: "Programmation" },
-    { name: "Git", icon: GitBranch, category: "Contrôle de Versions" },
-    { name: "TypeScript", icon: Zap, category: "Développement Web" },
-    { name: "React", icon: Atom, category: "Développement Web" },
-    { name: "TailWindCSS", icon: Waves, category: "Développement Web" },
-    { name: "Figma", icon: LayoutTemplate, category: "Design UI/UX" },
-    { name: "Three.js", icon: Globe, category: "Web 3D" },
-    { name: "Pixi.js", icon: FileX, category: "Web 2D" },
     { name: "Adobe Suite", icon: Layers, category: "Création de Contenus" },
     { name: "DaVinci Resolve", icon: Video, category: "Création de Contenus" },
     { name: "FL Studio", icon: Music, category: "Production Musicale" },
@@ -75,25 +75,6 @@ const PORTFOLIO_CONFIG = {
   },
   {
     id: 2,
-    title: "Modélisation scène 3D",
-    description: "Scène 3D réalisée sur Blender, mettant en avant mes compétences en modélisation, mise en scène, texturing et shading-procedural. Réalisé dans le cadre de la formation BUT Métiers du Multimédia et de l'Internet.",
-    image: "/images/blender_1.png",
-    technologies: ["Blender", "Cycles", "Shading procédural", "Texturing"],
-    featured: false,
-    year: "2025",
-  },
-  {
-    id: 3,
-    title: "Test shading Blender",
-    description: "Test de shaders procéduraux et de rendu Cycles sur Blender.",
-    image: "/images/blender_2.png",
-    video: "/videos/blender_2.mp4", 
-    technologies: ["Blender", "Cycles", "Shading procédural"],
-    featured: false,
-    year: "2025",
-  },
-  {
-    id: 4,
     title: "Génération de terrain procédural sur Unity",
     description: "Génération procédurale de terrain sur Unity avec un système de grille et de tiles pour créer des mondes vastes et variés. Réalisé dans le cadre d'un stage d'apprentissage chez BDCRAFT.",
     image: "/images/Unity_2.png",
@@ -113,7 +94,7 @@ const PORTFOLIO_CONFIG = {
     challenges: "La principale difficulté a été de concevoir un algorithme efficace pour générer des terrains variés tout en maintenant une performance optimale. J'ai dû expérimenter avec différents algorithmes de génération procédurale pour trouver le bon équilibre entre diversité et performance. De plus, l'intégration avec les systèmes de gameplay existants a nécessité une planification minutieuse pour éviter les conflits."
   },
   {
-    id: 5,
+    id: 3,
     title: "Motion design pour MOBIVIE",
     description: "Réalisation d'un motion design pour la promotion des services de location de vélo Vivélo de MOBIVIE, incluant la création et l'animation des visuels sur Illustrator et After Effect avec le plugin Limber 2.",
     image: "/images/mobivie.png",
@@ -133,6 +114,25 @@ const PORTFOLIO_CONFIG = {
     challenges: "La principale difficulté a été de respecter la charte graphique de MOBIVIE tout en créant des animations dynamiques et engageantes. J'ai dû travailler en étroite collaboration avec l'équipe de communication pour m'assurer que les animations reflètent correctement l'image de marque. De plus, l'animation devait tenir sur une durée de moins de 10 secondes à cause des contraintes techniques des panneaux d'affichages de Vichy Communauté."
   },
   {
+    id: 4,
+    title: "Modélisation scène 3D",
+    description: "Scène 3D réalisée sur Blender, mettant en avant mes compétences en modélisation, mise en scène, texturing et shading-procedural. Réalisé dans le cadre de la formation BUT Métiers du Multimédia et de l'Internet.",
+    image: "/images/blender_1.png",
+    technologies: ["Blender", "Cycles", "Shading procédural", "Texturing"],
+    featured: false,
+    year: "2025",
+  },
+  {
+    id: 5,
+    title: "Test shading Blender",
+    description: "Test de shaders procéduraux et de rendu Cycles sur Blender.",
+    image: "/images/blender_2.png",
+    video: "/videos/blender_2.mp4", 
+    technologies: ["Blender", "Cycles", "Shading procédural"],
+    featured: false,
+    year: "2025",
+  },
+  {
     id: 6,
     title: "Rick en T-Pose",
     description: "Modélisation, rigging et animation d'un personnage principal de Rick et Morty sur Blender.",
@@ -146,20 +146,6 @@ const PORTFOLIO_CONFIG = {
   experiences: [
     {
       id: 1,
-      role: "Assistant Développeur de Jeux Vidéo",
-      company: "BD CRAFT",
-      logo: "/images/bdcraft_logo.png",
-      period: "Mai - Juillet 2025",
-      description: "Aide au développement d'un jeu vidéo indie multijoueur utilisant Unity et C#.",
-      technologies: ["Unity", "C#", "Blender", "Git", "Game Design Document", ],
-      achievements: [
-        "Narration et dialogue pour les personnages",
-        "Modélisation d'assets 3D et animations",
-        "Création d'un monde procédural avec un système de grille et de tiles pour la génération de terrain"
-      ]
-    },
-    {
-      id: 2,
       role: "Développeur Web",
       company: "MusicBrainTraining Company",
       logo: "/images/MBTC_logo.png",
@@ -170,6 +156,20 @@ const PORTFOLIO_CONFIG = {
         "Migration de l'architecture graphique",
         "Optimisation des performances sur mobile et tablette",
         "Documentation complète du processus"
+      ]
+    },
+    {
+    id: 2,
+      role: "Assistant Développeur de Jeux Vidéo",
+      company: "BD CRAFT",
+      logo: "/images/bdcraft_logo.png",
+      period: "Mai - Juillet 2025",
+      description: "Aide au développement d'un jeu vidéo indie multijoueur utilisant Unity et C#.",
+      technologies: ["Unity", "C#", "Blender", "Git", "Game Design Document", ],
+      achievements: [
+        "Narration et dialogue pour les personnages",
+        "Modélisation d'assets 3D et animations",
+        "Création d'un monde procédural avec un système de grille et de tiles pour la génération de terrain"
       ]
     },
     {

@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { ChevronDown, Github, Mail, Linkedin, Code, Gamepad2, Box, Briefcase, Calendar, MapPin, CheckCircle, Camera, Instagram, Menu, X, Video } from 'lucide-react';
+import { ChevronDown, Github, Mail, Linkedin, Code, Gamepad2, Box, Briefcase, Calendar, MapPin, CheckCircle, Camera, Instagram, Menu, X, Video, ArrowUp } from 'lucide-react';
 import PORTFOLIO_CONFIG from './portfolioData';
 import GalaxyBackground from './galaxyBackground';
 import ProjectCard from './projectCard';
@@ -9,11 +9,18 @@ import InstagramCarousel from './carouselInstagram';
 const Portfolio: React.FC = () => {
   const [activeSection, setActiveSection] = useState('hero');
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const [scrollProgress, setScrollProgress] = useState(0);
+  const [showBackToTop, setShowBackToTop] = useState(false);
   
   useEffect(() => {
     const handleScroll = () => {
       const sections = ['hero', 'about', 'experience', 'portfolio', 'skills', 'contact'];
       const scrollPosition = window.scrollY + 100;
+
+      const totalHeight = document.documentElement.scrollHeight - window.innerHeight;
+      const progress = totalHeight > 0 ? (window.scrollY / totalHeight) * 100 : 0;
+      setScrollProgress(progress);
+      setShowBackToTop(window.scrollY > 650);
       
       for (const section of sections) {
         const element = document.getElementById(section);
@@ -28,6 +35,7 @@ const Portfolio: React.FC = () => {
     };
     
     window.addEventListener('scroll', handleScroll);
+    handleScroll();
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
@@ -43,6 +51,44 @@ const Portfolio: React.FC = () => {
       document.body.style.overflow = 'unset';
     };
   }, [isMobileMenuOpen]);
+
+  useEffect(() => {
+    const handleEscape = (event: KeyboardEvent) => {
+      if (event.key === 'Escape') {
+        setIsMobileMenuOpen(false);
+      }
+    };
+
+    window.addEventListener('keydown', handleEscape);
+    return () => window.removeEventListener('keydown', handleEscape);
+  }, []);
+
+  useEffect(() => {
+    const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    if (reducedMotion) return;
+
+    const sections = Array.from(document.querySelectorAll<HTMLElement>('[data-section-transition]'));
+    if (sections.length === 0) return;
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            entry.target.classList.add('section-visible');
+            observer.unobserve(entry.target);
+          }
+        });
+      },
+      { threshold: 0.2, rootMargin: '0px 0px -8% 0px' }
+    );
+
+    sections.forEach((section, index) => {
+      section.style.transitionDelay = `${Math.min(index * 80, 320)}ms`;
+      observer.observe(section);
+    });
+
+    return () => observer.disconnect();
+  }, []);
   
   const scrollToSection = (sectionId: string) => {
     const element = document.getElementById(sectionId);
@@ -65,28 +111,50 @@ const Portfolio: React.FC = () => {
     { id: 'contact', label: 'Contact' }
   ];
 
+  const sectionTitleClass = 'text-3xl sm:text-4xl font-bold text-center mb-12 sm:mb-16 text-cyan-100 tracking-tight';
+  const glassCardClass = 'bg-slate-900/55 backdrop-blur-md border border-cyan-300/20 rounded-2xl shadow-[0_14px_45px_rgba(8,47,73,0.28)]';
+  const tagClass = 'px-3 py-1 bg-cyan-500/15 border border-cyan-300/25 text-cyan-100 rounded-full text-sm';
+
   return (
-    <div className="min-h-screen bg-gradient-to-br from-gray-900 via-purple-900 to-black text-white relative overflow-x-hidden">
+    <div className="min-h-screen text-slate-100 relative overflow-x-hidden">
       {/* Arrière-plan galaxie 3D */}
       <GalaxyBackground />
+
+      <a
+        href="#main-content"
+        className="sr-only focus:not-sr-only focus:fixed focus:left-4 focus:top-4 focus:z-[70] focus:px-4 focus:py-2 focus:rounded-lg focus:bg-cyan-300 focus:text-slate-950"
+      >
+        Aller au contenu
+      </a>
+
+      {/* Barre de progression de lecture */}
+      <div className="fixed left-0 top-0 right-0 z-[60] h-1 bg-slate-900/50 backdrop-blur-sm" aria-hidden="true">
+        <div
+          className="h-full bg-gradient-to-r from-cyan-300 via-sky-400 to-amber-300 transition-[width] duration-150 ease-out"
+          style={{ width: `${scrollProgress}%` }}
+        />
+      </div>
       
       {/* Navigation */}
-      <nav className="fixed top-0 left-0 right-0 z-50 bg-black/20 backdrop-blur-md border-b border-purple-500/30">
-        <div className="max-w-6xl mx-auto px-6 py-4">
+      <nav className="fixed left-3 right-3 top-4 z-50 rounded-2xl bg-slate-950/65 backdrop-blur-md border border-cyan-300/20 shadow-[0_10px_35px_rgba(0,0,0,0.45)]" aria-label="Navigation principale">
+        <div className="max-w-6xl mx-auto px-4 sm:px-6 py-3 sm:py-4">
           <div className="flex justify-between items-center">
             {/* Logo */}
-            <div className="text-2xl font-bold bg-gradient-to-r from-purple-400 to-blue-400 bg-clip-text text-transparent">
+            <div className="text-lg sm:text-2xl font-bold text-cyan-100">
               {PORTFOLIO_CONFIG.name}
             </div>
             
             {/* Navigation Desktop */}
-            <div className="hidden md:flex space-x-8">
+            <div className="hidden md:flex items-center gap-3">
               {navigationItems.map((item) => (
                 <button
                   key={item.id}
                   onClick={() => scrollToSection(item.id)}
-                  className={`transition-colors duration-300 hover:text-purple-300 ${
-                    activeSection === item.id ? 'text-purple-400' : 'text-gray-300'
+                  aria-current={activeSection === item.id ? 'page' : undefined}
+                  className={`px-4 py-2 rounded-full border text-sm transition-all duration-300 ${
+                    activeSection === item.id
+                      ? 'text-cyan-100 bg-cyan-500/15 border-cyan-300/40 shadow-[0_0_18px_rgba(56,189,248,0.28)]'
+                      : 'text-slate-300 border-transparent hover:text-white hover:bg-white/10'
                   }`}
                 >
                   {item.label}
@@ -97,8 +165,10 @@ const Portfolio: React.FC = () => {
             {/* Bouton Menu Burger */}
             <button
               onClick={toggleMobileMenu}
-              className="md:hidden p-2 rounded-lg bg-purple-600/20 hover:bg-purple-600/40 transition-colors"
+              className="md:hidden p-2 rounded-lg bg-cyan-500/20 hover:bg-cyan-500/35 transition-colors"
               aria-label="Toggle mobile menu"
+              aria-expanded={isMobileMenuOpen}
+              aria-controls="mobile-navigation"
             >
               {isMobileMenuOpen ? <X size={24} /> : <Menu size={24} />}
             </button>
@@ -106,7 +176,7 @@ const Portfolio: React.FC = () => {
         </div>
 
         {/* Menu Mobile */}
-        <div className={`md:hidden absolute top-full left-0 right-0 bg-black/95 backdrop-blur-md border-b border-purple-500/30 transition-all duration-300 ${
+        <div id="mobile-navigation" className={`md:hidden absolute top-full left-0 right-0 bg-slate-950/95 backdrop-blur-md border-b border-cyan-300/20 rounded-b-2xl transition-all duration-300 ${
           isMobileMenuOpen ? 'opacity-100 visible' : 'opacity-0 invisible'
         }`}>
           <div className="max-w-6xl mx-auto px-6 py-4">
@@ -115,10 +185,11 @@ const Portfolio: React.FC = () => {
                 <button
                   key={item.id}
                   onClick={() => scrollToSection(item.id)}
+                  aria-current={activeSection === item.id ? 'page' : undefined}
                   className={`text-left py-3 px-4 rounded-lg transition-all duration-300 ${
                     activeSection === item.id 
-                      ? 'text-purple-400 bg-purple-600/20' 
-                      : 'text-gray-300 hover:text-white hover:bg-purple-600/10'
+                      ? 'text-cyan-100 bg-cyan-500/20 border border-cyan-300/25' 
+                      : 'text-slate-300 hover:text-white hover:bg-cyan-300/10 border border-transparent'
                   }`}
                 >
                   {item.label}
@@ -126,39 +197,43 @@ const Portfolio: React.FC = () => {
               ))}
               
               {/* Liens sociaux dans le menu mobile */}
-              <div className="pt-4 mt-4 border-t border-purple-500/30">
+              <div className="pt-4 mt-4 border-t border-cyan-300/20">
                 <div className="flex justify-center gap-4">
                   <a 
                     href={PORTFOLIO_CONFIG.github} 
-                    className="p-3 bg-gray-800/50 hover:bg-gray-700/50 rounded-full transition-colors"
+                    className="p-3 bg-slate-800/60 hover:bg-slate-700/70 rounded-full transition-colors"
                     target="_blank" 
                     rel="noopener noreferrer"
                     onClick={() => setIsMobileMenuOpen(false)}
+                    aria-label="GitHub"
                   >
                     <Github size={20} />
                   </a>
                   <a 
                     href={PORTFOLIO_CONFIG.instagram} 
-                    className="p-3 bg-gray-800/50 hover:bg-gray-700/50 rounded-full transition-colors"
+                    className="p-3 bg-slate-800/60 hover:bg-slate-700/70 rounded-full transition-colors"
                     target="_blank" 
                     rel="noopener noreferrer"
                     onClick={() => setIsMobileMenuOpen(false)}
+                    aria-label="Instagram"
                   >
                     <Instagram size={20} />
                   </a>
                   <a 
                     href={PORTFOLIO_CONFIG.linkedin} 
-                    className="p-3 bg-gray-800/50 hover:bg-gray-700/50 rounded-full transition-colors"
+                    className="p-3 bg-slate-800/60 hover:bg-slate-700/70 rounded-full transition-colors"
                     target="_blank" 
                     rel="noopener noreferrer"
                     onClick={() => setIsMobileMenuOpen(false)}
+                    aria-label="LinkedIn"
                   >
                     <Linkedin size={20} />
                   </a>
                   <a 
                     href={`mailto:${PORTFOLIO_CONFIG.email}`} 
-                    className="p-3 bg-gray-800/50 hover:bg-gray-700/50 rounded-full transition-colors"
+                    className="p-3 bg-slate-800/60 hover:bg-slate-700/70 rounded-full transition-colors"
                     onClick={() => setIsMobileMenuOpen(false)}
+                    aria-label="Email"
                   >
                     <Mail size={20} />
                   </a>
@@ -172,54 +247,58 @@ const Portfolio: React.FC = () => {
       {/* Overlay pour fermer le menu en cliquant à l'extérieur */}
       {isMobileMenuOpen && (
         <div 
-          className="fixed inset-0 bg-black/50 z-40 md:hidden" 
+          className="fixed inset-0 bg-slate-950/60 z-40 md:hidden" 
           onClick={() => setIsMobileMenuOpen(false)}
+          aria-hidden="true"
         />
       )}
+
+      <main id="main-content" tabIndex={-1}>
       
       {/* Hero Section */}
-      <section id="hero" className="min-h-screen flex items-center justify-center relative z-10">
-        <div className="text-center max-w-4xl mx-auto px-6">
+      <section id="hero" className="min-h-screen flex items-center justify-center relative z-10 pt-28 pb-16 scroll-mt-28">
+        <div className="text-center max-w-5xl mx-auto px-6">
           <div className="mb-8">
-            <div className="w-32 h-32 sm:w-48 sm:h-48 md:w-64 md:h-64 bg-gray-900/20 backdrop-blur-sm rounded-full mx-auto p-1 mb-6 flex items-center justify-center relative">
+            <div className="w-32 h-32 sm:w-48 sm:h-48 md:w-64 md:h-64 bg-slate-900/30 backdrop-blur-sm rounded-full mx-auto p-1 mb-8 flex items-center justify-center relative">
               {/* Contour en fade avec gradient */}
-              <div className="absolute inset-0 rounded-full bg-gradient-to-r from-purple-500/60 via-blue-500/60 to-purple-500/60 blur-sm"></div>
-              <div className="absolute inset-1 rounded-full bg-gradient-to-r from-purple-500/40 via-blue-500/40 to-purple-500/40"></div>
+              <div className="absolute inset-0 rounded-full bg-gradient-to-r from-cyan-500/65 via-sky-500/65 to-amber-300/50 blur-sm"></div>
+              <div className="absolute inset-1 rounded-full bg-gradient-to-r from-cyan-500/45 via-sky-500/45 to-amber-300/35"></div>
               
               {/* Image */}
               <div className="relative w-full h-full ">
-                <img src={PORTFOLIO_CONFIG.avatar} alt="Avatar" className="rounded-full w-full h-full object-cover relative z-10" />
+                <img src={PORTFOLIO_CONFIG.avatar} alt={`Portrait de ${PORTFOLIO_CONFIG.name}`} className="rounded-full w-full h-full object-cover relative z-10" />
               </div>
             </div>
-            <h1 className="text-6xl md:text-8xl font-bold mb-4 bg-gradient-to-r from-purple-400 via-blue-400 to-purple-600 bg-clip-text text-transparent">
+            <h1 className="text-5xl sm:text-6xl md:text-8xl font-bold mb-4 text-cyan-100 tracking-tight">
               {PORTFOLIO_CONFIG.name}
             </h1>
-            <h2 className="text-2xl md:text-3xl text-purple-300 mb-6">
+            <h2 className="text-xl sm:text-2xl md:text-3xl text-sky-200 mb-6">
               {PORTFOLIO_CONFIG.title}
             </h2>
-            <p className="text-xl text-gray-300 max-w-2xl mx-auto leading-relaxed">
+            <p className="text-lg sm:text-xl text-slate-300 max-w-3xl mx-auto leading-relaxed">
               {PORTFOLIO_CONFIG.bio}
             </p>
           </div>
           
-          <div className="flex justify-center gap-6 mb-12">
-            <a href={PORTFOLIO_CONFIG.github} className="p-4 bg-gray-800/50 hover:bg-gray-700/50 rounded-full transition-colors backdrop-blur-sm" target="_blank" rel="noopener noreferrer">
+          <div className="flex justify-center gap-4 sm:gap-6 mb-12 flex-wrap">
+            <a href={PORTFOLIO_CONFIG.github} className="p-4 bg-slate-800/70 border border-cyan-300/20 hover:border-cyan-300/45 hover:-translate-y-1 rounded-full transition-all backdrop-blur-sm" target="_blank" rel="noopener noreferrer" aria-label="GitHub">
               <Github size={24} />
             </a>
-            <a href={PORTFOLIO_CONFIG.instagram} className="p-4 bg-gray-800/50 hover:bg-gray-700/50 rounded-full transition-colors backdrop-blur-sm" target="_blank" rel="noopener noreferrer">
+            <a href={PORTFOLIO_CONFIG.instagram} className="p-4 bg-slate-800/70 border border-cyan-300/20 hover:border-cyan-300/45 hover:-translate-y-1 rounded-full transition-all backdrop-blur-sm" target="_blank" rel="noopener noreferrer" aria-label="Instagram">
               <Instagram size={24} />
             </a>
-            <a href={PORTFOLIO_CONFIG.linkedin} className="p-4 bg-gray-800/50 hover:bg-gray-700/50 rounded-full transition-colors backdrop-blur-sm" target="_blank" rel="noopener noreferrer">
+            <a href={PORTFOLIO_CONFIG.linkedin} className="p-4 bg-slate-800/70 border border-cyan-300/20 hover:border-cyan-300/45 hover:-translate-y-1 rounded-full transition-all backdrop-blur-sm" target="_blank" rel="noopener noreferrer" aria-label="LinkedIn">
               <Linkedin size={24} />
             </a>
-            <a href={`mailto:${PORTFOLIO_CONFIG.email}`} className="p-4 bg-gray-800/50 hover:bg-gray-700/50 rounded-full transition-colors backdrop-blur-sm">
+            <a href={`mailto:${PORTFOLIO_CONFIG.email}`} className="p-4 bg-slate-800/70 border border-cyan-300/20 hover:border-cyan-300/45 hover:-translate-y-1 rounded-full transition-all backdrop-blur-sm" aria-label="Email">
               <Mail size={24} />
             </a>
           </div>
           
           <button 
             onClick={() => scrollToSection('about')}
-            className="animate-bounce p-3 bg-purple-600/30 hover:bg-purple-500/30 rounded-full transition-colors backdrop-blur-sm"
+            className="animate-bounce p-3 bg-cyan-500/25 hover:bg-cyan-500/35 rounded-full border border-cyan-300/30 transition-colors backdrop-blur-sm"
+            aria-label="Descendre vers la section À propos"
           >
             <ChevronDown size={24} />
           </button>
@@ -227,29 +306,29 @@ const Portfolio: React.FC = () => {
       </section>
       
       {/* About Section */}
-      <section id="about" className="py-20 relative z-10">
+      <section id="about" data-section-transition className="py-20 relative z-10 section-transition scroll-mt-28">
         <div className="max-w-6xl mx-auto px-6">
-          <h2 className="text-4xl font-bold text-center mb-16 bg-gradient-to-r from-purple-400 to-blue-400 bg-clip-text text-transparent">
+          <h2 className={sectionTitleClass}>
             À Propos de Moi
           </h2>
           
           <div className="grid md:grid-cols-2 gap-12 items-center">
             <div>
-              <div className="bg-gray-900/50 backdrop-blur-sm border border-purple-500/30 rounded-xl p-8">
+              <div className={`${glassCardClass} p-8`}>
                 <h3 className="text-2xl font-bold mb-4 flex items-center gap-3">
-                  <Gamepad2 className="text-purple-400" />
+                  <Gamepad2 className="text-cyan-300" />
                   En bref
                 </h3>
-                <p className="text-gray-300 leading-relaxed mb-6">
+                <p className="text-slate-300 leading-relaxed mb-6">
                   Depuis plus de 2 ans, je développe des <strong>jeux vidéo</strong> et fais de la <strong>modélisation 3D</strong>. Ma passion pour le jeu vidéo m'a mené à maîtriser les outils les plus tendance de l'industrie.
                 </p>
-                <p className="text-gray-300 leading-relaxed mb-6">
-                  Je suis actuellement en <strong className="text-white font-bold">Master en informatique</strong> à l'<strong>Université de Lyon 2</strong>, où j'approfondis mes compétences en développement, modélisation 3D et création de jeux vidéo.
+                <p className="text-slate-300 leading-relaxed mb-6">
+                  Je suis actuellement en <strong className="text-slate-100 font-bold">Master en informatique</strong> à l'<strong>Université de Lyon 2</strong>, où j'approfondis mes compétences en développement, modélisation 3D et création de jeux vidéo.
                 </p>
-                <p className="text-gray-300 leading-relaxed mb-6">
-                  Ce diplôme fait suite à un <strong className="text-white font-bold">BUT Métiers du Multimédia et de l'Internet</strong> option <strong>Développement Web et Dispositifs Interactifs / Game Development</strong>, où j'ai acquis une solide base en développement de <strong>jeux vidéo</strong>.
+                <p className="text-slate-300 leading-relaxed mb-6">
+                  Ce diplôme fait suite à un <strong className="text-slate-100 font-bold">BUT Métiers du Multimédia et de l'Internet</strong> option <strong>Développement Web et Dispositifs Interactifs / Game Development</strong>, où j'ai acquis une solide base en développement de <strong>jeux vidéo</strong>.
                 </p>
-                <p className="text-gray-300 leading-relaxed">
+                <p className="text-slate-300 leading-relaxed">
                   Mon objectif à terme est de créer ou rejoindre un studio de développement de jeux vidéo, où je pourrai mettre à profit mes compétences et créer mes propres univers.
                 </p>
                 
@@ -259,7 +338,7 @@ const Portfolio: React.FC = () => {
                     href={PORTFOLIO_CONFIG.cvVideo}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="inline-flex items-center gap-3 px-6 py-3 bg-gradient-to-r from-purple-500 to-blue-600 hover:from-purple-600 hover:to-blue-700 text-white rounded-xl transition-all duration-300 font-semibold shadow-lg hover:shadow-xl transform hover:scale-105"
+                    className="inline-flex items-center gap-3 px-6 py-3 bg-gradient-to-r from-cyan-500 to-sky-500 hover:from-cyan-400 hover:to-sky-400 text-slate-950 rounded-xl transition-all duration-300 font-semibold shadow-lg hover:shadow-xl hover:-translate-y-0.5"
                   >
                     <Video size={20} />
                     Voir mon CV Vidéo
@@ -269,23 +348,23 @@ const Portfolio: React.FC = () => {
             </div>
             
             <div className="space-y-6">
-              <div className="bg-gray-900/50 backdrop-blur-sm border border-purple-500/30 rounded-xl p-6">
+              <div className={`${glassCardClass} p-6`}>
                 <div className="flex items-center gap-3">
-                  <Code className="text-blue-400" />
+                  <Code className="text-sky-300" />
                   <h4 className="text-xl font-semibold">Développement de Jeux Vidéo & Web</h4>
                 </div>
               </div>
               
-              <div className="bg-gray-900/50 backdrop-blur-sm border border-purple-500/30 rounded-xl p-6">
+              <div className={`${glassCardClass} p-6`}>
                 <div className="flex items-center gap-3">
-                  <Box className="text-green-400" />
+                  <Box className="text-emerald-300" />
                   <h4 className="text-xl font-semibold">3D & 2D Art</h4>
                 </div>
               </div>
               
-              <div className="bg-gray-900/50 backdrop-blur-sm border border-purple-500/30 rounded-xl p-6">
+              <div className={`${glassCardClass} p-6`}>
                 <div className="flex items-center gap-3">
-                  <Camera className="text-yellow-400" />
+                  <Camera className="text-amber-300" />
                   <h4 className="text-xl font-semibold">Création de contenu</h4>
                 </div>
               </div>
@@ -295,36 +374,36 @@ const Portfolio: React.FC = () => {
       </section>
 
       {/* Experience Section */}
-      <section id="experience" className="py-20 relative z-10">
+      <section id="experience" data-section-transition className="py-20 relative z-10 section-transition scroll-mt-28">
         <div className="max-w-6xl mx-auto px-6">
-          <h2 className="text-4xl font-bold text-center mb-16 bg-gradient-to-r from-purple-400 to-blue-400 bg-clip-text text-transparent">
+          <h2 className={sectionTitleClass}>
             Expérience Professionnelle
           </h2>
           
           <div className="space-y-8">
             {PORTFOLIO_CONFIG.experiences.map((experience) => (
-              <div key={experience.id} className="bg-gray-900/50 backdrop-blur-sm border border-purple-500/30 rounded-xl p-8 hover:border-purple-400/60 transition-all duration-300">
+              <div key={experience.id} className={`${glassCardClass} relative p-8 hover:border-cyan-300/50 transition-all duration-300`}>
                 <div className="grid md:grid-cols-3 gap-6">
                   {/* Info principale */}
                   <div className="md:col-span-2">
                     <div className="flex flex-wrap items-start gap-4 mb-1">
                       <div className="flex items-center gap-3">
-                        <Briefcase className="text-purple-400" size={20} />
-                        <h3 className="text-2xl font-bold text-white">{experience.role}</h3>
+                        <Briefcase className="text-cyan-300" size={20} />
+                        <h3 className="text-2xl font-bold text-slate-100">{experience.role}</h3>
                       </div>
-                      <div className="flex mt-2 items-top gap-3 text-purple-300">
+                      <div className="flex mt-2 items-top gap-3 text-sky-200">
                         <MapPin size={16} />
                         <span className="font-semibold">{experience.company}</span>
                         
                       </div>
                     </div>
                     
-                    <div className="flex items-center gap-2 mb-4 text-gray-300">
+                    <div className="flex items-center gap-2 mb-4 text-slate-300">
                       <Calendar size={16} />
                       <span>{experience.period}</span>
                     </div>
                     
-                    <p className="text-gray-300 mb-6 leading-relaxed">
+                    <p className="text-slate-300 mb-6 leading-relaxed">
                       {experience.description}
                     </p>
 
@@ -341,10 +420,10 @@ const Portfolio: React.FC = () => {
                     
                     {/* Technologies */}
                     <div className="mb-6">
-                      <h4 className="text-lg font-semibold mb-3 text-purple-300">Compétences utilisées</h4>
+                      <h4 className="text-lg font-semibold mb-3 text-sky-200">Compétences utilisées</h4>
                       <div className="flex flex-wrap gap-2">
                         {experience.technologies.map((tech, techIndex) => (
-                          <span key={techIndex} className="px-3 py-1 bg-purple-600/20 border border-purple-500/30 text-purple-300 rounded-full text-sm">
+                          <span key={techIndex} className={tagClass}>
                             {tech}
                           </span>
                         ))}
@@ -354,14 +433,14 @@ const Portfolio: React.FC = () => {
                   
                   {/* Réalisations */}
                   <div className="md:col-span-1">
-                    <h4 className="text-lg font-semibold mb-4 text-purple-300 flex items-center gap-2">
+                    <h4 className="text-lg font-semibold mb-4 text-sky-200 flex items-center gap-2">
                       <CheckCircle size={18} />
                       Réalisations clés
                     </h4>
                     <ul className="space-y-3">
                       {experience.achievements.map((achievement, achIndex) => (
-                        <li key={achIndex} className="flex items-start gap-2 text-gray-300">
-                          <div className="w-2 h-2 bg-purple-400 mt-2 flex-shrink-0"></div>
+                        <li key={achIndex} className="flex items-start gap-2 text-slate-300">
+                          <div className="w-2 h-2 bg-cyan-300 mt-2 flex-shrink-0"></div>
                           <span className="text-sm leading-relaxed">{achievement}</span>
                         </li>
                       ))}
@@ -376,9 +455,9 @@ const Portfolio: React.FC = () => {
       </section>
 
       {/* Portfolio Section */}
-      <section id="portfolio" className="py-20 relative z-15">
+      <section id="portfolio" data-section-transition className="py-20 relative z-10 section-transition scroll-mt-28">
         <div className="max-w-7xl mx-auto px-6">
-          <h2 className="text-4xl font-bold text-center mb-16 bg-gradient-to-r from-purple-400 to-blue-400 bg-clip-text text-transparent">
+          <h2 className={sectionTitleClass}>
             Portfolio
           </h2>
             <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
@@ -390,22 +469,22 @@ const Portfolio: React.FC = () => {
       </section>
       
       {/* Skills Section */}
-      <section id="skills" className="py-20 relative z-10">
+      <section id="skills" data-section-transition className="py-20 relative z-10 section-transition scroll-mt-28">
         <div className="max-w-6xl mx-auto px-6">
-          <h2 className="text-4xl font-bold text-center mb-16 bg-gradient-to-r from-purple-400 to-blue-400 bg-clip-text text-transparent">
+          <h2 className={sectionTitleClass}>
             Compétences
           </h2>
             <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
             {PORTFOLIO_CONFIG.skills.map((skill, index) => {
               const IconComponent = skill.icon;
               return (
-                <div key={index} className="bg-gray-900/50 backdrop-blur-sm border border-purple-500/30 rounded-xl p-6 hover:border-purple-400/60 transition-all duration-300 group">
+                <div key={index} className={`${glassCardClass} p-6 hover:border-cyan-300/55 transition-all duration-300 group`}>
                   <div className="text-center">
                     <div className="flex justify-center mb-3">
-                      <IconComponent size={48} className="text-purple-400 group-hover:text-purple-300 transition-colors" />
+                      <IconComponent size={48} className="text-cyan-300 group-hover:text-sky-200 transition-colors" />
                     </div>
                     <h3 className="text-lg font-semibold mb-2">{skill.name}</h3>
-                    <p className="text-sm text-purple-300 mb-4">{skill.category}</p>
+                    <p className="text-sm text-sky-200 mb-4">{skill.category}</p>
                   </div>
                 </div>
               );
@@ -415,13 +494,13 @@ const Portfolio: React.FC = () => {
       </section>      
       
       {/* Contact Section */}
-      <section id="contact" className="py-20 relative z-10">
+      <section id="contact" data-section-transition className="py-20 relative z-10 section-transition scroll-mt-28">
         <div className="max-w-6xl mx-auto px-6">
           <div className="text-center mb-16">
-            <h2 className="text-4xl font-bold mb-8 bg-gradient-to-r from-purple-400 to-blue-400 bg-clip-text text-transparent">
+            <h2 className="text-4xl font-bold mb-8 text-cyan-100 tracking-tight">
               Contactez-moi
             </h2>
-            <p className="text-xl text-gray-300 mb-12">
+            <p className="text-xl text-slate-300 mb-12">
               Prêt à collaborer sur votre prochain projet ? Parlons-en !
             </p>
           </div>
@@ -433,7 +512,8 @@ const Portfolio: React.FC = () => {
           <div className="flex flex-wrap justify-center gap-4 sm:gap-8 mb-12">
             <a 
               href={`mailto:${PORTFOLIO_CONFIG.email}`}
-              className="flex items-center gap-3 px-6 sm:px-8 py-3 sm:py-4 bg-purple-600 hover:bg-purple-500 rounded-xl transition-colors text-base sm:text-lg"
+              className="flex items-center gap-3 px-6 sm:px-8 py-3 sm:py-4 bg-cyan-500 hover:bg-cyan-400 text-slate-950 rounded-xl transition-colors text-base sm:text-lg font-semibold"
+              aria-label="Envoyer un email"
             >
               <Mail size={20} className="sm:hidden" />
               <Mail size={24} className="hidden sm:block" />
@@ -441,9 +521,10 @@ const Portfolio: React.FC = () => {
             </a>
             <a 
               href={PORTFOLIO_CONFIG.linkedin}
-              className="flex items-center gap-3 px-6 sm:px-8 py-3 sm:py-4 bg-blue-600 hover:bg-blue-500 rounded-xl transition-colors text-base sm:text-lg"
+              className="flex items-center gap-3 px-6 sm:px-8 py-3 sm:py-4 bg-sky-600 hover:bg-sky-500 rounded-xl transition-colors text-base sm:text-lg"
               target="_blank"
               rel="noopener noreferrer"
+              aria-label="Ouvrir LinkedIn"
             >
               <Linkedin size={20} className="sm:hidden" />
               <Linkedin size={24} className="hidden sm:block" />
@@ -451,9 +532,10 @@ const Portfolio: React.FC = () => {
             </a>
             <a 
               href={PORTFOLIO_CONFIG.cvVideo}
-              className="flex items-center gap-3 px-6 sm:px-8 py-3 sm:py-4 bg-gradient-to-r from-purple-500 to-blue-600 hover:from-purple-600 hover:to-blue-700 rounded-xl transition-colors text-base sm:text-lg text-white font-semibold"
+              className="flex items-center gap-3 px-6 sm:px-8 py-3 sm:py-4 bg-gradient-to-r from-cyan-500 to-teal-400 hover:from-cyan-400 hover:to-teal-300 rounded-xl transition-colors text-base sm:text-lg text-slate-950 font-semibold"
               target="_blank"
               rel="noopener noreferrer"
+              aria-label="Voir le CV video"
             >
               <Video size={20} className="sm:hidden" />
               <Video size={24} className="hidden sm:block" />
@@ -461,9 +543,10 @@ const Portfolio: React.FC = () => {
             </a>
             <a 
               href={PORTFOLIO_CONFIG.github}
-              className="flex items-center gap-3 px-6 sm:px-8 py-3 sm:py-4 bg-gray-800 hover:bg-gray-700 rounded-xl transition-colors text-base sm:text-lg"
+              className="flex items-center gap-3 px-6 sm:px-8 py-3 sm:py-4 bg-slate-800 hover:bg-slate-700 rounded-xl transition-colors text-base sm:text-lg"
               target="_blank"
               rel="noopener noreferrer"
+              aria-label="Ouvrir GitHub"
             >
               <Github size={20} className="sm:hidden" />
               <Github size={24} className="hidden sm:block" />
@@ -472,13 +555,24 @@ const Portfolio: React.FC = () => {
           </div>
         </div>
       </section>
+
+      {showBackToTop && (
+        <button
+          onClick={() => scrollToSection('hero')}
+          className="fixed bottom-6 right-6 z-40 p-3 rounded-full bg-cyan-400/90 text-slate-950 shadow-lg shadow-cyan-500/25 hover:bg-cyan-300 transition-colors"
+          aria-label="Retour en haut"
+        >
+          <ArrowUp size={20} />
+        </button>
+      )}
       
       {/* Footer */}
-      <footer className="py-8 text-center border-t border-purple-500/30 relative z-10">
-        <p className="text-gray-400">
-          © 2025 {PORTFOLIO_CONFIG.name}. Tous droits réservés. | Développé avec ❤️ par <a href={PORTFOLIO_CONFIG.github} className="text-purple-400 hover:underline" target="_blank" rel="noopener noreferrer">{PORTFOLIO_CONFIG.name}</a> avec React, TypeScript, Tailwind CSS et Three.js
+      <footer className="py-8 text-center border-t border-cyan-300/20 relative z-10">
+        <p className="text-slate-400 px-4">
+          © 2025 {PORTFOLIO_CONFIG.name}. Tous droits réservés. | Développé avec ❤️ par <a href={PORTFOLIO_CONFIG.github} className="text-cyan-200 hover:underline" target="_blank" rel="noopener noreferrer">{PORTFOLIO_CONFIG.name}</a> avec React, TypeScript, Tailwind CSS et Three.js
         </p>
       </footer>
+      </main>
     </div>
   );
 };

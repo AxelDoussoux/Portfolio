@@ -1,1 +1,108 @@
+@import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Sora:wght@400;500;600;700&display=swap');
 @import "tailwindcss";
+
+:root {
+	--bg-deep: #050a14;
+	--bg-mid: #0b1627;
+	--bg-soft: #12263e;
+	--text-main: #e8f2ff;
+	--text-soft: #a7b8cf;
+	--accent-primary: #38bdf8;
+	--accent-secondary: #2dd4bf;
+	--accent-warm: #f59e0b;
+}
+
+html {
+	scroll-behavior: smooth;
+	scroll-padding-top: 7.5rem;
+	scrollbar-width: none;
+	-ms-overflow-style: none;
+}
+
+html::-webkit-scrollbar,
+body::-webkit-scrollbar {
+	width: 0;
+	height: 0;
+	display: none;
+}
+
+body {
+	margin: 0;
+	min-height: 100vh;
+	scrollbar-width: none;
+	-ms-overflow-style: none;
+	color: var(--text-main);
+	background:
+		radial-gradient(1200px 700px at 15% 20%, rgba(56, 189, 248, 0.12), transparent 70%),
+		radial-gradient(900px 500px at 85% 15%, rgba(45, 212, 191, 0.09), transparent 72%),
+		linear-gradient(165deg, var(--bg-deep) 10%, var(--bg-mid) 55%, var(--bg-soft) 100%);
+	font-family: 'Space Grotesk', sans-serif;
+	text-rendering: optimizeLegibility;
+	-webkit-font-smoothing: antialiased;
+	-moz-osx-font-smoothing: grayscale;
+}
+
+h1,
+h2,
+h3,
+h4 {
+	font-family: 'Sora', sans-serif;
+}
+
+a,
+button {
+	transition: all 220ms ease;
+}
+
+a:focus-visible,
+button:focus-visible,
+[role="button"]:focus-visible {
+	outline: 2px solid rgba(56, 189, 248, 0.75);
+	outline-offset: 2px;
+}
+
+img,
+video,
+iframe {
+	max-width: 100%;
+	height: auto;
+}
+
+.section-transition {
+	opacity: 0;
+	transform: translateY(34px) scale(0.985);
+	filter: blur(2px);
+	transition-property: opacity, transform, filter;
+	transition-duration: 680ms, 760ms, 520ms;
+	transition-timing-function: cubic-bezier(0.22, 1, 0.36, 1);
+	will-change: opacity, transform, filter;
+}
+
+.section-visible {
+	opacity: 1;
+	transform: translateY(0) scale(1);
+	filter: blur(0);
+}
+
+@media (prefers-reduced-motion: reduce) {
+	html {
+		scroll-behavior: auto;
+	}
+
+	.section-transition,
+	.section-visible {
+		opacity: 1;
+		transform: none;
+		filter: none;
+		transition: none;
+	}
+
+	*,
+	*::before,
+	*::after {
+		animation-duration: 0.01ms !important;
+		animation-iteration-count: 1 !important;
+		transition-duration: 0.01ms !important;
+		scroll-behavior: auto !important;
+	}
+}

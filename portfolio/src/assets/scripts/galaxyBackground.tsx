@@ -43,11 +43,11 @@ const GalaxyBackground: React.FC = () => {
     const scales = new Float32Array(particlesCount);
     const randomness = new Float32Array(particlesCount);    // Couleurs pour la galaxie
     const colorCore = new THREE.Color('#ffffff'); // Centre blanc brillant
-    const colorArm1 = new THREE.Color('#a855f7'); // purple-500
-    const colorArm2 = new THREE.Color('#8b5cf6'); // purple-400
-    const colorArm3 = new THREE.Color('#60a5fa'); // blue-400
-    const colorOuter = new THREE.Color('#6366f1'); // indigo-500 (transition)
-    const colorDust = new THREE.Color('#c084fc'); // purple-300 (poussière d'étoiles)
+    const colorArm1 = new THREE.Color('#22d3ee'); // cyan-400
+    const colorArm2 = new THREE.Color('#38bdf8'); // sky-400
+    const colorArm3 = new THREE.Color('#2dd4bf'); // teal-400
+    const colorOuter = new THREE.Color('#0ea5e9'); // sky-500 (transition)
+    const colorDust = new THREE.Color('#67e8f9'); // cyan-300 (poussière d'étoiles)
 
     // Paramètres de la spirale
     const arms = 3;
@@ -255,7 +255,7 @@ const GalaxyBackground: React.FC = () => {
     <div 
       ref={mountRef} 
       className="fixed inset-0 z-0 pointer-events-none"
-      style={{ background: 'radial-gradient(ellipse at center, #1e1b4b 0%, #111827 50%, #000000 100%)', opacity: 0.8 }}
+      style={{ background: 'radial-gradient(ellipse at center, #0b223c 0%, #0b1627 52%, #050a14 100%)', opacity: 0.82 }}
     />
   );
 };
