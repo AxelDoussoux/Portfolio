@@ -2,11 +2,12 @@ import React, { useRef, useState } from "react";
 import { createPortal } from "react-dom";
 import type PORTFOLIO_CONFIG from "./portfolioData";
 import {
+  FiChevronLeft as ChevronLeft,
+  FiChevronRight as ChevronRight,
   FiExternalLink as ExternalLink,
   FiEye as Eye,
   FiPause as Pause,
   FiPlay as Play,
-  FiStar as Star,
   FiX as X,
   FiCalendar as Calendar,
   FiCode as Code2,
@@ -38,9 +39,13 @@ const ProjectModal: React.FC<{
 }> = ({ project, isOpen, onClose }) => {
   const [isVideoPlaying, setIsVideoPlaying] = useState(false);
   const [showVideo, setShowVideo] = useState(false);
+  const [currentImageIndex, setCurrentImageIndex] = useState(0);
+  const [carouselResetKey, setCarouselResetKey] = useState(0);
   const videoRef = useRef<HTMLVideoElement>(null);
   const iframeRef = useRef<HTMLIFrameElement>(null);
   const dialogTitleId = `project-modal-title-${project.id}`;
+  const projectImages = project.images.length > 0 ? project.images : [project.image];
+  const hasImageCarousel = projectImages.length > 1;
   
   const isYouTube = project.video && isYouTubeUrl(project.video);
   const youtubeEmbedUrl = isYouTube ? getYouTubeEmbedUrl(project.video!) : null;
@@ -71,6 +76,36 @@ const ProjectModal: React.FC<{
     window.addEventListener('keydown', handleEscape);
     return () => window.removeEventListener('keydown', handleEscape);
   }, [isOpen, onClose]);
+
+  React.useEffect(() => {
+    if (!isOpen) return;
+    setCurrentImageIndex(0);
+    setCarouselResetKey(0);
+  }, [isOpen, project.id]);
+
+  React.useEffect(() => {
+    if (!isOpen || !hasImageCarousel || showVideo) return;
+
+    const autoSlide = window.setInterval(() => {
+      setCurrentImageIndex((prevIndex) => (prevIndex + 1) % projectImages.length);
+    }, 4000);
+
+    return () => window.clearInterval(autoSlide);
+  }, [isOpen, hasImageCarousel, projectImages.length, showVideo, carouselResetKey]);
+
+  const goToImage = (index: number) => {
+    const normalizedIndex = ((index % projectImages.length) + projectImages.length) % projectImages.length;
+    setCurrentImageIndex(normalizedIndex);
+    setCarouselResetKey((previousKey) => previousKey + 1);
+  };
+
+  const goToRelativeImage = (step: number) => {
+    setCurrentImageIndex((prevIndex) => {
+      const nextIndex = (prevIndex + step + projectImages.length) % projectImages.length;
+      return nextIndex;
+    });
+    setCarouselResetKey((previousKey) => previousKey + 1);
+  };
 
   // Gérer le clic sur le backdrop pour fermer la modal
   const handleBackdropClick = (e: React.MouseEvent) => {
@@ -115,7 +150,7 @@ const ProjectModal: React.FC<{
       role="presentation"
     >
       <div 
-        className="bg-white/30 backdrop-blur-xl rounded-2xl max-w-5xl w-full max-h-[85vh] overflow-y-auto border border-white/45 shadow-[0_18px_45px_rgba(71,56,107,0.16)]"
+        className="bg-white/78 backdrop-blur-xl rounded-2xl max-w-5xl w-full max-h-[85vh] overflow-y-auto [-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden border border-white/85 shadow-[0_20px_52px_rgba(71,56,107,0.12)]"
         onClick={(e) => e.stopPropagation()}
         role="dialog"
         aria-modal="true"
@@ -126,12 +161,6 @@ const ProjectModal: React.FC<{
           <div>
             <div className="flex items-center gap-3 mb-2">
               <h2 id={dialogTitleId} className="text-2xl font-bold text-[#2F2352]">{project.title}</h2>
-              {project.featured && (
-                <div className="bg-[#9D71E8] text-[#241A42] px-2 py-1 rounded-full text-xs font-bold flex items-center gap-1">
-                  <Star size={12} />
-                  Featured
-                </div>
-              )}
             </div>
             <p className="text-[#47386B]">{project.description}</p>
           </div>
@@ -179,7 +208,11 @@ const ProjectModal: React.FC<{
                 </button>
               </div>
             ) : (
-              <img src={project.image} alt={project.title} className="w-full h-full object-cover bg-[#C9DCFF] group-hover:scale-105 transition-transform duration-500" />
+              <img
+                src={projectImages[currentImageIndex]}
+                alt={project.title}
+                className="w-full h-full object-cover bg-[#C9DCFF] transition-transform duration-500"
+              />
             )}
             
             {project.video && (
@@ -191,6 +224,44 @@ const ProjectModal: React.FC<{
               >
                 {showVideo ? <Eye size={20} /> : <Play size={20} />}
               </button>
+            )}
+
+            {hasImageCarousel && !showVideo && (
+              <>
+                <button
+                  type="button"
+                  onClick={() => goToRelativeImage(-1)}
+                  className="absolute left-3 top-1/2 -translate-y-1/2 z-10 inline-flex items-center justify-center w-8 h-8 rounded-full bg-white/70 hover:bg-white text-[#2F2352] border border-white/80 transition-colors"
+                  aria-label={`Image précédente du projet ${project.title}`}
+                >
+                  <ChevronLeft size={16} />
+                </button>
+
+                <button
+                  type="button"
+                  onClick={() => goToRelativeImage(1)}
+                  className="absolute right-3 top-1/2 -translate-y-1/2 z-10 inline-flex items-center justify-center w-8 h-8 rounded-full bg-white/70 hover:bg-white text-[#2F2352] border border-white/80 transition-colors"
+                  aria-label={`Image suivante du projet ${project.title}`}
+                >
+                  <ChevronRight size={16} />
+                </button>
+
+                <div className="absolute bottom-3 right-3 z-10 flex items-center gap-1.5">
+                  {projectImages.map((_, index) => (
+                    <button
+                      key={`${project.id}-modal-dot-${index}`}
+                      type="button"
+                      onClick={() => goToImage(index)}
+                      className={`h-2 rounded-full transition-all ${
+                        currentImageIndex === index
+                          ? 'w-5 bg-[#9D71E8]'
+                          : 'w-2 bg-white/75 hover:bg-white'
+                      }`}
+                      aria-label={`Afficher l'image ${index + 1} du projet ${project.title}`}
+                    />
+                  ))}
+                </div>
+              </>
             )}
           </div>
 
@@ -226,9 +297,10 @@ const ProjectModal: React.FC<{
                 {project.github && (
                   <a
                     href={project.github}
-                    className="flex items-center gap-2 px-3 py-3 bg-[#2F2352] hover:bg-[#35275B] text-[#F2F7FF] rounded-lg transition-colors flex-1 justify-center"
+                    className="inline-flex items-center justify-center w-11 h-11 bg-[#2F2352] hover:bg-[#35275B] text-[#F2F7FF] rounded-lg transition-colors"
                     target="_blank"
                     rel="noopener noreferrer"
+                    aria-label={`Voir le code source du projet ${project.title}`}
                   >
                     <Github size={20} />
                   </a>
@@ -236,9 +308,10 @@ const ProjectModal: React.FC<{
                 {project.demo && (
                   <a
                     href={project.demo}
-                    className="flex items-center gap-2 px-3 py-3 bg-[#9D71E8] hover:bg-[#BE99FF] text-[#241A42] rounded-lg transition-colors flex-1 justify-center font-semibold"
+                    className="inline-flex items-center justify-center w-11 h-11 bg-[#9D71E8] hover:bg-[#BE99FF] text-[#241A42] rounded-lg transition-colors"
                     target="_blank"
                     rel="noopener noreferrer"
+                    aria-label={`Ouvrir la démo du projet ${project.title}`}
                   >
                     <ExternalLink size={20} />
                   </a>
@@ -323,16 +396,13 @@ const ProjectCard: React.FC<{ project: typeof PORTFOLIO_CONFIG.projects[0] }> = 
   };
 
   const handleCardClick = () => {
-    // Ouvrir la modal seulement si le projet est Featured
-    if (project.featured) {
-      setIsModalOpen(true);
-    }
+    setIsModalOpen(true);
   };
 
   return (
     <>
       <div 
-        className={`group relative h-full bg-white/30 backdrop-blur-xl border border-white/45 rounded-xl overflow-hidden hover:border-[#9D71E8] transition-all duration-500 ${project.featured ? 'cursor-pointer' : ''} flex flex-col`}
+        className="group relative h-full bg-white/74 backdrop-blur-lg border border-white/85 rounded-xl overflow-hidden shadow-[0_14px_36px_rgba(71,56,107,0.1)] hover:border-[#9D71E8]/80 transition-all duration-500 cursor-pointer flex flex-col"
         onClick={handleCardClick}
       >
         <div className="relative aspect-video overflow-hidden flex-shrink-0 bg-[#C9DCFF]/80">
@@ -371,7 +441,7 @@ const ProjectCard: React.FC<{ project: typeof PORTFOLIO_CONFIG.projects[0] }> = 
             <img src={project.image} alt={project.title} className="w-full h-full object-cover bg-[#C9DCFF] group-hover:scale-105 transition-transform duration-500" />
           )}
           
-          <div className="absolute inset-0 bg-gradient-to-t from-[#2F2352]/30 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+          <div className="absolute inset-0 bg-gradient-to-t from-[#2F2352]/8 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
           
           {project.video && (
             <button
@@ -384,14 +454,11 @@ const ProjectCard: React.FC<{ project: typeof PORTFOLIO_CONFIG.projects[0] }> = 
             </button>
           )}
           
-          {/* Icône Plus seulement pour les projets Featured */}
-          {project.featured && (
-            <div className="absolute bottom-4 right-4 bg-[#9D71E8]/90 hover:bg-[#BE99FF] text-[#241A42] p-2 rounded-full transition-all duration-300 opacity-100 md:opacity-0 md:group-hover:opacity-100" aria-hidden="true">
-              <Plus size={16} />
-            </div>
-          )}
+          <div className="absolute bottom-4 right-4 bg-[#9D71E8]/90 text-[#241A42] p-2 rounded-full transition-all duration-300 opacity-0 group-hover:opacity-100" aria-hidden="true">
+            <Plus size={16} />
+          </div>
           
-          <div className={`absolute bottom-4 left-4 ${project.featured ? 'right-16' : 'right-4'} opacity-100 md:opacity-0 md:group-hover:opacity-100 transition-opacity duration-300`}>
+          <div className="absolute bottom-4 left-4 right-16 opacity-100 md:opacity-0 md:group-hover:opacity-100 transition-opacity duration-300">
             <div className="flex gap-2 mb-2">
               {project.technologies.slice(0, 3).map((tech, i) => (
                 <span key={i} className="px-2 py-1 bg-[#BE99FF]/95 text-xs rounded-full text-[#35275B] font-medium backdrop-blur-sm">
@@ -405,14 +472,6 @@ const ProjectCard: React.FC<{ project: typeof PORTFOLIO_CONFIG.projects[0] }> = 
               )}
             </div>
           </div>
-          
-          {/* Badge Featured */}
-          {project.featured && (
-            <div className="absolute top-4 right-4 bg-[#9D71E8] text-[#241A42] px-2 py-1 rounded-full text-xs font-bold flex items-center gap-1">
-              <Star size={12} />
-              Featured
-            </div>
-          )}
         </div>
         
         <div className="p-5 sm:p-6 flex flex-col flex-grow">
@@ -425,43 +484,29 @@ const ProjectCard: React.FC<{ project: typeof PORTFOLIO_CONFIG.projects[0] }> = 
           <p className="text-[#47386B] mb-4 leading-relaxed line-clamp-2 flex-grow">{project.description}</p>
           
           <div className="flex justify-between items-end mt-auto">
-            <div className="flex gap-3">
-              {project.featured && (
-                <button
-                  type="button"
-                  className="flex items-center gap-2 px-4 py-2 bg-[#2F2352] hover:bg-[#35275B] text-[#F2F7FF] rounded-lg transition-colors"
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    setIsModalOpen(true);
-                  }}
-                  aria-label={`Ouvrir le detail du projet ${project.title}`}
-                >
-                  <Plus size={16} />
-                  Details
-                </button>
-              )}
+            <div className="flex gap-2.5">
               {project.github && (
                 <a
                   href={project.github}
-                  className="flex items-center gap-2 px-4 py-2 bg-[#2F2352] hover:bg-[#35275B] text-[#F2F7FF] rounded-lg transition-colors"
+                  className="inline-flex items-center justify-center w-10 h-10 bg-[#2F2352] hover:bg-[#35275B] text-[#F2F7FF] rounded-lg transition-colors"
                   target="_blank"
                   rel="noopener noreferrer"
                   onClick={(e) => e.stopPropagation()}
+                  aria-label={`Voir le code source du projet ${project.title}`}
                 >
                   <Github size={16} />
-                  Code
                 </a>
               )}
               {project.demo && (
                 <a
                   href={project.demo}
-                  className="flex items-center gap-2 px-4 py-2 bg-[#9D71E8] hover:bg-[#BE99FF] text-[#241A42] rounded-lg transition-colors font-semibold"
+                  className="inline-flex items-center justify-center w-10 h-10 bg-[#9D71E8] hover:bg-[#BE99FF] text-[#241A42] rounded-lg transition-colors"
                   target="_blank"
                   rel="noopener noreferrer"
                   onClick={(e) => e.stopPropagation()}
+                  aria-label={`Ouvrir la démo du projet ${project.title}`}
                 >
                   <ExternalLink size={16} />
-                  Demo
                 </a>
               )}
             </div>
@@ -474,14 +519,11 @@ const ProjectCard: React.FC<{ project: typeof PORTFOLIO_CONFIG.projects[0] }> = 
         </div>
       </div>
 
-      {/* Modal seulement pour les projets Featured */}
-      {project.featured && (
-        <ProjectModal 
-          project={project} 
-          isOpen={isModalOpen} 
-          onClose={() => setIsModalOpen(false)} 
-        />
-      )}
+      <ProjectModal 
+        project={project} 
+        isOpen={isModalOpen} 
+        onClose={() => setIsModalOpen(false)} 
+      />
     </>
   );
 };

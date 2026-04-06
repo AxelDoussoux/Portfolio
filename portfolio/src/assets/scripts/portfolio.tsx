@@ -26,7 +26,15 @@ const Portfolio: React.FC = () => {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [scrollProgress, setScrollProgress] = useState(0);
   const [showBackToTop, setShowBackToTop] = useState(false);
+  const [introPhase, setIntroPhase] = useState<'center' | 'expand' | 'move' | 'exit'>('center');
+  const [showIntro, setShowIntro] = useState(true);
+  const [introTarget, setIntroTarget] = useState({ x: 0, y: 0 });
   const navClickLockRef = useRef<{ sectionId: string; until: number } | null>(null);
+  const navLogoRef = useRef<HTMLDivElement>(null);
+
+  const [firstName, ...lastNameParts] = PORTFOLIO_CONFIG.name.trim().split(/\s+/);
+  const lastName = lastNameParts.join(' ');
+  const hasLastName = lastName.length > 0;
   
   useEffect(() => {
     const handleScroll = () => {
@@ -70,9 +78,71 @@ const Portfolio: React.FC = () => {
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
-  // Empêcher le scroll quand le menu mobile est ouvert
   useEffect(() => {
-    if (isMobileMenuOpen) {
+    if (!showIntro) return;
+
+    const updateTarget = () => {
+      const navLogo = navLogoRef.current;
+      if (!navLogo) return;
+
+      const navRect = navLogo.getBoundingClientRect();
+
+      const x = navRect.left + navRect.width / 2 - window.innerWidth / 2;
+      const y = navRect.top + navRect.height / 2 - window.innerHeight / 2;
+
+      setIntroTarget({ x, y });
+    };
+
+    const frameId = window.requestAnimationFrame(updateTarget);
+    window.addEventListener('resize', updateTarget);
+
+    return () => {
+      window.cancelAnimationFrame(frameId);
+      window.removeEventListener('resize', updateTarget);
+    };
+  }, [showIntro]);
+
+  useEffect(() => {
+    const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+    if (reducedMotion) {
+      setIntroPhase('exit');
+      const hideIntro = window.setTimeout(() => {
+        setShowIntro(false);
+      }, 200);
+
+      return () => {
+        window.clearTimeout(hideIntro);
+      };
+    }
+
+    const expandName = window.setTimeout(() => {
+      setIntroPhase('expand');
+    }, 1000);
+
+    const moveToLogo = window.setTimeout(() => {
+      setIntroPhase('move');
+    }, 2300);
+
+    const exitIntro = window.setTimeout(() => {
+      setIntroPhase('exit');
+    }, 3600);
+
+    const hideIntro = window.setTimeout(() => {
+      setShowIntro(false);
+    }, 4300);
+
+    return () => {
+      window.clearTimeout(expandName);
+      window.clearTimeout(moveToLogo);
+      window.clearTimeout(exitIntro);
+      window.clearTimeout(hideIntro);
+    };
+  }, []);
+
+  // Empêcher le scroll quand le menu mobile ou l'intro sont ouverts
+  useEffect(() => {
+    if (isMobileMenuOpen || showIntro) {
       document.body.style.overflow = 'hidden';
     } else {
       document.body.style.overflow = 'unset';
@@ -81,7 +151,7 @@ const Portfolio: React.FC = () => {
     return () => {
       document.body.style.overflow = 'unset';
     };
-  }, [isMobileMenuOpen]);
+  }, [isMobileMenuOpen, showIntro]);
 
   useEffect(() => {
     const handleEscape = (event: KeyboardEvent) => {
@@ -155,6 +225,45 @@ const Portfolio: React.FC = () => {
 
   return (
     <div className="min-h-screen text-[#2F2352] relative overflow-x-hidden">
+      {showIntro && (
+        <div
+          className={`fixed inset-0 z-[1200] px-6 overflow-hidden pointer-events-none transition-opacity duration-500 ${
+            introPhase === 'exit' ? 'opacity-0' : 'opacity-100'
+          }`}
+          style={{ background: 'radial-gradient(ellipse at center, #f2f7ff 0%, #c9dcff 52%, #b2c9ff 100%)' }}
+          aria-hidden="true"
+        >
+          <div
+            className="fixed left-1/2 top-1/2"
+            style={{
+              transform:
+                introPhase === 'move' || introPhase === 'exit'
+                  ? `translate(calc(-50% + ${introTarget.x}px), calc(-50% + ${introTarget.y}px))`
+                  : 'translate(-50%, -50%)',
+              transformOrigin: 'center center',
+              transition: 'transform 980ms cubic-bezier(0.22, 1, 0.36, 1)',
+            }}
+          >
+            <div
+              className={`flex items-center whitespace-nowrap text-lg sm:text-2xl font-bold transition-transform duration-[980ms] ease-out ${
+                introPhase === 'move' || introPhase === 'exit' ? 'scale-100' : 'scale-[2.35] sm:scale-[4.6] md:scale-[6]'
+              }`}
+            >
+              <span className="text-[#2F2352]">{firstName}</span>
+              {hasLastName && (
+                <span
+                  className={`overflow-hidden text-[#47386B] transition-all duration-1000 ease-in-out ${
+                    introPhase === 'center' ? 'max-w-0 opacity-0 ml-0' : 'max-w-[90vw] sm:max-w-[1000px] opacity-100 ml-3'
+                  }`}
+                >
+                  {lastName}
+                </span>
+              )}
+            </div>
+          </div>
+        </div>
+      )}
+
       {/* Arrière-plan galaxie 3D */}
       <GalaxyBackground />
 
@@ -178,7 +287,12 @@ const Portfolio: React.FC = () => {
         <div className="max-w-6xl mx-auto px-4 sm:px-6 py-3 sm:py-4">
           <div className="flex justify-between items-center">
             {/* Logo */}
-            <div className="text-lg sm:text-2xl font-bold text-[#2F2352]">
+            <div
+              ref={navLogoRef}
+              className={`text-lg sm:text-2xl font-bold text-[#2F2352] transition-opacity duration-500 ${
+                showIntro && introPhase !== 'move' && introPhase !== 'exit' ? 'opacity-0' : 'opacity-100'
+              }`}
+            >
               {PORTFOLIO_CONFIG.name}
             </div>
             
@@ -295,41 +409,40 @@ const Portfolio: React.FC = () => {
       
       {/* Hero Section */}
       <section id="hero" className="min-h-screen flex items-center justify-center relative z-10 pt-28 pb-16 scroll-mt-28">
-        <div className="text-center max-w-5xl mx-auto px-6">
-          <div className="mb-6">
-            <h1 className="text-5xl sm:text-6xl md:text-8xl font-bold mb-4 text-[#2F2352] tracking-tight">
-              {PORTFOLIO_CONFIG.name}
+        <div className="max-w-5xl mx-auto px-2 w-full">
+          <div className="text-center">
+            <h1 className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-bold mb-6 leading-[1.05] tracking-tight text-[#2F2352]">
+              Une idée ? Je la transforme en expérience web complète 
             </h1>
-            <h2 className="text-xl sm:text-2xl md:text-3xl text-[#47386B] mb-6">
-              {PORTFOLIO_CONFIG.title}
-            </h2>
-            <p className="text-lg sm:text-xl text-[#47386B] max-w-3xl mx-auto leading-relaxed">
-              {PORTFOLIO_CONFIG.bio}
+            <p className="text-lg sm:text-xl text-[#47386B] max-w-3xl mx-auto leading-relaxed mb-8 sm:mb-10">
+              Du front-end à la logique métier, je conçois des applications performantes, évolutives et intuitives, avec une attention forte au design, à la qualité du code et à l'expérience utilisateur.
             </p>
+
+            <div className="flex justify-center gap-4 sm:gap-6 flex-wrap">
+              <a href={PORTFOLIO_CONFIG.github} className="p-4 rounded-full bg-white/35 border border-white/60 text-[#2F2352] shadow-[0_10px_30px_rgba(71,56,107,0.12)] hover:bg-[#C9DCFF]/85 hover:border-[#9D71E8]/70 hover:-translate-y-1 transition-all" target="_blank" rel="noopener noreferrer" aria-label="GitHub">
+                <Github size={24} />
+              </a>
+              <a href={PORTFOLIO_CONFIG.instagram} className="p-4 rounded-full bg-white/35 border border-white/60 text-[#2F2352] shadow-[0_10px_30px_rgba(71,56,107,0.12)] hover:bg-[#C9DCFF]/85 hover:border-[#9D71E8]/70 hover:-translate-y-1 transition-all" target="_blank" rel="noopener noreferrer" aria-label="Instagram">
+                <Instagram size={24} />
+              </a>
+              <a href={PORTFOLIO_CONFIG.linkedin} className="p-4 rounded-full bg-white/35 border border-white/60 text-[#2F2352] shadow-[0_10px_30px_rgba(71,56,107,0.12)] hover:bg-[#C9DCFF]/85 hover:border-[#9D71E8]/70 hover:-translate-y-1 transition-all" target="_blank" rel="noopener noreferrer" aria-label="LinkedIn">
+                <Linkedin size={24} />
+              </a>
+              <a href={`mailto:${PORTFOLIO_CONFIG.email}`} className="p-4 rounded-full bg-white/35 border border-white/60 text-[#2F2352] shadow-[0_10px_30px_rgba(71,56,107,0.12)] hover:bg-[#C9DCFF]/85 hover:border-[#9D71E8]/70 hover:-translate-y-1 transition-all" aria-label="Email">
+                <Mail size={24} />
+              </a>
+            </div>
           </div>
-          
-          <div className="flex justify-center gap-4 sm:gap-6 mb-12 flex-wrap">
-            <a href={PORTFOLIO_CONFIG.github} className="p-4 bg-[#B2C9FF]/95 border border-[#9D71E8]/70 hover:border-[#9D71E8] hover:-translate-y-1 rounded-full transition-all backdrop-blur-sm text-[#2F2352]" target="_blank" rel="noopener noreferrer" aria-label="GitHub">
-              <Github size={24} />
-            </a>
-            <a href={PORTFOLIO_CONFIG.instagram} className="p-4 bg-[#B2C9FF]/95 border border-[#9D71E8]/70 hover:border-[#9D71E8] hover:-translate-y-1 rounded-full transition-all backdrop-blur-sm text-[#2F2352]" target="_blank" rel="noopener noreferrer" aria-label="Instagram">
-              <Instagram size={24} />
-            </a>
-            <a href={PORTFOLIO_CONFIG.linkedin} className="p-4 bg-[#B2C9FF]/95 border border-[#9D71E8]/70 hover:border-[#9D71E8] hover:-translate-y-1 rounded-full transition-all backdrop-blur-sm text-[#2F2352]" target="_blank" rel="noopener noreferrer" aria-label="LinkedIn">
-              <Linkedin size={24} />
-            </a>
-            <a href={`mailto:${PORTFOLIO_CONFIG.email}`} className="p-4 bg-[#B2C9FF]/95 border border-[#9D71E8]/70 hover:border-[#9D71E8] hover:-translate-y-1 rounded-full transition-all backdrop-blur-sm text-[#2F2352]" aria-label="Email">
-              <Mail size={24} />
-            </a>
+
+          <div className="mt-10 flex justify-center">
+            <button 
+              onClick={() => scrollToSection('about')}
+              className="animate-bounce p-3 bg-white/35 hover:bg-[#BE99FF]/85 rounded-full border border-white/60 transition-colors backdrop-blur-sm text-[#241A42]"
+              aria-label="Descendre vers la section À propos"
+            >
+              <ChevronDown size={24} />
+            </button>
           </div>
-          
-          <button 
-            onClick={() => scrollToSection('about')}
-            className="animate-bounce p-3 bg-[#BE99FF]/90 hover:bg-[#9D71E8] rounded-full border border-[#9D71E8]/70 transition-colors backdrop-blur-sm text-[#241A42]"
-            aria-label="Descendre vers la section À propos"
-          >
-            <ChevronDown size={24} />
-          </button>
         </div>
       </section>
       
