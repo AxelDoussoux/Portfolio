@@ -160,7 +160,6 @@ const InstagramCarousel: React.FC = () => {
                     className="w-full h-full border-0"
                     frameBorder="0"
                     scrolling="no"
-                    allowTransparency={true}
                     allow="encrypted-media"
                     title={`Instagram post ${post.id}`}
                     sandbox="allow-scripts allow-same-origin allow-popups allow-popups-to-escape-sandbox"

@@ -7,12 +7,21 @@ import * as THREE from 'three';
 
 const GalaxyBackground: React.FC = () => {
   const mountRef = useRef<HTMLDivElement>(null);
-  const sceneRef = useRef<THREE.Scene | null>(null);
-  const rendererRef = useRef<THREE.WebGLRenderer | null>(null);
   const animationRef = useRef<number>(0);
 
   useEffect(() => {
     if (!mountRef.current) return;
+
+    const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    const deviceMemory = (navigator as Navigator & { deviceMemory?: number }).deviceMemory ?? 8;
+    const hardwareConcurrency = navigator.hardwareConcurrency ?? 8;
+    const isMobile = window.innerWidth < 768;
+    const lowEndDevice = hardwareConcurrency <= 4 || deviceMemory <= 4;
+    const pixelRatioCap = prefersReducedMotion ? 1 : (isMobile || lowEndDevice ? 1.2 : 1.6);
+    const particlesCount = prefersReducedMotion ? 8000 : (isMobile ? 14000 : (lowEndDevice ? 18000 : 32000));
+    const targetFPS = prefersReducedMotion ? 12 : (isMobile || lowEndDevice ? 30 : 45);
+    let isPageVisible = document.visibilityState === 'visible';
+    let lastFrameTime = 0;
 
     // Configuration de la scène
     const scene = new THREE.Scene();
@@ -21,33 +30,32 @@ const GalaxyBackground: React.FC = () => {
     const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
     const renderer = new THREE.WebGLRenderer({ 
       alpha: true, 
-      antialias: true,
+      antialias: !(isMobile || lowEndDevice),
       powerPreference: "high-performance"
     });
     
     renderer.setSize(window.innerWidth, window.innerHeight);
-    renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+    renderer.setPixelRatio(Math.min(window.devicePixelRatio, pixelRatioCap));
     renderer.setClearColor(0x000000, 0);
     mountRef.current.appendChild(renderer.domElement);
-
-    sceneRef.current = scene;
-    rendererRef.current = renderer;
 
     // Création de la galaxie spirale
     const galaxyGeometry = new THREE.BufferGeometry();
 
-    // Paramètres de la galaxie spirale améliorée
-    const particlesCount = 50000;
+    // Paramètres de la galaxie spirale adaptatifs
     const positions = new Float32Array(particlesCount * 3);
     const colors = new Float32Array(particlesCount * 3);
     const scales = new Float32Array(particlesCount);
-    const randomness = new Float32Array(particlesCount);    // Couleurs pour la galaxie
+    const randomness = new Float32Array(particlesCount);
+
+    // Couleurs pour la galaxie
     const colorCore = new THREE.Color('#ffffff'); // Centre blanc brillant
     const colorArm1 = new THREE.Color('#22d3ee'); // cyan-400
     const colorArm2 = new THREE.Color('#38bdf8'); // sky-400
     const colorArm3 = new THREE.Color('#2dd4bf'); // teal-400
     const colorOuter = new THREE.Color('#0ea5e9'); // sky-500 (transition)
     const colorDust = new THREE.Color('#67e8f9'); // cyan-300 (poussière d'étoiles)
+    const mixedColor = new THREE.Color();
 
     // Paramètres de la spirale
     const arms = 3;
@@ -74,19 +82,18 @@ const GalaxyBackground: React.FC = () => {
       positions[i3 + 2] = Math.sin(branchAngle + spinAngle) * radius + randomZ;
 
       // Couleurs plus complexes et brillantes
-      let mixedColor = new THREE.Color();
       const distanceFromCenter = radius / outsideRadius;
       
       // Couleur en fonction du bras et de la distance
       const armIndex = i % arms;
       if (armIndex === 0) {
-        mixedColor = colorArm1.clone();
+        mixedColor.copy(colorArm1);
       } else if (armIndex === 1) {
-        mixedColor = colorArm2.clone();
+        mixedColor.copy(colorArm2);
       } else if (armIndex === 2) {
-        mixedColor = colorArm3.clone();
+        mixedColor.copy(colorArm3);
       } else {
-        mixedColor = colorDust.clone();
+        mixedColor.copy(colorDust);
       }
 
       // Mélange avec le centre et l'extérieur
@@ -94,12 +101,16 @@ const GalaxyBackground: React.FC = () => {
         mixedColor.lerp(colorCore, 1 - distanceFromCenter * 10);
       } else if (distanceFromCenter > 0.7) {
         mixedColor.lerp(colorOuter, (distanceFromCenter - 0.7) / 0.3);
-      }      // Réduction de la luminosité pour améliorer la lisibilité
+      }
+
+      // Réduction de la luminosité pour améliorer la lisibilité
       mixedColor.multiplyScalar(0.6 + Math.random() * 0.3);
 
       colors[i3] = mixedColor.r;
       colors[i3 + 1] = mixedColor.g;
-      colors[i3 + 2] = mixedColor.b;      // Échelle variable réduite pour créer de la diversité sans gêner la lisibilité
+      colors[i3 + 2] = mixedColor.b;
+
+      // Échelle variable réduite pour créer de la diversité sans gêner la lisibilité
       scales[i] = Math.random() * 1.2 + 0.3;
       randomness[i] = Math.random();
     }
@@ -177,10 +188,12 @@ const GalaxyBackground: React.FC = () => {
         
         gl_FragColor = vec4(finalColor, alpha);
       }
-    `;    const galaxyMaterialShader = new THREE.ShaderMaterial({
+    `;
+
+    const galaxyMaterialShader = new THREE.ShaderMaterial({
       uniforms: {
         uTime: { value: 0 },
-        uSize: { value: 35 * renderer.getPixelRatio() } // Taille réduite
+        uSize: { value: 28 * renderer.getPixelRatio() } // Taille réduite
       },
       vertexShader,
       fragmentShader,
@@ -197,10 +210,22 @@ const GalaxyBackground: React.FC = () => {
     camera.position.set(12, 8, 12);
     camera.lookAt(0, 0, 0);
 
-    // Animation améliorée
+    // Animation améliorée avec limite FPS
     const clock = new THREE.Clock();
     
-    const animate = () => {
+    const animate = (time: number) => {
+      if (!isPageVisible) {
+        animationRef.current = requestAnimationFrame(animate);
+        return;
+      }
+
+      const frameInterval = 1000 / targetFPS;
+      if (time - lastFrameTime < frameInterval) {
+        animationRef.current = requestAnimationFrame(animate);
+        return;
+      }
+
+      lastFrameTime = time;
       const elapsedTime = clock.getElapsedTime();
       
       // Mise à jour du shader
@@ -211,28 +236,44 @@ const GalaxyBackground: React.FC = () => {
       galaxy.rotation.x = Math.sin(elapsedTime * 0.02) * 0.1;
       
       // Mouvement de caméra plus dynamique
-      const radius = 10 + Math.sin(elapsedTime * 0.1) * 2;
+      const radius = 10 + Math.sin(elapsedTime * 0.08) * 1.4;
       camera.position.x = Math.cos(elapsedTime * 0.05) * radius;
       camera.position.z = Math.sin(elapsedTime * 0.05) * radius;
-      camera.position.y = 8 + Math.sin(elapsedTime * 0.03) * 3;
+      camera.position.y = 8 + Math.sin(elapsedTime * 0.03) * 2;
       camera.lookAt(0, 0, 0);
       
       renderer.render(scene, camera);
       animationRef.current = requestAnimationFrame(animate);
     };
 
-    animate();
+    const handleVisibilityChange = () => {
+      isPageVisible = document.visibilityState === 'visible';
+      if (isPageVisible) {
+        lastFrameTime = performance.now();
+      }
+    };
+
+    document.addEventListener('visibilitychange', handleVisibilityChange);
+
+    if (prefersReducedMotion) {
+      renderer.render(scene, camera);
+    } else {
+      animationRef.current = requestAnimationFrame(animate);
+    }
 
     // Gestion du redimensionnement
     const handleResize = () => {
-      if (!rendererRef.current) return;
-      
       camera.aspect = window.innerWidth / window.innerHeight;
       camera.updateProjectionMatrix();
-      rendererRef.current.setSize(window.innerWidth, window.innerHeight);
-      rendererRef.current.setPixelRatio(Math.min(window.devicePixelRatio, 2));
-        // Mise à jour de la taille des particules (réduite)
-      galaxyMaterialShader.uniforms.uSize.value = 35 * rendererRef.current.getPixelRatio();
+      renderer.setSize(window.innerWidth, window.innerHeight);
+      renderer.setPixelRatio(Math.min(window.devicePixelRatio, pixelRatioCap));
+
+      // Mise à jour de la taille des particules
+      galaxyMaterialShader.uniforms.uSize.value = 28 * renderer.getPixelRatio();
+
+      if (prefersReducedMotion) {
+        renderer.render(scene, camera);
+      }
     };
 
     window.addEventListener('resize', handleResize);
@@ -240,6 +281,7 @@ const GalaxyBackground: React.FC = () => {
     // Nettoyage
     return () => {
       window.removeEventListener('resize', handleResize);
+      document.removeEventListener('visibilitychange', handleVisibilityChange);
       if (animationRef.current) {
         cancelAnimationFrame(animationRef.current);
       }

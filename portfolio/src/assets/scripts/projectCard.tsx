@@ -1,6 +1,7 @@
 import React, { useRef, useState } from "react";
+import { createPortal } from "react-dom";
 import type PORTFOLIO_CONFIG from "./portfolioData";
-import { ExternalLink, Eye, Pause, Play, Star, X, Calendar, Code2, Users, Plus } from "lucide-react";
+import { ExternalLink, Eye, Pause, Play, Star, X, Calendar, Code2, Users, Plus, Github } from "lucide-react";
 
 // Fonction pour convertir une URL YouTube en URL embed
 const getYouTubeEmbedUrl = (url: string): string | null => {
@@ -95,9 +96,9 @@ const ProjectModal: React.FC<{
 
   if (!isOpen) return null;
 
-  return (
+  const modalContent = (
     <div 
-      className="fixed inset-0 bg-slate-950/85 backdrop-blur-sm z-50 flex items-center justify-center p-4"
+      className="fixed inset-0 bg-slate-950/85 backdrop-blur-sm z-[1000] flex items-center justify-center p-4"
       onClick={handleBackdropClick}
       role="presentation"
     >
@@ -133,14 +134,14 @@ const ProjectModal: React.FC<{
 
         {/* Media Section */}
         <div className="p-6">
-          <div className="relative aspect-auto rounded-xl overflow-hidden mb-6">
+          <div className="relative w-full aspect-video rounded-xl overflow-hidden mb-6 bg-slate-950/80 border border-slate-700/40">
             {showVideo && project.video ? (
               <div className="relative w-full h-full">
                 {isYouTube && youtubeEmbedUrl ? (
                   <iframe
                     ref={iframeRef}
                     src={youtubeEmbedUrl}
-                    className="w-full h-auto aspect-video"
+                    className="w-full h-full"
                     allow="autoplay; encrypted-media; gyroscope; picture-in-picture"
                     allowFullScreen
                     frameBorder="1"
@@ -150,7 +151,7 @@ const ProjectModal: React.FC<{
                   <video
                     ref={videoRef}
                     src={project.video}
-                    className="w-full h-full object-contain"
+                    className="w-full h-full object-contain bg-slate-950"
                     loop
                     muted
                     autoPlay
@@ -166,7 +167,7 @@ const ProjectModal: React.FC<{
                 </button>
               </div>
             ) : (
-              <img src={project.image} alt={project.title} className="w-full h-full object-contain bg-slate-950 group-hover:scale-105 transition-transform duration-500" />
+              <img src={project.image} alt={project.title} className="w-full h-full object-cover bg-slate-950 group-hover:scale-105 transition-transform duration-500" />
             )}
             
             {project.video && (
@@ -209,18 +210,18 @@ const ProjectModal: React.FC<{
                 <p><span className="text-slate-400">Statut :</span> {project.status || "Terminé"}</p>
               </div>
               {/* Action Buttons */}
-              <div className="flex gap-4 mt-8 pt-6">
-                {/* {project.github && (
+              <div className="flex flex-wrap gap-4 mt-8 pt-6">
+                {project.github && (
                   <a
                     href={project.github}
-                    className="flex items-center gap-2 px-6 py-3 bg-gray-800 hover:bg-gray-700 text-white rounded-lg transition-colors flex-1 justify-center"
+                    className="flex items-center gap-2 px-6 py-3 bg-slate-700 hover:bg-slate-600 text-white rounded-lg transition-colors flex-1 justify-center"
                     target="_blank"
                     rel="noopener noreferrer"
                   >
                     <Github size={20} />
                     Voir le code
                   </a>
-                )} */}
+                )}
                 {project.demo && (
                   <a
                     href={project.demo}
@@ -267,6 +268,8 @@ const ProjectModal: React.FC<{
       </div>
     </div>
   );
+
+  return createPortal(modalContent, document.body);
 };
 
 // Composant pour les projets avec media
@@ -319,10 +322,10 @@ const ProjectCard: React.FC<{ project: typeof PORTFOLIO_CONFIG.projects[0] }> = 
   return (
     <>
       <div 
-        className={`group relative bg-slate-900/55 backdrop-blur-sm border border-cyan-300/20 rounded-xl overflow-hidden hover:border-cyan-300/55 transition-all duration-500 ${project.featured ? 'cursor-pointer' : ''} ${project.featured ? 'lg:col-span-2' : ''} flex flex-col`}
+        className={`group relative h-full bg-slate-900/55 backdrop-blur-sm border border-cyan-300/20 rounded-xl overflow-hidden hover:border-cyan-300/55 transition-all duration-500 ${project.featured ? 'cursor-pointer' : ''} flex flex-col`}
         onClick={handleCardClick}
       >
-        <div className="relative aspect-auto overflow-hidden flex-shrink-0">
+        <div className="relative aspect-video overflow-hidden flex-shrink-0 bg-slate-950/80">
           {showVideo && project.video ? (
             <div className="relative w-full h-full">
               {isYouTube && youtubeEmbedUrl ? (
@@ -339,7 +342,7 @@ const ProjectCard: React.FC<{ project: typeof PORTFOLIO_CONFIG.projects[0] }> = 
                 <video
                   ref={videoRef}
                   src={project.video}
-                  className="w-full h-full object-contain bg-black"
+                  className="w-full h-full object-contain bg-slate-950"
                   loop
                   muted
                   autoPlay
@@ -355,7 +358,7 @@ const ProjectCard: React.FC<{ project: typeof PORTFOLIO_CONFIG.projects[0] }> = 
               </button>
             </div>
           ) : (
-            <img src={project.image} alt={project.title} className="w-full h-full object-contain bg-slate-950 group-hover:scale-105 transition-transform duration-500" />
+            <img src={project.image} alt={project.title} className="w-full h-full object-cover bg-slate-950 group-hover:scale-105 transition-transform duration-500" />
           )}
           
           <div className="absolute inset-0 bg-gradient-to-t from-black/80 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
@@ -364,7 +367,7 @@ const ProjectCard: React.FC<{ project: typeof PORTFOLIO_CONFIG.projects[0] }> = 
             <button
               onClick={toggleVideo}
               type="button"
-              className="absolute top-4 left-4 bg-cyan-500/85 hover:bg-cyan-400 text-slate-950 p-2 rounded-full transition-all duration-300 opacity-0 group-hover:opacity-100"
+              className="absolute top-4 left-4 bg-cyan-500/85 hover:bg-cyan-400 text-slate-950 p-2 rounded-full transition-all duration-300 opacity-100 md:opacity-0 md:group-hover:opacity-100"
               aria-label={showVideo ? 'Afficher l\'image du projet' : 'Afficher la video du projet'}
             >
               {showVideo ? <Eye size={20} /> : <Play size={20} />}
@@ -373,12 +376,12 @@ const ProjectCard: React.FC<{ project: typeof PORTFOLIO_CONFIG.projects[0] }> = 
           
           {/* Icône Plus seulement pour les projets Featured */}
           {project.featured && (
-            <div className="absolute bottom-4 right-4 bg-cyan-500/85 hover:bg-cyan-400 text-slate-950 p-2 rounded-full transition-all duration-300 opacity-0 group-hover:opacity-100" aria-hidden="true">
+            <div className="absolute bottom-4 right-4 bg-cyan-500/85 hover:bg-cyan-400 text-slate-950 p-2 rounded-full transition-all duration-300 opacity-100 md:opacity-0 md:group-hover:opacity-100" aria-hidden="true">
               <Plus size={16} />
             </div>
           )}
           
-          <div className={`absolute bottom-4 left-4 ${project.featured ? 'right-16' : 'right-4'} opacity-0 group-hover:opacity-100 transition-opacity duration-300`}>
+          <div className={`absolute bottom-4 left-4 ${project.featured ? 'right-16' : 'right-4'} opacity-100 md:opacity-0 md:group-hover:opacity-100 transition-opacity duration-300`}>
             <div className="flex gap-2 mb-2">
               {project.technologies.slice(0, 3).map((tech, i) => (
                 <span key={i} className="px-2 py-1 bg-cyan-500/80 text-xs rounded-full text-slate-950 font-medium backdrop-blur-sm">
@@ -427,10 +430,10 @@ const ProjectCard: React.FC<{ project: typeof PORTFOLIO_CONFIG.projects[0] }> = 
                   Details
                 </button>
               )}
-              {/* {project.github && (
+              {project.github && (
                 <a
                   href={project.github}
-                  className="flex items-center gap-2 px-4 py-2 bg-gray-800 hover:bg-gray-700 text-white rounded-lg transition-colors"
+                  className="flex items-center gap-2 px-4 py-2 bg-slate-700 hover:bg-slate-600 text-white rounded-lg transition-colors"
                   target="_blank"
                   rel="noopener noreferrer"
                   onClick={(e) => e.stopPropagation()}
@@ -438,7 +441,7 @@ const ProjectCard: React.FC<{ project: typeof PORTFOLIO_CONFIG.projects[0] }> = 
                   <Github size={16} />
                   Code
                 </a>
-              )} */}
+              )}
               {project.demo && (
                 <a
                   href={project.demo}

@@ -1,9 +1,8 @@
 import React, { useState, useEffect } from 'react';
-import { ChevronDown, Github, Mail, Linkedin, Code, Gamepad2, Box, Briefcase, Calendar, MapPin, CheckCircle, Camera, Instagram, Menu, X, Video, ArrowUp } from 'lucide-react';
+import { ChevronDown, Github, Mail, Linkedin, Code, Box, Briefcase, Calendar, MapPin, CheckCircle, Instagram, Menu, X, ArrowUp } from 'lucide-react';
 import PORTFOLIO_CONFIG from './portfolioData';
 import GalaxyBackground from './galaxyBackground';
 import ProjectCard from './projectCard';
-import InstagramCarousel from './carouselInstagram';
 
 // Composant principal
 const Portfolio: React.FC = () => {
@@ -114,6 +113,7 @@ const Portfolio: React.FC = () => {
   const sectionTitleClass = 'text-3xl sm:text-4xl font-bold text-center mb-12 sm:mb-16 text-cyan-100 tracking-tight';
   const glassCardClass = 'bg-slate-900/55 backdrop-blur-md border border-cyan-300/20 rounded-2xl shadow-[0_14px_45px_rgba(8,47,73,0.28)]';
   const tagClass = 'px-3 py-1 bg-cyan-500/15 border border-cyan-300/25 text-cyan-100 rounded-full text-sm';
+  const currentYear = new Date().getFullYear();
 
   return (
     <div className="min-h-screen text-slate-100 relative overflow-x-hidden">
@@ -312,63 +312,62 @@ const Portfolio: React.FC = () => {
             À Propos de Moi
           </h2>
           
-          <div className="grid md:grid-cols-2 gap-12 items-center">
-            <div>
-              <div className={`${glassCardClass} p-8`}>
-                <h3 className="text-2xl font-bold mb-4 flex items-center gap-3">
-                  <Gamepad2 className="text-cyan-300" />
-                  En bref
-                </h3>
-                <p className="text-slate-300 leading-relaxed mb-6">
-                  Depuis plus de 2 ans, je développe des <strong>jeux vidéo</strong> et fais de la <strong>modélisation 3D</strong>. Ma passion pour le jeu vidéo m'a mené à maîtriser les outils les plus tendance de l'industrie.
-                </p>
-                <p className="text-slate-300 leading-relaxed mb-6">
-                  Je suis actuellement en <strong className="text-slate-100 font-bold">Master en informatique</strong> à l'<strong>Université de Lyon 2</strong>, où j'approfondis mes compétences en développement, modélisation 3D et création de jeux vidéo.
-                </p>
-                <p className="text-slate-300 leading-relaxed mb-6">
-                  Ce diplôme fait suite à un <strong className="text-slate-100 font-bold">BUT Métiers du Multimédia et de l'Internet</strong> option <strong>Développement Web et Dispositifs Interactifs / Game Development</strong>, où j'ai acquis une solide base en développement de <strong>jeux vidéo</strong>.
-                </p>
-                <p className="text-slate-300 leading-relaxed">
-                  Mon objectif à terme est de créer ou rejoindre un studio de développement de jeux vidéo, où je pourrai mettre à profit mes compétences et créer mes propres univers.
-                </p>
-                
-                {/* Bouton CV Vidéo */}
-                <div className="mt-6">
-                  <a
-                    href={PORTFOLIO_CONFIG.cvVideo}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="inline-flex items-center gap-3 px-6 py-3 bg-gradient-to-r from-cyan-500 to-sky-500 hover:from-cyan-400 hover:to-sky-400 text-slate-950 rounded-xl transition-all duration-300 font-semibold shadow-lg hover:shadow-xl hover:-translate-y-0.5"
-                  >
-                    <Video size={20} />
-                    Voir mon CV Vidéo
-                  </a>
-                </div>
-              </div>
+          <div className="space-y-6 md:space-y-8">
+            <div className={`${glassCardClass} p-8`}>
+              <h3 className="text-2xl font-bold mb-4 flex items-center gap-3">
+                <Code className="text-cyan-300" />
+                En bref
+              </h3>
+              <p className="text-slate-300 leading-relaxed mb-6">
+                Depuis plus de 2 ans, je développe des <strong>applications web</strong> et des <strong>interfaces interactives</strong>. J'aime concevoir des produits utiles, performants et intuitifs, du design d'interface jusqu'à la logique métier.
+              </p>
+              <p className="text-slate-300 leading-relaxed mb-6">
+                Je suis actuellement en <strong className="text-slate-100 font-bold">Master en informatique</strong> à l'<strong>Université de Lyon 2</strong>, où j'approfondis mes compétences en architecture logicielle, développement web fullstack et optimisation des performances.
+              </p>
+              <p className="text-slate-300 leading-relaxed mb-6">
+                Ce diplôme fait suite à un <strong className="text-slate-100 font-bold">BUT Métiers du Multimédia et de l'Internet</strong> orienté <strong>Développement Web et dispositifs interactifs</strong>, où j'ai construit une base solide en front-end, back-end et expérience utilisateur.
+              </p>
+              <p className="text-slate-300 leading-relaxed">
+                Mon objectif est de concevoir des plateformes web complètes et évolutives, avec une attention forte à la qualité du code, à la maintenabilité et à l'expérience utilisateur.
+              </p>
             </div>
-            
-            <div className="space-y-6">
+
+            <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
               <div className={`${glassCardClass} p-6`}>
                 <div className="flex items-center gap-3">
                   <Code className="text-sky-300" />
-                  <h4 className="text-xl font-semibold">Développement de Jeux Vidéo & Web</h4>
+                  <h4 className="text-xl font-semibold">Développement Fullstack Web</h4>
                 </div>
               </div>
-              
+
               <div className={`${glassCardClass} p-6`}>
                 <div className="flex items-center gap-3">
                   <Box className="text-emerald-300" />
-                  <h4 className="text-xl font-semibold">3D & 2D Art</h4>
+                  <h4 className="text-xl font-semibold">APIs, données & architecture</h4>
                 </div>
               </div>
-              
+
               <div className={`${glassCardClass} p-6`}>
                 <div className="flex items-center gap-3">
-                  <Camera className="text-amber-300" />
-                  <h4 className="text-xl font-semibold">Création de contenu</h4>
+                  <Briefcase className="text-amber-300" />
+                  <h4 className="text-xl font-semibold">UX, performance & déploiement</h4>
                 </div>
               </div>
             </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Portfolio Section */}
+      <section id="portfolio" data-section-transition className="py-20 relative z-10 section-transition scroll-mt-28">
+        <div className="max-w-7xl mx-auto px-6">
+          <h2 className={sectionTitleClass}>
+            Portfolio
+          </h2>
+            <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+            {PORTFOLIO_CONFIG.projects.map((project) => (
+              <ProjectCard key={project.id} project={project} />
+            ))}
           </div>
         </div>
       </section>
@@ -454,19 +453,7 @@ const Portfolio: React.FC = () => {
         </div>
       </section>
 
-      {/* Portfolio Section */}
-      <section id="portfolio" data-section-transition className="py-20 relative z-10 section-transition scroll-mt-28">
-        <div className="max-w-7xl mx-auto px-6">
-          <h2 className={sectionTitleClass}>
-            Portfolio
-          </h2>
-            <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
-            {PORTFOLIO_CONFIG.projects.map((project) => (
-              <ProjectCard key={project.id} project={project} />
-            ))}
-          </div>
-        </div>
-      </section>
+      
       
       {/* Skills Section */}
       <section id="skills" data-section-transition className="py-20 relative z-10 section-transition scroll-mt-28">
@@ -505,9 +492,6 @@ const Portfolio: React.FC = () => {
             </p>
           </div>
           
-          {/* Carousel Instagram */}
-          <InstagramCarousel />
-          
           {/* Boutons de contact */}
           <div className="flex flex-wrap justify-center gap-4 sm:gap-8 mb-12">
             <a 
@@ -529,17 +513,6 @@ const Portfolio: React.FC = () => {
               <Linkedin size={20} className="sm:hidden" />
               <Linkedin size={24} className="hidden sm:block" />
               LinkedIn
-            </a>
-            <a 
-              href={PORTFOLIO_CONFIG.cvVideo}
-              className="flex items-center gap-3 px-6 sm:px-8 py-3 sm:py-4 bg-gradient-to-r from-cyan-500 to-teal-400 hover:from-cyan-400 hover:to-teal-300 rounded-xl transition-colors text-base sm:text-lg text-slate-950 font-semibold"
-              target="_blank"
-              rel="noopener noreferrer"
-              aria-label="Voir le CV video"
-            >
-              <Video size={20} className="sm:hidden" />
-              <Video size={24} className="hidden sm:block" />
-              CV Vidéo
             </a>
             <a 
               href={PORTFOLIO_CONFIG.github}
@@ -569,7 +542,7 @@ const Portfolio: React.FC = () => {
       {/* Footer */}
       <footer className="py-8 text-center border-t border-cyan-300/20 relative z-10">
         <p className="text-slate-400 px-4">
-          © 2025 {PORTFOLIO_CONFIG.name}. Tous droits réservés. | Développé avec ❤️ par <a href={PORTFOLIO_CONFIG.github} className="text-cyan-200 hover:underline" target="_blank" rel="noopener noreferrer">{PORTFOLIO_CONFIG.name}</a> avec React, TypeScript, Tailwind CSS et Three.js
+          © {currentYear} {PORTFOLIO_CONFIG.name}. Tous droits réservés. | Développé par <a href={PORTFOLIO_CONFIG.github} className="text-cyan-200 hover:underline" target="_blank" rel="noopener noreferrer">{PORTFOLIO_CONFIG.name}</a> avec React, TypeScript, Tailwind CSS et Three.js
         </p>
       </footer>
       </main>
