@@ -2,14 +2,34 @@
 @import "tailwindcss";
 
 :root {
-	--bg-deep: #fefae0;
-	--bg-mid: #faedcd;
-	--bg-soft: #e9edc9;
-	--text-main: #5a4630;
-	--text-soft: #6f5a43;
-	--accent-primary: #d4a373;
-	--accent-secondary: #e7c8a0;
-	--accent-warm: #ccd5ae;
+	/* Cozy palette kept in stock */
+	--cozy-bg-deep: #fefae0;
+	--cozy-bg-mid: #faedcd;
+	--cozy-bg-soft: #e9edc9;
+	--cozy-text-main: #5a4630;
+	--cozy-text-soft: #6f5a43;
+	--cozy-accent-primary: #d4a373;
+	--cozy-accent-secondary: #e7c8a0;
+	--cozy-accent-warm: #ccd5ae;
+
+	/* Blue/violet palette (active test) */
+	--test-bg-deep: #f2f7ff;
+	--test-bg-mid: #c9dcff;
+	--test-bg-soft: #b2c9ff;
+	--test-text-main: #2f2352;
+	--test-text-soft: #47386b;
+	--test-accent-primary: #9d71e8;
+	--test-accent-secondary: #be99ff;
+	--test-accent-warm: #b2c9ff;
+
+	--bg-deep: var(--test-bg-deep);
+	--bg-mid: var(--test-bg-mid);
+	--bg-soft: var(--test-bg-soft);
+	--text-main: var(--test-text-main);
+	--text-soft: var(--test-text-soft);
+	--accent-primary: var(--test-accent-primary);
+	--accent-secondary: var(--test-accent-secondary);
+	--accent-warm: var(--test-accent-warm);
 }
 
 html {
@@ -33,9 +53,9 @@ body {
 	-ms-overflow-style: none;
 	color: var(--text-main);
 	background:
-		radial-gradient(1300px 820px at 12% 18%, rgba(254, 250, 224, 0.95), transparent 72%),
-		radial-gradient(980px 620px at 84% 12%, rgba(231, 200, 160, 0.55), transparent 74%),
-		linear-gradient(165deg, var(--bg-deep) 10%, var(--bg-mid) 55%, var(--bg-soft) 100%);
+		radial-gradient(1320px 860px at 14% 16%, rgba(242, 247, 255, 0.92), transparent 72%),
+		radial-gradient(1020px 620px at 82% 12%, rgba(190, 153, 255, 0.34), transparent 74%),
+		linear-gradient(165deg, #f2f7ff 8%, #c9dcff 52%, #b2c9ff 100%);
 	font-family: 'Space Grotesk', sans-serif;
 	text-rendering: optimizeLegibility;
 	-webkit-font-smoothing: antialiased;
@@ -57,7 +77,7 @@ button {
 a:focus-visible,
 button:focus-visible,
 [role="button"]:focus-visible {
-	outline: 2px solid rgba(212, 163, 115, 0.8);
+	outline: 2px solid rgba(157, 113, 232, 0.8);
 	outline-offset: 2px;
 }
 

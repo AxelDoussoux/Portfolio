@@ -1,15 +1,15 @@
 import { 
-  Palette, 
-  Zap, 
-  Atom, 
-  GitBranch, 
-  Globe,
-  Server,
-  Database,
-  Layers,
-  Waves,
-  LayoutTemplate
-} from 'lucide-react';
+  FiPenTool as Palette,
+  FiZap as Zap,
+  FiCpu as Atom,
+  FiGitBranch as GitBranch,
+  FiGlobe as Globe,
+  FiServer as Server,
+  FiDatabase as Database,
+  FiLayers as Layers,
+  FiWind as Waves,
+  FiLayout as LayoutTemplate
+} from 'react-icons/fi';
 
 // Configuration du portfolio
 
@@ -25,16 +25,23 @@ const PORTFOLIO_CONFIG = {
   skills: [
     { name: "TypeScript", icon: Zap, category: "Développement Web" },
     { name: "React", icon: Atom, category: "Développement Web" },
-    { name: "Node.js", icon: Server, category: "Back-end" },
     { name: "Supabase", icon: Database, category: "Base de données" },
     { name: "PostgreSQL", icon: Database, category: "Base de données" },
     { name: "API REST", icon: Globe, category: "Architecture" },
     { name: "TailWindCSS", icon: Waves, category: "Développement Web" },
     { name: "Git", icon: GitBranch, category: "Contrôle de Versions" },
+    { name: "Wordpress", icon: Globe, category: "Création de Contenus" },
     { name: "Figma", icon: LayoutTemplate, category: "Design UI/UX" },
     { name: "Three.js", icon: Globe, category: "Web 3D" },
     { name: "Blender", icon: Palette, category: "Modélisation 3D" },
     { name: "Adobe Suite", icon: Layers, category: "Création de Contenus" },
+  ],
+
+  learningSkills: [
+    { name: "C++", icon: Zap, category: "Langages système" },
+    { name: "Rust", icon: GitBranch, category: "Programmation système" },
+    { name: "Next.js", icon: Globe, category: "Framework fullstack" },
+    { name: "Node.js", icon: Server, category: "Back-end" },
   ],
   
   projects: [

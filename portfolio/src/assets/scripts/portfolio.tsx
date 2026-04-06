@@ -1,5 +1,21 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { ChevronDown, Github, Mail, Linkedin, Code, Box, Briefcase, Calendar, MapPin, CheckCircle, Instagram, Menu, X, ArrowUp } from 'lucide-react';
+import {
+  FiChevronDown as ChevronDown,
+  FiMail as Mail,
+  FiCode as Code,
+  FiBox as Box,
+  FiBriefcase as Briefcase,
+  FiCalendar as Calendar,
+  FiMapPin as MapPin,
+  FiCheckCircle as CheckCircle,
+  FiMenu as Menu,
+  FiX as X,
+  FiArrowUp as ArrowUp,
+  FiZap as Zap,
+  FiGithub as Github,
+  FiInstagram as Instagram,
+  FiLinkedin as Linkedin,
+} from 'react-icons/fi';
 import PORTFOLIO_CONFIG from './portfolioData';
 import GalaxyBackground from './galaxyBackground';
 import ProjectCard from './projectCard';
@@ -131,37 +147,38 @@ const Portfolio: React.FC = () => {
     { id: 'contact', label: 'Contact' }
   ];
 
-  const sectionTitleClass = 'text-3xl sm:text-4xl font-bold text-center mb-12 sm:mb-16 text-[#5A4630] tracking-tight';
-  const glassCardClass = 'bg-[#FEFAE0]/92 backdrop-blur-md border border-[#E7C8A0]/70 rounded-2xl shadow-[0_16px_42px_rgba(90,70,48,0.18)]';
-  const tagClass = 'px-3 py-1 bg-[#E9EDC9]/90 border border-[#CCD5AE]/90 text-[#5A4630] rounded-full text-sm';
+  const sectionTitleClass = 'text-3xl sm:text-4xl font-bold text-center mb-12 sm:mb-16 text-[#2F2352] tracking-tight';
+  const glassCardClass = 'bg-[#F2F7FF]/92 backdrop-blur-md border border-[#BE99FF]/70 rounded-2xl shadow-[0_16px_42px_rgba(71,56,107,0.18)]';
+  const tagClass = 'px-3 py-1 bg-[#B2C9FF]/90 border border-[#BE99FF]/90 text-[#2F2352] rounded-full text-sm';
+  const sidePillClass = 'inline-flex items-center gap-2 rounded-full px-3 py-2 bg-[#F2F7FF]/90 border border-[#BE99FF]/80 shadow-[0_8px_22px_rgba(71,56,107,0.14)] backdrop-blur-md hover:bg-[#C9DCFF] hover:border-[#9D71E8] text-[#2F2352] transition-all duration-300 text-sm';
   const currentYear = new Date().getFullYear();
 
   return (
-    <div className="min-h-screen text-[#5A4630] relative overflow-x-hidden">
+    <div className="min-h-screen text-[#2F2352] relative overflow-x-hidden">
       {/* Arrière-plan galaxie 3D */}
       <GalaxyBackground />
 
       <a
         href="#main-content"
-        className="sr-only focus:not-sr-only focus:fixed focus:left-4 focus:top-4 focus:z-[70] focus:px-4 focus:py-2 focus:rounded-lg focus:bg-[#D4A373] focus:text-[#2f2418]"
+        className="sr-only focus:not-sr-only focus:fixed focus:left-4 focus:top-4 focus:z-[70] focus:px-4 focus:py-2 focus:rounded-lg focus:bg-[#9D71E8] focus:text-[#241A42]"
       >
         Aller au contenu
       </a>
 
       {/* Barre de progression de lecture */}
-      <div className="fixed left-0 top-0 right-0 z-[60] h-1 bg-[#FAEDCD]/80 backdrop-blur-sm" aria-hidden="true">
+      <div className="fixed left-0 top-0 right-0 z-[60] h-1 bg-[#C9DCFF]/80 backdrop-blur-sm" aria-hidden="true">
         <div
-          className="h-full bg-gradient-to-r from-[#CCD5AE] via-[#E7C8A0] to-[#D4A373] transition-[width] duration-150 ease-out"
+          className="h-full bg-gradient-to-r from-[#C9DCFF] via-[#BE99FF] to-[#9D71E8] transition-[width] duration-150 ease-out"
           style={{ width: `${scrollProgress}%` }}
         />
       </div>
       
       {/* Navigation */}
-      <nav className="fixed left-3 right-3 top-4 z-50 rounded-2xl bg-[#FEFAE0]/88 backdrop-blur-md border border-[#E7C8A0]/75 shadow-[0_10px_35px_rgba(90,70,48,0.2)]" aria-label="Navigation principale">
+      <nav className="fixed left-3 right-3 top-4 z-50 rounded-2xl bg-[#F2F7FF]/88 backdrop-blur-md border border-[#BE99FF]/75 shadow-[0_10px_35px_rgba(71,56,107,0.2)]" aria-label="Navigation principale">
         <div className="max-w-6xl mx-auto px-4 sm:px-6 py-3 sm:py-4">
           <div className="flex justify-between items-center">
             {/* Logo */}
-            <div className="text-lg sm:text-2xl font-bold text-[#5A4630]">
+            <div className="text-lg sm:text-2xl font-bold text-[#2F2352]">
               {PORTFOLIO_CONFIG.name}
             </div>
             
@@ -174,8 +191,8 @@ const Portfolio: React.FC = () => {
                   aria-current={activeSection === item.id ? 'page' : undefined}
                   className={`px-4 py-2 rounded-full border text-sm transition-all duration-300 ${
                     activeSection === item.id
-                      ? 'text-[#5A4630] bg-[#FAEDCD]/90 border-[#E7C8A0]/80 shadow-[0_0_18px_rgba(212,163,115,0.25)]'
-                      : 'text-[#6F5A43] border-transparent hover:text-[#5A4630] hover:bg-[#E9EDC9]/70'
+                      ? 'text-[#2F2352] bg-[#C9DCFF]/90 border-[#BE99FF]/80 shadow-[0_0_18px_rgba(157,113,232,0.25)]'
+                      : 'text-[#47386B] border-transparent hover:text-[#2F2352] hover:bg-[#B2C9FF]/70'
                   }`}
                 >
                   {item.label}
@@ -186,7 +203,7 @@ const Portfolio: React.FC = () => {
             {/* Bouton Menu Burger */}
             <button
               onClick={toggleMobileMenu}
-              className="md:hidden p-2 rounded-lg bg-[#FAEDCD]/90 hover:bg-[#E7C8A0] transition-colors text-[#5A4630]"
+              className="md:hidden p-2 rounded-lg bg-[#C9DCFF]/90 hover:bg-[#BE99FF] transition-colors text-[#2F2352]"
               aria-label="Toggle mobile menu"
               aria-expanded={isMobileMenuOpen}
               aria-controls="mobile-navigation"
@@ -197,7 +214,7 @@ const Portfolio: React.FC = () => {
         </div>
 
         {/* Menu Mobile */}
-        <div id="mobile-navigation" className={`md:hidden absolute top-full left-0 right-0 bg-[#FEFAE0]/96 backdrop-blur-md border-b border-[#E7C8A0]/75 rounded-b-2xl transition-all duration-300 ${
+        <div id="mobile-navigation" className={`md:hidden absolute top-full left-0 right-0 bg-[#F2F7FF]/96 backdrop-blur-md border-b border-[#BE99FF]/75 rounded-b-2xl transition-all duration-300 ${
           isMobileMenuOpen ? 'opacity-100 visible' : 'opacity-0 invisible'
         }`}>
           <div className="max-w-6xl mx-auto px-6 py-4">
@@ -209,8 +226,8 @@ const Portfolio: React.FC = () => {
                   aria-current={activeSection === item.id ? 'page' : undefined}
                   className={`text-left py-3 px-4 rounded-lg transition-all duration-300 ${
                     activeSection === item.id 
-                      ? 'text-[#5A4630] bg-[#FAEDCD]/90 border border-[#E7C8A0]/75' 
-                      : 'text-[#6F5A43] hover:text-[#5A4630] hover:bg-[#E9EDC9]/75 border border-transparent'
+                      ? 'text-[#2F2352] bg-[#C9DCFF]/90 border border-[#BE99FF]/75' 
+                      : 'text-[#47386B] hover:text-[#2F2352] hover:bg-[#B2C9FF]/75 border border-transparent'
                   }`}
                 >
                   {item.label}
@@ -218,11 +235,11 @@ const Portfolio: React.FC = () => {
               ))}
               
               {/* Liens sociaux dans le menu mobile */}
-              <div className="pt-4 mt-4 border-t border-[#E7C8A0]/75">
+              <div className="pt-4 mt-4 border-t border-[#BE99FF]/75">
                 <div className="flex justify-center gap-4">
                   <a 
                     href={PORTFOLIO_CONFIG.github} 
-                    className="p-3 bg-[#E9EDC9] hover:bg-[#CCD5AE] rounded-full transition-colors text-[#5A4630]"
+                    className="p-3 bg-[#B2C9FF] hover:bg-[#BE99FF] rounded-full transition-colors text-[#2F2352]"
                     target="_blank" 
                     rel="noopener noreferrer"
                     onClick={() => setIsMobileMenuOpen(false)}
@@ -232,7 +249,7 @@ const Portfolio: React.FC = () => {
                   </a>
                   <a 
                     href={PORTFOLIO_CONFIG.instagram} 
-                    className="p-3 bg-[#E9EDC9] hover:bg-[#CCD5AE] rounded-full transition-colors text-[#5A4630]"
+                    className="p-3 bg-[#B2C9FF] hover:bg-[#BE99FF] rounded-full transition-colors text-[#2F2352]"
                     target="_blank" 
                     rel="noopener noreferrer"
                     onClick={() => setIsMobileMenuOpen(false)}
@@ -242,7 +259,7 @@ const Portfolio: React.FC = () => {
                   </a>
                   <a 
                     href={PORTFOLIO_CONFIG.linkedin} 
-                    className="p-3 bg-[#E9EDC9] hover:bg-[#CCD5AE] rounded-full transition-colors text-[#5A4630]"
+                    className="p-3 bg-[#B2C9FF] hover:bg-[#BE99FF] rounded-full transition-colors text-[#2F2352]"
                     target="_blank" 
                     rel="noopener noreferrer"
                     onClick={() => setIsMobileMenuOpen(false)}
@@ -252,7 +269,7 @@ const Portfolio: React.FC = () => {
                   </a>
                   <a 
                     href={`mailto:${PORTFOLIO_CONFIG.email}`} 
-                    className="p-3 bg-[#E9EDC9] hover:bg-[#CCD5AE] rounded-full transition-colors text-[#5A4630]"
+                    className="p-3 bg-[#B2C9FF] hover:bg-[#BE99FF] rounded-full transition-colors text-[#2F2352]"
                     onClick={() => setIsMobileMenuOpen(false)}
                     aria-label="Email"
                   >
@@ -268,11 +285,73 @@ const Portfolio: React.FC = () => {
       {/* Overlay pour fermer le menu en cliquant à l'extérieur */}
       {isMobileMenuOpen && (
         <div 
-          className="fixed inset-0 bg-[#5A4630]/20 z-40 md:hidden" 
+          className="fixed inset-0 bg-[#2F2352]/20 z-40 md:hidden" 
           onClick={() => setIsMobileMenuOpen(false)}
           aria-hidden="true"
         />
       )}
+
+      {/* Pastilles flottantes desktop */}
+      <aside className="hidden xl:flex fixed left-5 top-1/2 -translate-y-1/2 z-30 flex-col gap-3" aria-label="Pastilles latérales gauche">
+        <button
+          type="button"
+          onClick={() => scrollToSection('experience')}
+          className={sidePillClass}
+          title="Timeline"
+        >
+          <Calendar size={14} className="text-[#9D71E8]" />
+          <span>Timeline</span>
+        </button>
+        <button
+          type="button"
+          onClick={() => scrollToSection('skills')}
+          className={sidePillClass}
+          title="Tech que je maîtrise"
+        >
+          <Code size={14} className="text-[#9D71E8]" />
+          <span>Je maîtrise</span>
+        </button>
+        <button
+          type="button"
+          onClick={() => scrollToSection('skills')}
+          className={sidePillClass}
+          title="Tech que j'apprends"
+        >
+          <Box size={14} className="text-[#9D71E8]" />
+          <span>J'apprends</span>
+        </button>
+      </aside>
+
+      <aside className="hidden xl:flex fixed right-5 top-1/2 -translate-y-1/2 z-30 flex-col gap-3 items-end" aria-label="Pastilles latérales droite">
+        <button
+          type="button"
+          onClick={() => scrollToSection('portfolio')}
+          className={sidePillClass}
+          title="Voir mes projets"
+        >
+          <Briefcase size={14} className="text-[#9D71E8]" />
+          <span>Projets</span>
+        </button>
+        <button
+          type="button"
+          onClick={() => scrollToSection('contact')}
+          className={sidePillClass}
+          title="Me contacter"
+        >
+          <Mail size={14} className="text-[#9D71E8]" />
+          <span>Contact</span>
+        </button>
+        <a
+          href={PORTFOLIO_CONFIG.github}
+          target="_blank"
+          rel="noopener noreferrer"
+          className={sidePillClass}
+          title="Ouvrir GitHub"
+        >
+          <Github size={14} className="text-[#9D71E8]" />
+          <span>GitHub</span>
+        </a>
+      </aside>
 
       <main id="main-content" tabIndex={-1}>
       
@@ -280,35 +359,35 @@ const Portfolio: React.FC = () => {
       <section id="hero" className="min-h-screen flex items-center justify-center relative z-10 pt-28 pb-16 scroll-mt-28">
         <div className="text-center max-w-5xl mx-auto px-6">
           <div className="mb-6">
-            <h1 className="text-5xl sm:text-6xl md:text-8xl font-bold mb-4 text-[#5A4630] tracking-tight">
+            <h1 className="text-5xl sm:text-6xl md:text-8xl font-bold mb-4 text-[#2F2352] tracking-tight">
               {PORTFOLIO_CONFIG.name}
             </h1>
-            <h2 className="text-xl sm:text-2xl md:text-3xl text-[#6F5A43] mb-6">
+            <h2 className="text-xl sm:text-2xl md:text-3xl text-[#47386B] mb-6">
               {PORTFOLIO_CONFIG.title}
             </h2>
-            <p className="text-lg sm:text-xl text-[#6F5A43] max-w-3xl mx-auto leading-relaxed">
+            <p className="text-lg sm:text-xl text-[#47386B] max-w-3xl mx-auto leading-relaxed">
               {PORTFOLIO_CONFIG.bio}
             </p>
           </div>
           
           <div className="flex justify-center gap-4 sm:gap-6 mb-12 flex-wrap">
-            <a href={PORTFOLIO_CONFIG.github} className="p-4 bg-[#E9EDC9]/95 border border-[#D4A373]/70 hover:border-[#D4A373] hover:-translate-y-1 rounded-full transition-all backdrop-blur-sm text-[#5A4630]" target="_blank" rel="noopener noreferrer" aria-label="GitHub">
+            <a href={PORTFOLIO_CONFIG.github} className="p-4 bg-[#B2C9FF]/95 border border-[#9D71E8]/70 hover:border-[#9D71E8] hover:-translate-y-1 rounded-full transition-all backdrop-blur-sm text-[#2F2352]" target="_blank" rel="noopener noreferrer" aria-label="GitHub">
               <Github size={24} />
             </a>
-            <a href={PORTFOLIO_CONFIG.instagram} className="p-4 bg-[#E9EDC9]/95 border border-[#D4A373]/70 hover:border-[#D4A373] hover:-translate-y-1 rounded-full transition-all backdrop-blur-sm text-[#5A4630]" target="_blank" rel="noopener noreferrer" aria-label="Instagram">
+            <a href={PORTFOLIO_CONFIG.instagram} className="p-4 bg-[#B2C9FF]/95 border border-[#9D71E8]/70 hover:border-[#9D71E8] hover:-translate-y-1 rounded-full transition-all backdrop-blur-sm text-[#2F2352]" target="_blank" rel="noopener noreferrer" aria-label="Instagram">
               <Instagram size={24} />
             </a>
-            <a href={PORTFOLIO_CONFIG.linkedin} className="p-4 bg-[#E9EDC9]/95 border border-[#D4A373]/70 hover:border-[#D4A373] hover:-translate-y-1 rounded-full transition-all backdrop-blur-sm text-[#5A4630]" target="_blank" rel="noopener noreferrer" aria-label="LinkedIn">
+            <a href={PORTFOLIO_CONFIG.linkedin} className="p-4 bg-[#B2C9FF]/95 border border-[#9D71E8]/70 hover:border-[#9D71E8] hover:-translate-y-1 rounded-full transition-all backdrop-blur-sm text-[#2F2352]" target="_blank" rel="noopener noreferrer" aria-label="LinkedIn">
               <Linkedin size={24} />
             </a>
-            <a href={`mailto:${PORTFOLIO_CONFIG.email}`} className="p-4 bg-[#E9EDC9]/95 border border-[#D4A373]/70 hover:border-[#D4A373] hover:-translate-y-1 rounded-full transition-all backdrop-blur-sm text-[#5A4630]" aria-label="Email">
+            <a href={`mailto:${PORTFOLIO_CONFIG.email}`} className="p-4 bg-[#B2C9FF]/95 border border-[#9D71E8]/70 hover:border-[#9D71E8] hover:-translate-y-1 rounded-full transition-all backdrop-blur-sm text-[#2F2352]" aria-label="Email">
               <Mail size={24} />
             </a>
           </div>
           
           <button 
             onClick={() => scrollToSection('about')}
-            className="animate-bounce p-3 bg-[#E7C8A0]/90 hover:bg-[#D4A373] rounded-full border border-[#D4A373]/70 transition-colors backdrop-blur-sm text-[#2f2418]"
+            className="animate-bounce p-3 bg-[#BE99FF]/90 hover:bg-[#9D71E8] rounded-full border border-[#9D71E8]/70 transition-colors backdrop-blur-sm text-[#241A42]"
             aria-label="Descendre vers la section À propos"
           >
             <ChevronDown size={24} />
@@ -326,19 +405,19 @@ const Portfolio: React.FC = () => {
           <div className="space-y-6 md:space-y-8">
             <div className={`${glassCardClass} p-8`}>
               <h3 className="text-2xl font-bold mb-4 flex items-center gap-3">
-                <Code className="text-[#D4A373]" />
+                <Code className="text-[#9D71E8]" />
                 En bref
               </h3>
-              <p className="text-[#5A4630]/90 leading-relaxed mb-6">
+              <p className="text-[#2F2352]/90 leading-relaxed mb-6">
                 Depuis plus de 2 ans, je développe des <strong>applications web</strong> et des <strong>interfaces interactives</strong>. J'aime concevoir des produits utiles, performants et intuitifs, du design d'interface jusqu'à la logique métier.
               </p>
-              <p className="text-[#5A4630]/90 leading-relaxed mb-6">
-                Je suis actuellement en <strong className="text-[#5A4630] font-bold">Master en informatique</strong> à l'<strong>Université de Lyon 2</strong>, où j'approfondis mes compétences en architecture logicielle, développement web fullstack et optimisation des performances.
+              <p className="text-[#2F2352]/90 leading-relaxed mb-6">
+                Je suis actuellement en <strong className="text-[#2F2352] font-bold">Master en informatique</strong> à l'<strong>Université de Lyon 2</strong>, où j'approfondis mes compétences en architecture logicielle, développement web fullstack et optimisation des performances.
               </p>
-              <p className="text-[#5A4630]/90 leading-relaxed mb-6">
-                Ce diplôme fait suite à un <strong className="text-[#5A4630] font-bold">BUT Métiers du Multimédia et de l'Internet</strong> orienté <strong>Développement Web et dispositifs interactifs</strong>, où j'ai construit une base solide en front-end, back-end et expérience utilisateur.
+              <p className="text-[#2F2352]/90 leading-relaxed mb-6">
+                Ce diplôme fait suite à un <strong className="text-[#2F2352] font-bold">BUT Métiers du Multimédia et de l'Internet</strong> orienté <strong>Développement Web et dispositifs interactifs</strong>, où j'ai construit une base solide en front-end, back-end et expérience utilisateur.
               </p>
-              <p className="text-[#5A4630]/90 leading-relaxed">
+              <p className="text-[#2F2352]/90 leading-relaxed">
                 Mon objectif est de concevoir des plateformes web complètes et évolutives, avec une attention forte à la qualité du code, à la maintenabilité et à l'expérience utilisateur.
               </p>
             </div>
@@ -346,21 +425,21 @@ const Portfolio: React.FC = () => {
             <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
               <div className={`${glassCardClass} p-6`}>
                 <div className="flex items-center gap-3">
-                  <Code className="text-[#D4A373]" />
+                  <Code className="text-[#9D71E8]" />
                   <h4 className="text-xl font-semibold">Développement Fullstack Web</h4>
                 </div>
               </div>
 
               <div className={`${glassCardClass} p-6`}>
                 <div className="flex items-center gap-3">
-                  <Box className="text-[#CCD5AE]" />
+                  <Box className="text-[#BE99FF]" />
                   <h4 className="text-xl font-semibold">APIs, données & architecture</h4>
                 </div>
               </div>
 
               <div className={`${glassCardClass} p-6`}>
                 <div className="flex items-center gap-3">
-                  <Briefcase className="text-[#D4A373]" />
+                  <Briefcase className="text-[#9D71E8]" />
                   <h4 className="text-xl font-semibold">UX, performance & déploiement</h4>
                 </div>
               </div>
@@ -392,28 +471,28 @@ const Portfolio: React.FC = () => {
           
           <div className="space-y-8">
             {PORTFOLIO_CONFIG.experiences.map((experience) => (
-              <div key={experience.id} className={`${glassCardClass} relative p-8 hover:border-[#D4A373]/75 transition-all duration-300`}>
+              <div key={experience.id} className={`${glassCardClass} relative p-8 hover:border-[#9D71E8]/75 transition-all duration-300`}>
                 <div className="grid md:grid-cols-3 gap-6">
                   {/* Info principale */}
                   <div className="md:col-span-2">
                     <div className="flex flex-wrap items-start gap-4 mb-1">
                       <div className="flex items-center gap-3">
-                        <Briefcase className="text-[#D4A373]" size={20} />
-                        <h3 className="text-2xl font-bold text-[#5A4630]">{experience.role}</h3>
+                        <Briefcase className="text-[#9D71E8]" size={20} />
+                        <h3 className="text-2xl font-bold text-[#2F2352]">{experience.role}</h3>
                       </div>
-                      <div className="flex mt-2 items-top gap-3 text-[#6F5A43]">
+                      <div className="flex mt-2 items-top gap-3 text-[#47386B]">
                         <MapPin size={16} />
                         <span className="font-semibold">{experience.company}</span>
                         
                       </div>
                     </div>
                     
-                    <div className="flex items-center gap-2 mb-4 text-[#6F5A43]">
+                    <div className="flex items-center gap-2 mb-4 text-[#47386B]">
                       <Calendar size={16} />
                       <span>{experience.period}</span>
                     </div>
                     
-                    <p className="text-[#5A4630]/90 mb-6 leading-relaxed">
+                    <p className="text-[#2F2352]/90 mb-6 leading-relaxed">
                       {experience.description}
                     </p>
 
@@ -430,7 +509,7 @@ const Portfolio: React.FC = () => {
                     
                     {/* Technologies */}
                     <div className="mb-6">
-                      <h4 className="text-lg font-semibold mb-3 text-[#6F5A43]">Compétences utilisées</h4>
+                      <h4 className="text-lg font-semibold mb-3 text-[#47386B]">Compétences utilisées</h4>
                       <div className="flex flex-wrap gap-2">
                         {experience.technologies.map((tech, techIndex) => (
                           <span key={techIndex} className={tagClass}>
@@ -443,14 +522,14 @@ const Portfolio: React.FC = () => {
                   
                   {/* Réalisations */}
                   <div className="md:col-span-1">
-                    <h4 className="text-lg font-semibold mb-4 text-[#6F5A43] flex items-center gap-2">
+                    <h4 className="text-lg font-semibold mb-4 text-[#47386B] flex items-center gap-2">
                       <CheckCircle size={18} />
                       Réalisations clés
                     </h4>
                     <ul className="space-y-3">
                       {experience.achievements.map((achievement, achIndex) => (
-                        <li key={achIndex} className="flex items-start gap-2 text-[#5A4630]/90">
-                          <div className="w-2 h-2 bg-[#D4A373] mt-2 flex-shrink-0"></div>
+                        <li key={achIndex} className="flex items-start gap-2 text-[#2F2352]/90">
+                          <div className="w-2 h-2 bg-[#9D71E8] mt-2 flex-shrink-0"></div>
                           <span className="text-sm leading-relaxed">{achievement}</span>
                         </li>
                       ))}
@@ -472,21 +551,52 @@ const Portfolio: React.FC = () => {
           <h2 className={sectionTitleClass}>
             Compétences
           </h2>
-            <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
-            {PORTFOLIO_CONFIG.skills.map((skill, index) => {
-              const IconComponent = skill.icon;
-              return (
-                <div key={index} className={`${glassCardClass} p-6 hover:border-[#D4A373]/80 transition-all duration-300 group`}>
-                  <div className="text-center">
-                    <div className="flex justify-center mb-3">
-                      <IconComponent size={48} className="text-[#D4A373] group-hover:text-[#5A4630] transition-colors" />
+          <div className="space-y-8">
+            <div className={`${glassCardClass} p-6 sm:p-8`}>
+              <h3 className="text-2xl font-semibold text-[#2F2352] mb-6 flex items-center gap-3">
+                <CheckCircle size={22} className="text-[#9D71E8]" />
+                Ce que je maîtrise
+              </h3>
+              <div className="flex flex-wrap justify-center gap-4">
+                {PORTFOLIO_CONFIG.skills.map((skill, index) => {
+                  const IconComponent = skill.icon;
+                  return (
+                    <div key={index} className="w-full sm:w-[calc((100%-1rem)/2)] lg:w-[calc((100%-3rem)/4)] p-5 rounded-xl bg-[#C9DCFF]/80 border border-[#BE99FF]/70 hover:border-[#9D71E8]/80 transition-all duration-300 group">
+                      <div className="text-center">
+                        <div className="flex justify-center mb-3">
+                          <IconComponent size={42} className="text-[#9D71E8] group-hover:text-[#2F2352] transition-colors" />
+                        </div>
+                        <h4 className="text-base font-semibold mb-1">{skill.name}</h4>
+                        <p className="text-xs text-[#47386B]">{skill.category}</p>
+                      </div>
                     </div>
-                    <h3 className="text-lg font-semibold mb-2">{skill.name}</h3>
-                    <p className="text-sm text-[#6F5A43] mb-4">{skill.category}</p>
-                  </div>
-                </div>
-              );
-            })}
+                  );
+                })}
+              </div>
+            </div>
+
+            <div className={`${glassCardClass} p-6 sm:p-8`}>
+              <h3 className="text-2xl font-semibold text-[#2F2352] mb-6 flex items-center gap-3">
+                <Zap size={22} className="text-[#9D71E8]" />
+                Ce que j'apprends
+              </h3>
+              <div className="flex flex-wrap justify-center gap-4">
+                {PORTFOLIO_CONFIG.learningSkills.map((skill, index) => {
+                  const IconComponent = skill.icon;
+                  return (
+                    <div key={index} className="w-full sm:w-[calc((100%-1rem)/2)] lg:w-[calc((100%-3rem)/4)] p-5 rounded-xl bg-[#B2C9FF]/70 border border-[#BE99FF]/80 hover:border-[#9D71E8]/80 transition-all duration-300 group">
+                      <div className="text-center">
+                        <div className="flex justify-center mb-3">
+                          <IconComponent size={40} className="text-[#5A4690] group-hover:text-[#2F2352] transition-colors" />
+                        </div>
+                        <h4 className="text-base font-semibold mb-1">{skill.name}</h4>
+                        <p className="text-xs text-[#47386B]">{skill.category}</p>
+                      </div>
+                    </div>
+                  );
+                })}
+              </div>
+            </div>
           </div>
         </div>
       </section>      
@@ -495,10 +605,10 @@ const Portfolio: React.FC = () => {
       <section id="contact" data-section-transition className="py-20 relative z-10 section-transition scroll-mt-28">
         <div className="max-w-6xl mx-auto px-6">
           <div className="text-center mb-16">
-            <h2 className="text-4xl font-bold mb-8 text-[#5A4630] tracking-tight">
+            <h2 className="text-4xl font-bold mb-8 text-[#2F2352] tracking-tight">
               Contactez-moi
             </h2>
-            <p className="text-xl text-[#6F5A43] mb-12">
+            <p className="text-xl text-[#47386B] mb-12">
               Prêt à collaborer sur votre prochain projet ? Parlons-en !
             </p>
           </div>
@@ -507,7 +617,7 @@ const Portfolio: React.FC = () => {
           <div className="flex flex-wrap justify-center gap-4 sm:gap-8 mb-12">
             <a 
               href={`mailto:${PORTFOLIO_CONFIG.email}`}
-              className="flex items-center gap-3 px-6 sm:px-8 py-3 sm:py-4 bg-[#D4A373] hover:bg-[#C99563] text-[#2f2418] rounded-xl transition-colors text-base sm:text-lg font-semibold"
+              className="flex items-center gap-3 px-6 sm:px-8 py-3 sm:py-4 bg-[#9D71E8] hover:bg-[#8A65CF] text-[#241A42] rounded-xl transition-colors text-base sm:text-lg font-semibold"
               aria-label="Envoyer un email"
             >
               <Mail size={20} className="sm:hidden" />
@@ -516,7 +626,7 @@ const Portfolio: React.FC = () => {
             </a>
             <a 
               href={PORTFOLIO_CONFIG.linkedin}
-              className="flex items-center gap-3 px-6 sm:px-8 py-3 sm:py-4 bg-[#E7C8A0] hover:bg-[#D4A373] text-[#4A3828] rounded-xl transition-colors text-base sm:text-lg"
+              className="flex items-center gap-3 px-6 sm:px-8 py-3 sm:py-4 bg-[#BE99FF] hover:bg-[#9D71E8] text-[#35275B] rounded-xl transition-colors text-base sm:text-lg"
               target="_blank"
               rel="noopener noreferrer"
               aria-label="Ouvrir LinkedIn"
@@ -527,7 +637,7 @@ const Portfolio: React.FC = () => {
             </a>
             <a 
               href={PORTFOLIO_CONFIG.github}
-              className="flex items-center gap-3 px-6 sm:px-8 py-3 sm:py-4 bg-[#E9EDC9] hover:bg-[#CCD5AE] text-[#4A3828] rounded-xl transition-colors text-base sm:text-lg"
+              className="flex items-center gap-3 px-6 sm:px-8 py-3 sm:py-4 bg-[#B2C9FF] hover:bg-[#BE99FF] text-[#35275B] rounded-xl transition-colors text-base sm:text-lg"
               target="_blank"
               rel="noopener noreferrer"
               aria-label="Ouvrir GitHub"
@@ -543,7 +653,7 @@ const Portfolio: React.FC = () => {
       {showBackToTop && (
         <button
           onClick={() => scrollToSection('hero')}
-          className="fixed bottom-6 right-6 z-40 p-3 rounded-full bg-[#D4A373]/95 text-[#2f2418] shadow-lg shadow-[#D4A373]/35 hover:bg-[#E7C8A0] transition-colors"
+          className="fixed bottom-6 right-6 z-40 p-3 rounded-full bg-[#9D71E8]/95 text-[#241A42] shadow-lg shadow-[#9D71E8]/35 hover:bg-[#BE99FF] transition-colors"
           aria-label="Retour en haut"
         >
           <ArrowUp size={20} />
@@ -551,9 +661,9 @@ const Portfolio: React.FC = () => {
       )}
       
       {/* Footer */}
-      <footer className="py-8 text-center border-t border-[#E7C8A0]/80 relative z-10">
-        <p className="text-[#6F5A43] px-4">
-          © {currentYear} {PORTFOLIO_CONFIG.name}. Tous droits réservés. | Développé par <a href={PORTFOLIO_CONFIG.github} className="text-[#5A4630] hover:underline" target="_blank" rel="noopener noreferrer">{PORTFOLIO_CONFIG.name}</a> avec React, TypeScript, Tailwind CSS et Three.js
+      <footer className="py-8 text-center border-t border-[#BE99FF]/80 relative z-10">
+        <p className="text-[#47386B] px-4">
+          © {currentYear} {PORTFOLIO_CONFIG.name}. Tous droits réservés. | Développé par <a href={PORTFOLIO_CONFIG.github} className="text-[#2F2352] hover:underline" target="_blank" rel="noopener noreferrer">{PORTFOLIO_CONFIG.name}</a> avec React, TypeScript, Tailwind CSS et Three.js
         </p>
       </footer>
       </main>

@@ -25,7 +25,7 @@ const GalaxyBackground: React.FC = () => {
 
     // Configuration de la scène
     const scene = new THREE.Scene();
-    scene.fog = new THREE.Fog(0xf4ead4, 10, 92); // Brouillard chaud et clair pour une ambiance cosy
+    scene.fog = new THREE.Fog(0xc9dcff, 10, 92); // Brouillard bleu clair cohérent avec la nouvelle palette
     
     const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
     const renderer = new THREE.WebGLRenderer({ 
@@ -49,12 +49,12 @@ const GalaxyBackground: React.FC = () => {
     const randomness = new Float32Array(particlesCount);
 
     // Couleurs pour la galaxie
-    const colorCore = new THREE.Color('#fefae0'); // ivoire
-    const colorArm1 = new THREE.Color('#e7c8a0'); // beige chaud
-    const colorArm2 = new THREE.Color('#d4a373'); // doré caramel
-    const colorArm3 = new THREE.Color('#ccd5ae'); // sauge douce
-    const colorOuter = new THREE.Color('#a0734e'); // bord plus profond
-    const colorDust = new THREE.Color('#faedcd'); // poussière claire
+    const colorCore = new THREE.Color('#f2f7ff'); // blanc bleute
+    const colorArm1 = new THREE.Color('#c9dcff'); // bleu pastel
+    const colorArm2 = new THREE.Color('#b2c9ff'); // bleu pervenche
+    const colorArm3 = new THREE.Color('#be99ff'); // violet clair
+    const colorOuter = new THREE.Color('#9d71e8'); // violet profond
+    const colorDust = new THREE.Color('#f2f7ff'); // poussière froide
     const mixedColor = new THREE.Color();
 
     // Paramètres de la spirale
@@ -297,7 +297,7 @@ const GalaxyBackground: React.FC = () => {
     <div 
       ref={mountRef} 
       className="fixed inset-0 z-0 pointer-events-none"
-      style={{ background: 'radial-gradient(ellipse at center, #fefae0 0%, #faedcd 52%, #e9edc9 100%)', opacity: 0.9 }}
+      style={{ background: 'radial-gradient(ellipse at center, #f2f7ff 0%, #c9dcff 52%, #b2c9ff 100%)', opacity: 0.9 }}
     />
   );
 };

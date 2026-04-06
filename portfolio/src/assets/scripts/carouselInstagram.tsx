@@ -1,6 +1,10 @@
 import { useEffect, useRef, useState } from "react";
 import PORTFOLIO_CONFIG from "./portfolioData";
-import { ChevronLeft, ChevronRight, Instagram } from "lucide-react";
+import {
+  FiChevronLeft as ChevronLeft,
+  FiChevronRight as ChevronRight,
+  FiInstagram as Instagram,
+} from "react-icons/fi";
 
 // Composant Carousel Instagram avec embeds
 const InstagramCarousel: React.FC = () => {
