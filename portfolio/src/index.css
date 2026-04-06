@@ -12,15 +12,25 @@
 	--cozy-accent-secondary: #e7c8a0;
 	--cozy-accent-warm: #ccd5ae;
 
-	/* Blue/violet palette (active test) */
-	--test-bg-deep: #f2f7ff;
-	--test-bg-mid: #c9dcff;
-	--test-bg-soft: #b2c9ff;
-	--test-text-main: #2f2352;
-	--test-text-soft: #47386b;
-	--test-accent-primary: #9d71e8;
-	--test-accent-secondary: #be99ff;
-	--test-accent-warm: #b2c9ff;
+	/* Blue/violet palette kept in stock */
+	--blue-bg-deep: #f2f7ff;
+	--blue-bg-mid: #c9dcff;
+	--blue-bg-soft: #b2c9ff;
+	--blue-text-main: #2f2352;
+	--blue-text-soft: #47386b;
+	--blue-accent-primary: #9d71e8;
+	--blue-accent-secondary: #be99ff;
+	--blue-accent-warm: #b2c9ff;
+
+	/* Pastel palette (active test) */
+	--test-bg-deep: #f8f7ff;
+	--test-bg-mid: #ffeedd;
+	--test-bg-soft: #ffd8be;
+	--test-text-main: #33295f;
+	--test-text-soft: #5a4f8e;
+	--test-accent-primary: #9381ff;
+	--test-accent-secondary: #b8b8ff;
+	--test-accent-warm: #ffd8be;
 
 	--bg-deep: var(--test-bg-deep);
 	--bg-mid: var(--test-bg-mid);
@@ -30,6 +40,9 @@
 	--accent-primary: var(--test-accent-primary);
 	--accent-secondary: var(--test-accent-secondary);
 	--accent-warm: var(--test-accent-warm);
+
+	--cursor-default: url("data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20width='32'%20height='32'%20viewBox='0%200%2024%2024'%3E%3Cpath%20fill='%23FFF'%20stroke='%232F2352'%20stroke-width='1.4'%20d='M5.5%203.21V20.8c0%20.45.54.67.85.35l4.86-4.86a.5.5%200%200%201%20.35-.15h6.87a.5.5%200%200%200%20.35-.85L6.35%202.85a.5.5%200%200%200-.85.35Z'%3E%3C/path%3E%3C/svg%3E") 3 2, auto;
+	--cursor-pointer: url("data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20width='32'%20height='32'%20viewBox='0%200%2024%2024'%3E%3Cpath%20fill='%23FFF'%20stroke='%232F2352'%20stroke-width='1.4'%20stroke-linejoin='round'%20d='M10%2011V8.99c0-.88.59-1.64%201.44-1.86h.05A1.99%201.99%200%200%201%2014%209.05V12v-2c0-.88.6-1.65%201.46-1.87h.05A1.98%201.98%200%200%201%2018%2010.06V13v-1.94a2%202%200%200%201%201.51-1.94h0A2%202%200%200%201%2022%2011.06V14c0%20.6-.08%201.27-.21%201.97a7.96%207.96%200%200%201-7.55%206.48%2054.98%2054.98%200%200%201-4.48%200%207.96%207.96%200%200%201-7.55-6.48C2.08%2015.27%202%2014.59%202%2014v-1.49c0-1.11.9-2.01%202.01-2.01h0a2%202%200%200%201%202.01%202.03l-.01.97v-10c0-1.1.9-2%202-2h0a2%202%200%200%201%202%202V11Z'%3E%3C/path%3E%3C/svg%3E") 6 3, pointer;
 }
 
 html {
@@ -53,9 +66,9 @@ body {
 	-ms-overflow-style: none;
 	color: var(--text-main);
 	background:
-		radial-gradient(1320px 860px at 14% 16%, rgba(242, 247, 255, 0.92), transparent 72%),
-		radial-gradient(1020px 620px at 82% 12%, rgba(190, 153, 255, 0.34), transparent 74%),
-		linear-gradient(165deg, #f2f7ff 8%, #c9dcff 52%, #b2c9ff 100%);
+		radial-gradient(1320px 860px at 14% 16%, rgba(248, 247, 255, 0.94), transparent 72%),
+		radial-gradient(1020px 620px at 82% 12%, rgba(184, 184, 255, 0.34), transparent 74%),
+		linear-gradient(165deg, #f8f7ff 8%, #ffeedd 54%, #ffd8be 100%);
 	font-family: 'Space Grotesk', sans-serif;
 	text-rendering: optimizeLegibility;
 	-webkit-font-smoothing: antialiased;
@@ -79,10 +92,29 @@ button {
 	transition: all 220ms ease;
 }
 
+@media (hover: hover) and (pointer: fine) {
+	html,
+	body {
+		cursor: var(--cursor-default);
+	}
+
+	a,
+	button,
+	[role="button"],
+	input[type="button"],
+	input[type="submit"],
+	summary,
+	select,
+	label[for],
+	.cursor-pointer {
+		cursor: var(--cursor-pointer);
+	}
+}
+
 a:focus-visible,
 button:focus-visible,
 [role="button"]:focus-visible {
-	outline: 2px solid rgba(157, 113, 232, 0.8);
+	outline: 2px solid rgba(147, 129, 255, 0.85);
 	outline-offset: 2px;
 }
 

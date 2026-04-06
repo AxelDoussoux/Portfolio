@@ -317,7 +317,11 @@ const Portfolio: React.FC = () => {
             {/* Bouton Menu Burger */}
             <button
               onClick={toggleMobileMenu}
-              className="md:hidden p-2 rounded-lg bg-[#C9DCFF]/90 hover:bg-[#BE99FF] transition-colors text-[#2F2352]"
+              className={`md:hidden p-2.5 rounded-xl border transition-all duration-300 text-[#2F2352] ${
+                isMobileMenuOpen
+                  ? 'bg-[#B8B8FF]/80 border-[#9381FF]/65 shadow-[0_0_0_3px_rgba(147,129,255,0.18)]'
+                  : 'bg-[#C9DCFF]/92 border-[#B8B8FF]/60 hover:bg-[#B8B8FF]/75'
+              }`}
               aria-label="Toggle mobile menu"
               aria-expanded={isMobileMenuOpen}
               aria-controls="mobile-navigation"
@@ -328,20 +332,20 @@ const Portfolio: React.FC = () => {
         </div>
 
         {/* Menu Mobile */}
-        <div id="mobile-navigation" className={`md:hidden absolute top-full left-0 right-0 bg-white/35 backdrop-blur-xl border-b border-white/45 rounded-b-2xl transition-all duration-300 ${
-          isMobileMenuOpen ? 'opacity-100 visible' : 'opacity-0 invisible'
+        <div id="mobile-navigation" className={`md:hidden absolute top-[calc(100%+0.55rem)] left-2 right-2 bg-[#F8F7FF]/96 backdrop-blur-2xl border border-[#B8B8FF]/55 rounded-2xl shadow-[0_24px_65px_rgba(51,41,95,0.22)] max-h-[72vh] overflow-y-auto [-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden origin-top transition-all duration-300 ${
+          isMobileMenuOpen ? 'opacity-100 visible translate-y-0 scale-100' : 'opacity-0 invisible -translate-y-2 scale-95 pointer-events-none'
         }`}>
-          <div className="max-w-6xl mx-auto px-6 py-4">
-            <div className="flex flex-col space-y-4">
+          <div className="max-w-6xl mx-auto px-4 py-4">
+            <div className="flex flex-col space-y-2">
               {navigationItems.map((item) => (
                 <button
                   key={item.id}
                   onClick={() => scrollToSection(item.id)}
                   aria-current={activeSection === item.id ? 'page' : undefined}
-                  className={`text-left py-3 px-4 rounded-lg transition-all duration-300 ${
+                  className={`text-left py-3.5 px-4 rounded-xl border transition-all duration-300 ${
                     activeSection === item.id 
-                      ? 'text-[#2F2352] bg-[#C9DCFF]/90 border border-[#BE99FF]/75' 
-                      : 'text-[#47386B] hover:text-[#2F2352] hover:bg-[#B2C9FF]/75 border border-transparent'
+                      ? 'text-[#2F2352] bg-[#B8B8FF]/58 border-[#9381FF]/55 shadow-[0_6px_20px_rgba(147,129,255,0.2)]' 
+                      : 'text-[#47386B] bg-white/55 border-white/50 hover:text-[#2F2352] hover:bg-[#FFEEDD]/92 hover:border-[#B8B8FF]/55'
                   }`}
                 >
                   {item.label}
@@ -349,11 +353,11 @@ const Portfolio: React.FC = () => {
               ))}
               
               {/* Liens sociaux dans le menu mobile */}
-              <div className="pt-4 mt-4 border-t border-[#BE99FF]/75">
+              <div className="pt-4 mt-4 border-t border-[#B8B8FF]/70">
                 <div className="flex justify-center gap-4">
                   <a 
                     href={PORTFOLIO_CONFIG.github} 
-                    className="p-3 bg-[#B2C9FF] hover:bg-[#BE99FF] rounded-full transition-colors text-[#2F2352]"
+                    className="p-3 rounded-full bg-[#B8B8FF]/58 hover:bg-[#9381FF]/42 border border-[#9381FF]/35 transition-colors text-[#2F2352]"
                     target="_blank" 
                     rel="noopener noreferrer"
                     onClick={() => setIsMobileMenuOpen(false)}
@@ -363,7 +367,7 @@ const Portfolio: React.FC = () => {
                   </a>
                   <a 
                     href={PORTFOLIO_CONFIG.instagram} 
-                    className="p-3 bg-[#B2C9FF] hover:bg-[#BE99FF] rounded-full transition-colors text-[#2F2352]"
+                    className="p-3 rounded-full bg-[#B8B8FF]/58 hover:bg-[#9381FF]/42 border border-[#9381FF]/35 transition-colors text-[#2F2352]"
                     target="_blank" 
                     rel="noopener noreferrer"
                     onClick={() => setIsMobileMenuOpen(false)}
@@ -373,7 +377,7 @@ const Portfolio: React.FC = () => {
                   </a>
                   <a 
                     href={PORTFOLIO_CONFIG.linkedin} 
-                    className="p-3 bg-[#B2C9FF] hover:bg-[#BE99FF] rounded-full transition-colors text-[#2F2352]"
+                    className="p-3 rounded-full bg-[#B8B8FF]/58 hover:bg-[#9381FF]/42 border border-[#9381FF]/35 transition-colors text-[#2F2352]"
                     target="_blank" 
                     rel="noopener noreferrer"
                     onClick={() => setIsMobileMenuOpen(false)}
@@ -383,7 +387,7 @@ const Portfolio: React.FC = () => {
                   </a>
                   <a 
                     href={`mailto:${PORTFOLIO_CONFIG.email}`} 
-                    className="p-3 bg-[#B2C9FF] hover:bg-[#BE99FF] rounded-full transition-colors text-[#2F2352]"
+                    className="p-3 rounded-full bg-[#B8B8FF]/58 hover:bg-[#9381FF]/42 border border-[#9381FF]/35 transition-colors text-[#2F2352]"
                     onClick={() => setIsMobileMenuOpen(false)}
                     aria-label="Email"
                   >
@@ -399,7 +403,7 @@ const Portfolio: React.FC = () => {
       {/* Overlay pour fermer le menu en cliquant à l'extérieur */}
       {isMobileMenuOpen && (
         <div 
-          className="fixed inset-0 bg-[#2F2352]/20 z-40 md:hidden" 
+          className="fixed inset-0 bg-[#2F2352]/45 backdrop-blur-[2px] z-40 md:hidden" 
           onClick={() => setIsMobileMenuOpen(false)}
           aria-hidden="true"
         />
