@@ -7,10 +7,6 @@ import {
   Server,
   Database,
   Layers,
-  Video,
-  FileX,
-  Blocks,
-  Brush,
   Waves,
   LayoutTemplate
 } from 'lucide-react';
@@ -20,7 +16,6 @@ import {
 const PORTFOLIO_CONFIG = {
   name: "Axel DOUSSOUX",
   title: "Développeur Web Fullstack",
-  avatar: "/images/pp_min.png",
   email: "contact@axeldoussoux.fr",
   github: "https://github.com/AxelDoussoux",
   linkedin: "https://www.linkedin.com/in/axeldoussoux/",
@@ -49,7 +44,7 @@ const PORTFOLIO_CONFIG = {
       description: "Application web collaborative pour estimer des user stories en équipe avec un workflow Planning Poker clair et rapide.",
       image: "/images/mobivie.png",
       video: "",
-      technologies: ["TypeScript", "React", "Node.js", "Express.js", "PostgreSQL", "TailwindCSS"],
+      technologies: ["TypeScript", "React", "Node.js", "Supabase", "PostgreSQL", "TailwindCSS"],
       github: "https://github.com/AxelDoussoux/WebApp-PlanningPoker-Online",
       demo: "https://axeldoussoux.github.io/WebApp-PlanningPoker-Online/",
       featured: true,

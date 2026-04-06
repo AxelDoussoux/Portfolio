@@ -25,7 +25,7 @@ const GalaxyBackground: React.FC = () => {
 
     // Configuration de la scène
     const scene = new THREE.Scene();
-    scene.fog = new THREE.Fog(0x000000, 10, 100); // Effet de brouillard pour la profondeur
+    scene.fog = new THREE.Fog(0xf4ead4, 10, 92); // Brouillard chaud et clair pour une ambiance cosy
     
     const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
     const renderer = new THREE.WebGLRenderer({ 
@@ -49,12 +49,12 @@ const GalaxyBackground: React.FC = () => {
     const randomness = new Float32Array(particlesCount);
 
     // Couleurs pour la galaxie
-    const colorCore = new THREE.Color('#ffffff'); // Centre blanc brillant
-    const colorArm1 = new THREE.Color('#22d3ee'); // cyan-400
-    const colorArm2 = new THREE.Color('#38bdf8'); // sky-400
-    const colorArm3 = new THREE.Color('#2dd4bf'); // teal-400
-    const colorOuter = new THREE.Color('#0ea5e9'); // sky-500 (transition)
-    const colorDust = new THREE.Color('#67e8f9'); // cyan-300 (poussière d'étoiles)
+    const colorCore = new THREE.Color('#fefae0'); // ivoire
+    const colorArm1 = new THREE.Color('#e7c8a0'); // beige chaud
+    const colorArm2 = new THREE.Color('#d4a373'); // doré caramel
+    const colorArm3 = new THREE.Color('#ccd5ae'); // sauge douce
+    const colorOuter = new THREE.Color('#a0734e'); // bord plus profond
+    const colorDust = new THREE.Color('#faedcd'); // poussière claire
     const mixedColor = new THREE.Color();
 
     // Paramètres de la spirale
@@ -104,7 +104,7 @@ const GalaxyBackground: React.FC = () => {
       }
 
       // Réduction de la luminosité pour améliorer la lisibilité
-      mixedColor.multiplyScalar(0.6 + Math.random() * 0.3);
+      mixedColor.multiplyScalar(0.48 + Math.random() * 0.2);
 
       colors[i3] = mixedColor.r;
       colors[i3 + 1] = mixedColor.g;
@@ -181,10 +181,10 @@ const GalaxyBackground: React.FC = () => {
         float depthFade = smoothstep(30.0, 15.0, vDistance);
         
         // Intensité finale plus douce
-        float alpha = strength * twinkle * depthFade * 2.0;
+        float alpha = strength * twinkle * depthFade * 1.15;
         
         // Couleur finale moins brillante
-        vec3 finalColor = vColor * (0.8 + strength * 0.2);
+        vec3 finalColor = vColor * (0.68 + strength * 0.18);
         
         gl_FragColor = vec4(finalColor, alpha);
       }
@@ -297,7 +297,7 @@ const GalaxyBackground: React.FC = () => {
     <div 
       ref={mountRef} 
       className="fixed inset-0 z-0 pointer-events-none"
-      style={{ background: 'radial-gradient(ellipse at center, #0b223c 0%, #0b1627 52%, #050a14 100%)', opacity: 0.82 }}
+      style={{ background: 'radial-gradient(ellipse at center, #fefae0 0%, #faedcd 52%, #e9edc9 100%)', opacity: 0.9 }}
     />
   );
 };
