@@ -115,7 +115,7 @@ const ProjectModal: React.FC<{
       role="presentation"
     >
       <div 
-        className="bg-[#F2F7FF]/96 rounded-2xl max-w-5xl w-full max-h-[85vh] overflow-y-auto border border-[#BE99FF]/75"
+        className="bg-white/30 backdrop-blur-xl rounded-2xl max-w-5xl w-full max-h-[85vh] overflow-y-auto border border-white/45 shadow-[0_18px_45px_rgba(71,56,107,0.16)]"
         onClick={(e) => e.stopPropagation()}
         role="dialog"
         aria-modal="true"
@@ -332,7 +332,7 @@ const ProjectCard: React.FC<{ project: typeof PORTFOLIO_CONFIG.projects[0] }> = 
   return (
     <>
       <div 
-        className={`group relative h-full bg-[#F2F7FF]/92 backdrop-blur-sm border border-[#BE99FF]/80 rounded-xl overflow-hidden hover:border-[#9D71E8] transition-all duration-500 ${project.featured ? 'cursor-pointer' : ''} flex flex-col`}
+        className={`group relative h-full bg-white/30 backdrop-blur-xl border border-white/45 rounded-xl overflow-hidden hover:border-[#9D71E8] transition-all duration-500 ${project.featured ? 'cursor-pointer' : ''} flex flex-col`}
         onClick={handleCardClick}
       >
         <div className="relative aspect-video overflow-hidden flex-shrink-0 bg-[#C9DCFF]/80">

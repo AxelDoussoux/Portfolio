@@ -148,9 +148,9 @@ const Portfolio: React.FC = () => {
   ];
 
   const sectionTitleClass = 'text-3xl sm:text-4xl font-bold text-center mb-12 sm:mb-16 text-[#2F2352] tracking-tight';
-  const glassCardClass = 'bg-[#F2F7FF]/92 backdrop-blur-md border border-[#BE99FF]/70 rounded-2xl shadow-[0_16px_42px_rgba(71,56,107,0.18)]';
+  const glassCardClass = 'bg-white/30 backdrop-blur-xl border border-white/45 rounded-2xl shadow-[0_18px_45px_rgba(71,56,107,0.16)]';
+  const skillsGlassCardClass = 'bg-white/30 backdrop-blur-xl border border-white/45 rounded-2xl shadow-[0_18px_45px_rgba(71,56,107,0.16)]';
   const tagClass = 'px-3 py-1 bg-[#B2C9FF]/90 border border-[#BE99FF]/90 text-[#2F2352] rounded-full text-sm';
-  const sidePillClass = 'inline-flex items-center gap-2 rounded-full px-3 py-2 bg-[#F2F7FF]/90 border border-[#BE99FF]/80 shadow-[0_8px_22px_rgba(71,56,107,0.14)] backdrop-blur-md hover:bg-[#C9DCFF] hover:border-[#9D71E8] text-[#2F2352] transition-all duration-300 text-sm';
   const currentYear = new Date().getFullYear();
 
   return (
@@ -174,7 +174,7 @@ const Portfolio: React.FC = () => {
       </div>
       
       {/* Navigation */}
-      <nav className="fixed left-3 right-3 top-4 z-50 rounded-2xl bg-[#F2F7FF]/88 backdrop-blur-md border border-[#BE99FF]/75 shadow-[0_10px_35px_rgba(71,56,107,0.2)]" aria-label="Navigation principale">
+      <nav className="fixed left-3 right-3 top-4 z-50 rounded-2xl bg-white/30 backdrop-blur-xl border border-white/45 shadow-[0_10px_35px_rgba(71,56,107,0.2)]" aria-label="Navigation principale">
         <div className="max-w-6xl mx-auto px-4 sm:px-6 py-3 sm:py-4">
           <div className="flex justify-between items-center">
             {/* Logo */}
@@ -214,7 +214,7 @@ const Portfolio: React.FC = () => {
         </div>
 
         {/* Menu Mobile */}
-        <div id="mobile-navigation" className={`md:hidden absolute top-full left-0 right-0 bg-[#F2F7FF]/96 backdrop-blur-md border-b border-[#BE99FF]/75 rounded-b-2xl transition-all duration-300 ${
+        <div id="mobile-navigation" className={`md:hidden absolute top-full left-0 right-0 bg-white/35 backdrop-blur-xl border-b border-white/45 rounded-b-2xl transition-all duration-300 ${
           isMobileMenuOpen ? 'opacity-100 visible' : 'opacity-0 invisible'
         }`}>
           <div className="max-w-6xl mx-auto px-6 py-4">
@@ -290,68 +290,6 @@ const Portfolio: React.FC = () => {
           aria-hidden="true"
         />
       )}
-
-      {/* Pastilles flottantes desktop */}
-      <aside className="hidden xl:flex fixed left-5 top-1/2 -translate-y-1/2 z-30 flex-col gap-3" aria-label="Pastilles latérales gauche">
-        <button
-          type="button"
-          onClick={() => scrollToSection('experience')}
-          className={sidePillClass}
-          title="Timeline"
-        >
-          <Calendar size={14} className="text-[#9D71E8]" />
-          <span>Timeline</span>
-        </button>
-        <button
-          type="button"
-          onClick={() => scrollToSection('skills')}
-          className={sidePillClass}
-          title="Tech que je maîtrise"
-        >
-          <Code size={14} className="text-[#9D71E8]" />
-          <span>Je maîtrise</span>
-        </button>
-        <button
-          type="button"
-          onClick={() => scrollToSection('skills')}
-          className={sidePillClass}
-          title="Tech que j'apprends"
-        >
-          <Box size={14} className="text-[#9D71E8]" />
-          <span>J'apprends</span>
-        </button>
-      </aside>
-
-      <aside className="hidden xl:flex fixed right-5 top-1/2 -translate-y-1/2 z-30 flex-col gap-3 items-end" aria-label="Pastilles latérales droite">
-        <button
-          type="button"
-          onClick={() => scrollToSection('portfolio')}
-          className={sidePillClass}
-          title="Voir mes projets"
-        >
-          <Briefcase size={14} className="text-[#9D71E8]" />
-          <span>Projets</span>
-        </button>
-        <button
-          type="button"
-          onClick={() => scrollToSection('contact')}
-          className={sidePillClass}
-          title="Me contacter"
-        >
-          <Mail size={14} className="text-[#9D71E8]" />
-          <span>Contact</span>
-        </button>
-        <a
-          href={PORTFOLIO_CONFIG.github}
-          target="_blank"
-          rel="noopener noreferrer"
-          className={sidePillClass}
-          title="Ouvrir GitHub"
-        >
-          <Github size={14} className="text-[#9D71E8]" />
-          <span>GitHub</span>
-        </a>
-      </aside>
 
       <main id="main-content" tabIndex={-1}>
       
@@ -552,7 +490,7 @@ const Portfolio: React.FC = () => {
             Compétences
           </h2>
           <div className="space-y-8">
-            <div className={`${glassCardClass} p-6 sm:p-8`}>
+            <div className={`${skillsGlassCardClass} p-6 sm:p-8`}>
               <h3 className="text-2xl font-semibold text-[#2F2352] mb-6 flex items-center gap-3">
                 <CheckCircle size={22} className="text-[#9D71E8]" />
                 Ce que je maîtrise
@@ -575,7 +513,7 @@ const Portfolio: React.FC = () => {
               </div>
             </div>
 
-            <div className={`${glassCardClass} p-6 sm:p-8`}>
+            <div className={`${skillsGlassCardClass} p-6 sm:p-8`}>
               <h3 className="text-2xl font-semibold text-[#2F2352] mb-6 flex items-center gap-3">
                 <Zap size={22} className="text-[#9D71E8]" />
                 Ce que j'apprends
