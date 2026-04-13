@@ -47,26 +47,26 @@ const PORTFOLIO_CONFIG = {
   projects: [
     {
       id: 1,
-      title: "Planning Poker Online",
-      description: "Application web collaborative pour estimer des user stories en équipe avec un workflow Planning Poker clair et rapide.",
-      image: "/images/mobivie.png",
-      images: ["/images/pp_min.png", "/images/mobivie.png"],
+      title: "FlowSync",
+      description: "Landing page de démonstration pour un faux SaaS orienté productivité, avec narration produit, preuve sociale et sections de conversion.",
+      image: "/images/landing_1.png",
+      images: ["/images/landing_1.png", "/images/landing_2.png"],
       video: "",
-      technologies: ["TypeScript", "React", "Node.js", "Supabase", "PostgreSQL", "TailwindCSS"],
-      github: "https://github.com/AxelDoussoux/WebApp-PlanningPoker-Online",
-      demo: "https://axeldoussoux.github.io/WebApp-PlanningPoker-Online/",
+      technologies: ["TypeScript", "React", "TailwindCSS", "Vite"],
+      github: "https://github.com/AxelDoussoux/Landing-project-1",
+      demo: "https://axeldoussoux.github.io/Landing-project-1/",
       featured: true,
-      year: "2025",
-      duration: "2 mois",
-      type: "Projet fullstack web",
+      year: "2026",
+      duration: "Quelques jours",
+      type: "Landing page SaaS",
       status: "Terminé",
       features: [
-        "Salles de session multi-utilisateurs",
-        "Votes synchronisés pour chaque participant",
-        "Gestion des stories et des estimations",
-        "UI responsive orientée productivité"
+        "Collaboration en temps réel mise en avant",
+        "Automatisation intelligente et rappels",
+        "Dashboard décisionnel pour suivre l'avancement",
+        "Mode focus et structure orientée conversion"
       ],
-      challenges: "Le principal défi était la synchronisation des interactions entre plusieurs utilisateurs en temps réel, avec une interface qui reste lisible et fluide pendant les sessions d'estimation."
+      challenges: "Le principal défi était de rendre la proposition de valeur évidente dès le premier écran, tout en gardant une hiérarchie visuelle claire, un rythme calme et une page orientée conversion."
     },
     {
       id: 2,
