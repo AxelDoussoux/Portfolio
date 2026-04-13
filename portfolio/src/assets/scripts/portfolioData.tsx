@@ -72,11 +72,12 @@ const PORTFOLIO_CONFIG = {
       id: 2,
       title: "3D World Viewer",
       description: "Visualiseur web 3D permettant d'explorer des environnements interactifs directement dans le navigateur.",
-      image: "/images/blender_1.png",
-      images: ["/images/blender_1.png", "/images/blender_2.png", "/images/blender_3.png"],
+      image: "/images/WorldViewer3D_1.png",
+      images: ["/images/WorldViewer3D_1.png", "/images/WorldViewer3D_2.png"],
       video: "",
-      technologies: ["PHP", "JavaScript", "Three.js", "WebGL"],
+      technologies: ["Symfony", "JavaScript", "Three.js", "WebGL"],
       github: "https://github.com/AxelDoussoux/3D-World-Viewer",
+      demo: "https://axeldoussoux.github.io/3D-World-Viewer/",
       featured: true,
       year: "2025",
       duration: "1 mois",
@@ -92,25 +93,58 @@ const PORTFOLIO_CONFIG = {
     },
     {
       id: 3,
-      title: "Portfolio",
-      description: "Portfolio personnel orienté développement web fullstack avec animations, responsive design et composants réutilisables.",
-      image: "/images/Unity_2.png",
-      images: ["/images/Unity_2.png", "/images/Unity_1.png"],
+      title: "Satisfactory Calculator",
+      description: "Outil de planification d'usine pour Satisfactory avec calculs de production, KPI, objectifs multiples et graphe de chaîne interactif.",
+      image: "/images/SCalculator_1.png",
+      images: ["/images/SCalculator_1.png", "/images/SCalculator_2.png"],
       video: "",
-      technologies: ["React", "TypeScript", "TailwindCSS", "Three.js", "Vite"],
-      github: "https://github.com/AxelDoussoux/Portfolio",
-      featured: false,
+      technologies: ["TypeScript", "React", "TailwindCSS", "Vite"],
+      github: "https://github.com/AxelDoussoux/SatisfactoryCalculator",
+      demo: "https://axeldoussoux.github.io/SatisfactoryCalculator/",
+      featured: true,
       year: "2026",
-      duration: "Continu",
-      type: "Projet vitrine web",
-      status: "En cours",
+      type: "Outil de planification d'usine pour jeu vidéo",
+      status: "Terminé",
       features: [
-        "Architecture front-end modulaire",
-        "Animations et background 3D optimisés",
-        "Accessibilité et responsive améliorés",
-        "Personnalisation orientée branding"
+        "Calcul des flux de production par ressource",
+        "Gestion de plusieurs cibles et presets de plan",
+        "Import / export de configuration complète",
+        "Graphe de chaîne et indicateurs KPI"
       ],
-      challenges: "Le défi est de garder un équilibre entre identité visuelle forte, performances web et maintenabilité, tout en faisant évoluer le portfolio avec de nouveaux projets."
+      challenges: "Le principal défi a été de structurer un calculateur complexe tout en gardant une interface lisible, rapide à manipuler et suffisamment claire pour comparer plusieurs scénarios de production."
+    }
+  ],
+
+  instagramPosts: [
+    {
+      id: 1,
+      embedUrl: "https://www.instagram.com/p/DDFbY24tAvz/embed/",
+      link: "https://www.instagram.com/p/DDFbY24tAvz/"
+    },
+    {
+      id: 2,
+      embedUrl: "https://www.instagram.com/p/DCf1LgovgeC/embed/",
+      link: "https://www.instagram.com/p/DCf1LgovgeC/"
+    },
+    {
+      id: 3,
+      embedUrl: "https://www.instagram.com/p/DA3TZ6UPefm/embed/",
+      link: "https://www.instagram.com/p/DA3TZ6UPefm/"
+    },
+    {
+      id: 4,
+      embedUrl: "https://www.instagram.com/p/Ct145ebIogT/embed/",
+      link: "https://www.instagram.com/p/Ct145ebIogT/"
+    },
+    {
+      id: 5,
+      embedUrl: "https://www.instagram.com/p/Ctu7kkmoPWX/embed/",
+      link: "https://www.instagram.com/p/Ctu7kkmoPWX/"
+    },
+    {
+      id: 6,
+      embedUrl: "https://www.instagram.com/p/C1E997AtDca/embed/",
+      link: "https://www.instagram.com/p/C1E997AtDca/"
     }
   ],
 
@@ -158,39 +192,6 @@ const PORTFOLIO_CONFIG = {
       ]
     }
   ],
-
-  instagramPosts: [
-    {
-      id: 1,
-      embedUrl: "https://www.instagram.com/p/DDFbY24tAvz/embed/",
-      link: "https://www.instagram.com/p/DDFbY24tAvz/"
-    },
-    {
-      id: 2,
-      embedUrl: "https://www.instagram.com/p/DCf1LgovgeC/embed/",
-      link: "https://www.instagram.com/p/DCf1LgovgeC/"
-    },
-    {
-      id: 3,
-      embedUrl: "https://www.instagram.com/p/DA3TZ6UPefm/embed/",
-      link: "https://www.instagram.com/p/DA3TZ6UPefm/"
-    },
-    {
-      id: 4,
-      embedUrl: "https://www.instagram.com/p/Ct145ebIogT/embed/",
-      link: "https://www.instagram.com/p/Ct145ebIogT/"
-    },
-    {
-      id: 5,
-      embedUrl: "https://www.instagram.com/p/Ctu7kkmoPWX/embed/",
-      link: "https://www.instagram.com/p/Ctu7kkmoPWX/"
-    },
-    {
-      id: 6,
-      embedUrl: "https://www.instagram.com/p/C1E997AtDca/embed/",
-      link: "https://www.instagram.com/p/C1E997AtDca/"
-    }
-  ]
 
 };
 

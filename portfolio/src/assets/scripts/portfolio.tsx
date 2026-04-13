@@ -19,6 +19,18 @@ import {
 import PORTFOLIO_CONFIG from './portfolioData';
 import GalaxyBackground from './galaxyBackground';
 import ProjectCard from './projectCard';
+import ProjectDetailPage from './projectDetailPage';
+
+const getProjectIdFromHash = () => {
+  if (typeof window === 'undefined') return null;
+
+  const hash = window.location.hash;
+  const match = hash.match(/^#project-(\d+)$/);
+  if (!match) return null;
+
+  const projectId = Number(match[1]);
+  return Number.isFinite(projectId) ? projectId : null;
+};
 
 // Composant principal
 const Portfolio: React.FC = () => {
@@ -27,16 +39,23 @@ const Portfolio: React.FC = () => {
   const [scrollProgress, setScrollProgress] = useState(0);
   const [showBackToTop, setShowBackToTop] = useState(false);
   const [introPhase, setIntroPhase] = useState<'center' | 'expand' | 'move' | 'exit'>('center');
-  const [showIntro, setShowIntro] = useState(true);
+  const [showIntro, setShowIntro] = useState(() => getProjectIdFromHash() === null);
   const [introTarget, setIntroTarget] = useState({ x: 0, y: 0 });
+  const [selectedProjectId, setSelectedProjectId] = useState<number | null>(() => getProjectIdFromHash());
   const navClickLockRef = useRef<{ sectionId: string; until: number } | null>(null);
   const navLogoRef = useRef<HTMLDivElement>(null);
 
   const [firstName, ...lastNameParts] = PORTFOLIO_CONFIG.name.trim().split(/\s+/);
   const lastName = lastNameParts.join(' ');
   const hasLastName = lastName.length > 0;
+  const selectedProject =
+    selectedProjectId !== null
+      ? PORTFOLIO_CONFIG.projects.find((project) => project.id === selectedProjectId) ?? null
+      : null;
   
   useEffect(() => {
+    if (selectedProjectId !== null) return;
+
     const handleScroll = () => {
       const sections = ['hero', 'about', 'portfolio', 'experience', 'skills', 'contact'];
       const rootStyle = window.getComputedStyle(document.documentElement);
@@ -76,10 +95,24 @@ const Portfolio: React.FC = () => {
     window.addEventListener('scroll', handleScroll);
     handleScroll();
     return () => window.removeEventListener('scroll', handleScroll);
+  }, [selectedProjectId]);
+
+  useEffect(() => {
+    const syncSelectedProject = () => {
+      setSelectedProjectId(getProjectIdFromHash());
+    };
+
+    window.addEventListener('hashchange', syncSelectedProject);
+    window.addEventListener('popstate', syncSelectedProject);
+
+    return () => {
+      window.removeEventListener('hashchange', syncSelectedProject);
+      window.removeEventListener('popstate', syncSelectedProject);
+    };
   }, []);
 
   useEffect(() => {
-    if (!showIntro) return;
+    if (!showIntro || selectedProjectId !== null) return;
 
     const updateTarget = () => {
       const navLogo = navLogoRef.current;
@@ -100,9 +133,15 @@ const Portfolio: React.FC = () => {
       window.cancelAnimationFrame(frameId);
       window.removeEventListener('resize', updateTarget);
     };
-  }, [showIntro]);
+  }, [showIntro, selectedProjectId]);
 
   useEffect(() => {
+    if (selectedProjectId !== null) {
+      setIntroPhase('exit');
+      setShowIntro(false);
+      return;
+    }
+
     const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
     if (reducedMotion) {
@@ -138,11 +177,13 @@ const Portfolio: React.FC = () => {
       window.clearTimeout(exitIntro);
       window.clearTimeout(hideIntro);
     };
-  }, []);
+  }, [selectedProjectId]);
 
   // Empêcher le scroll quand le menu mobile ou l'intro sont ouverts
   useEffect(() => {
-    if (isMobileMenuOpen || showIntro) {
+    if (selectedProjectId !== null) {
+      document.body.style.overflow = 'unset';
+    } else if (isMobileMenuOpen || showIntro) {
       document.body.style.overflow = 'hidden';
     } else {
       document.body.style.overflow = 'unset';
@@ -151,7 +192,7 @@ const Portfolio: React.FC = () => {
     return () => {
       document.body.style.overflow = 'unset';
     };
-  }, [isMobileMenuOpen, showIntro]);
+  }, [isMobileMenuOpen, selectedProjectId, showIntro]);
 
   useEffect(() => {
     const handleEscape = (event: KeyboardEvent) => {
@@ -165,6 +206,8 @@ const Portfolio: React.FC = () => {
   }, []);
 
   useEffect(() => {
+    if (selectedProjectId !== null) return;
+
     const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
     if (reducedMotion) return;
 
@@ -189,7 +232,33 @@ const Portfolio: React.FC = () => {
     });
 
     return () => observer.disconnect();
-  }, []);
+  }, [selectedProjectId]);
+
+  useEffect(() => {
+    if (selectedProjectId === null) {
+      return;
+    }
+
+    setIsMobileMenuOpen(false);
+  }, [selectedProjectId]);
+
+  const openProjectPage = (projectId: number) => {
+    setIsMobileMenuOpen(false);
+    setShowIntro(false);
+    window.history.pushState({ projectId }, '', `#project-${projectId}`);
+    setSelectedProjectId(projectId);
+    window.scrollTo({ top: 0, left: 0, behavior: 'auto' });
+  };
+
+  const closeProjectPage = () => {
+    if (window.history.state?.projectId) {
+      window.history.back();
+      return;
+    }
+
+    window.history.replaceState(null, '', `${window.location.pathname}${window.location.search}`);
+    setSelectedProjectId(null);
+  };
   
   const scrollToSection = (sectionId: string) => {
     const element = document.getElementById(sectionId);
@@ -222,6 +291,10 @@ const Portfolio: React.FC = () => {
   const skillsGlassCardClass = 'bg-white/30 backdrop-blur-xl border border-white/45 rounded-2xl shadow-[0_18px_45px_rgba(71,56,107,0.16)]';
   const tagClass = 'px-3 py-1 bg-[#B2C9FF]/90 border border-[#BE99FF]/90 text-[#2F2352] rounded-full text-sm';
   const currentYear = new Date().getFullYear();
+
+  if (selectedProject) {
+    return <ProjectDetailPage project={selectedProject} onBack={closeProjectPage} />;
+  }
 
   return (
     <div className="min-h-screen text-[#2F2352] relative overflow-x-hidden">
@@ -509,9 +582,12 @@ const Portfolio: React.FC = () => {
           <h2 className={sectionTitleClass}>
             Portfolio
           </h2>
-            <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+          <p className="-mt-6 mb-10 text-center text-[#47386B] max-w-3xl mx-auto leading-relaxed">
+            Chaque carte ouvre une page dédiée avec davantage de contexte, les fonctionnalités clés et un aperçu en direct quand le projet est déployé sur GitHub Pages.
+          </p>
+          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
             {PORTFOLIO_CONFIG.projects.map((project) => (
-              <ProjectCard key={project.id} project={project} />
+              <ProjectCard key={project.id} project={project} onOpenProject={openProjectPage} />
             ))}
           </div>
         </div>
