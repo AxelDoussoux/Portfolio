@@ -80,7 +80,7 @@ const PORTFOLIO_CONFIG = {
       demo: "https://axeldoussoux.github.io/3D-World-Viewer/",
       featured: true,
       year: "2025",
-      duration: "1 mois",
+      duration: "2 semaines",
       type: "Projet web 3D",
       status: "Terminé",
       features: [
@@ -105,7 +105,7 @@ const PORTFOLIO_CONFIG = {
       
       year: "2026",
       type: "Outil de planification d'usine pour jeu vidéo",
-      status: "Terminé",
+      status: "En développement",
       features: [
         "Calcul des flux de production par ressource",
         "Gestion de plusieurs cibles et presets de plan",
