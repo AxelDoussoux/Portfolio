@@ -102,6 +102,7 @@ const PORTFOLIO_CONFIG = {
       github: "https://github.com/AxelDoussoux/SatisfactoryCalculator",
       demo: "https://axeldoussoux.github.io/SatisfactoryCalculator/",
       featured: true,
+      
       year: "2026",
       type: "Outil de planification d'usine pour jeu vidéo",
       status: "Terminé",

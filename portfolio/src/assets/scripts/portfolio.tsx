@@ -11,6 +11,7 @@ import {
   FiMenu as Menu,
   FiX as X,
   FiArrowUp as ArrowUp,
+  FiFileText as FileText,
   FiZap as Zap,
   FiGithub as Github,
   FiInstagram as Instagram,
@@ -507,6 +508,16 @@ const Portfolio: React.FC = () => {
               </a>
               <a href={`mailto:${PORTFOLIO_CONFIG.email}`} className="p-4 rounded-full bg-white/35 border border-white/60 text-[#2F2352] shadow-[0_10px_30px_rgba(71,56,107,0.12)] hover:bg-[#C9DCFF]/85 hover:border-[#9D71E8]/70 hover:-translate-y-1 transition-all" aria-label="Email">
                 <Mail size={24} />
+              </a>
+              <a
+                href="/cv.pdf"
+                className="inline-flex items-center gap-2 px-5 py-3 rounded-full bg-[#2F2352] text-[#F2F7FF] shadow-[0_10px_30px_rgba(71,56,107,0.12)] hover:bg-[#35275B] hover:-translate-y-1 transition-all font-semibold"
+                target="_blank"
+                rel="noopener noreferrer"
+                aria-label="Ouvrir le CV numérique en PDF"
+              >
+                <FileText size={20} />
+                CV numérique
               </a>
             </div>
           </div>
