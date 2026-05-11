@@ -116,38 +116,7 @@ const PORTFOLIO_CONFIG = {
     }
   ],
 
-  instagramPosts: [
-    {
-      id: 1,
-      embedUrl: "https://www.instagram.com/p/DDFbY24tAvz/embed/",
-      link: "https://www.instagram.com/p/DDFbY24tAvz/"
-    },
-    {
-      id: 2,
-      embedUrl: "https://www.instagram.com/p/DCf1LgovgeC/embed/",
-      link: "https://www.instagram.com/p/DCf1LgovgeC/"
-    },
-    {
-      id: 3,
-      embedUrl: "https://www.instagram.com/p/DA3TZ6UPefm/embed/",
-      link: "https://www.instagram.com/p/DA3TZ6UPefm/"
-    },
-    {
-      id: 4,
-      embedUrl: "https://www.instagram.com/p/Ct145ebIogT/embed/",
-      link: "https://www.instagram.com/p/Ct145ebIogT/"
-    },
-    {
-      id: 5,
-      embedUrl: "https://www.instagram.com/p/Ctu7kkmoPWX/embed/",
-      link: "https://www.instagram.com/p/Ctu7kkmoPWX/"
-    },
-    {
-      id: 6,
-      embedUrl: "https://www.instagram.com/p/C1E997AtDca/embed/",
-      link: "https://www.instagram.com/p/C1E997AtDca/"
-    }
-  ],
+
 
   experiences: [
     {
