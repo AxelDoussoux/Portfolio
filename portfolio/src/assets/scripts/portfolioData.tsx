@@ -15,22 +15,22 @@ import {
 
 const PORTFOLIO_CONFIG = {
   name: "Axel DOUSSOUX",
-  title: "Développeur Web Fullstack",
+  title: "Développeur Fullstack",
   email: "contact@axeldoussoux.fr",
   github: "https://github.com/AxelDoussoux",
   linkedin: "https://www.linkedin.com/in/axeldoussoux/",
   instagram: "https://www.instagram.com/axel_in_the_pict/",
-  bio: "Développeur web fullstack, je conçois des applications performantes du front-end au back-end, avec une approche orientée produit, UX et qualité logicielle.",
+  bio: "Etudiant en développement informatique, je conçois des applications performantes, évolutives et intuitives, avec une attention forte au design, à la qualité du code et à l'expérience utilisateur.",
   
   skills: [
     { name: "TypeScript", icon: Zap, category: "Développement Web" },
-    { name: "React", icon: Atom, category: "Développement Web" },
+    { name: "React", icon: Atom, category: "Framework Frontend" },
     { name: "Supabase", icon: Database, category: "Base de données" },
     { name: "PostgreSQL", icon: Database, category: "Base de données" },
-    { name: "API REST", icon: Globe, category: "Architecture" },
     { name: "TailWindCSS", icon: Waves, category: "Développement Web" },
     { name: "Git", icon: GitBranch, category: "Contrôle de Versions" },
-    { name: "Wordpress", icon: Globe, category: "Création de Contenus" },
+    { name: "Wordpress", icon: LayoutTemplate, category: "Création de Contenus" },
+    { name: "Starpi", icon: LayoutTemplate, category: "CMS Headless" },
     { name: "Figma", icon: LayoutTemplate, category: "Design UI/UX" },
     { name: "Three.js", icon: Globe, category: "Web 3D" },
     { name: "Blender", icon: Palette, category: "Modélisation 3D" },
@@ -38,8 +38,8 @@ const PORTFOLIO_CONFIG = {
   ],
 
   learningSkills: [
-    { name: "C++", icon: Zap, category: "Langages système" },
     { name: "Rust", icon: GitBranch, category: "Programmation système" },
+    { name: "API REST", icon: Globe, category: "Architecture" },
     { name: "Next.js", icon: Globe, category: "Framework fullstack" },
     { name: "Node.js", icon: Server, category: "Back-end" },
   ],

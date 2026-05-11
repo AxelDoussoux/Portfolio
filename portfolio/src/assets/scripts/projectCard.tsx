@@ -12,7 +12,7 @@ import {
 type Project = typeof PORTFOLIO_CONFIG.projects[number];
 
 const getYouTubeEmbedUrl = (url: string): string | null => {
-  const regex = /(?:youtube\.com\/(?:[^\/]+\/.+\/|(?:v|e(?:mbed)?)\/|.*[?&]v=)|youtu\.be\/)([^"&?\/\s]{11})/;
+  const regex = /* eslint-disable no-useless-escape */ /(?:youtube\.com\/(?:[^\/]+\/.+\/|(?:v|e(?:mbed)?)\/|.*[?&]v=)|youtu\.be\/)([^"&?\/\s]{11})/;
   const match = url.match(regex);
   if (match && match[1]) {
     return `https://www.youtube.com/embed/${match[1]}?autoplay=1&mute=1&loop=1&playlist=${match[1]}`;
@@ -130,7 +130,7 @@ const ProjectCard: React.FC<ProjectCardProps> = ({ project, onOpenProject }) => 
             onClick={toggleVideo}
             type="button"
             className="absolute top-4 left-4 bg-[#9D71E8]/90 hover:bg-[#BE99FF] text-[#241A42] p-2 rounded-full transition-all duration-300 opacity-100 md:opacity-0 md:group-hover:opacity-100"
-            aria-label={showVideo ? 'Afficher l\'image du projet' : 'Afficher la video du projet'}
+            aria-label={showVideo ? "Afficher l'image du projet" : 'Afficher la video du projet'}
           >
             {showVideo ? <Eye size={20} /> : <Play size={20} />}
           </button>

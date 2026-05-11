@@ -3,7 +3,6 @@ import {
   FiChevronDown as ChevronDown,
   FiMail as Mail,
   FiCode as Code,
-  FiBox as Box,
   FiBriefcase as Briefcase,
   FiCalendar as Calendar,
   FiMapPin as MapPin,
@@ -490,10 +489,10 @@ const Portfolio: React.FC = () => {
         <div className="max-w-5xl mx-auto px-2 w-full">
           <div className="text-center">
             <h1 className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-bold mb-6 leading-[1.05] tracking-tight text-[#2F2352]">
-              Une idée ? Je la transforme en expérience web complète 
+              {PORTFOLIO_CONFIG.title}
             </h1>
             <p className="text-lg sm:text-xl text-[#47386B] max-w-3xl mx-auto leading-relaxed mb-8 sm:mb-10">
-              Du front-end à la logique métier, je conçois des applications performantes, évolutives et intuitives, avec une attention forte au design, à la qualité du code et à l'expérience utilisateur.
+              {PORTFOLIO_CONFIG.bio}
             </p>
 
             <div className="flex justify-center gap-4 sm:gap-6 flex-wrap">
@@ -559,29 +558,6 @@ const Portfolio: React.FC = () => {
               <p className="text-[#2F2352]/90 leading-relaxed">
                 Mon objectif est de concevoir des plateformes web complètes et évolutives, avec une attention forte à la qualité du code, à la maintenabilité et à l'expérience utilisateur.
               </p>
-            </div>
-
-            <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
-              <div className={`${glassCardClass} p-6`}>
-                <div className="flex items-center gap-3">
-                  <Code className="text-[#9D71E8]" />
-                  <h4 className="text-xl font-semibold">Développement Fullstack Web</h4>
-                </div>
-              </div>
-
-              <div className={`${glassCardClass} p-6`}>
-                <div className="flex items-center gap-3">
-                  <Box className="text-[#BE99FF]" />
-                  <h4 className="text-xl font-semibold">APIs, données & architecture</h4>
-                </div>
-              </div>
-
-              <div className={`${glassCardClass} p-6`}>
-                <div className="flex items-center gap-3">
-                  <Briefcase className="text-[#9D71E8]" />
-                  <h4 className="text-xl font-semibold">UX, performance & déploiement</h4>
-                </div>
-              </div>
             </div>
           </div>
         </div>

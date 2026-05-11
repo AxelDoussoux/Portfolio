@@ -27,10 +27,10 @@ Use the package scripts defined in `package.json`:
 - If you change visuals, check both desktop and mobile behavior.
 - Respect reduced-motion behavior and existing scroll/animation conventions in `src/index.css`.
 
-## Validation
-- Prefer `npm run build` as the main sanity check after structural or dependency changes.
-- Run `npm run lint` when modifying application logic or React components.
-- If VS Code diagnostics look stale after creating a new file, rebuild before assuming there is a real issue.
+## Build Notes
+- `npm run build` runs `tsc -b && vite build` — type-checking is part of the build step.
+- Tailwind v4 with `@tailwindcss/vite` plugin — no separate `tailwind.config.js`; config is CSS-first.
+- ESLint uses `typescript-eslint` v8+ with recommended rules. `eslint.config.js` ignores `dist`.
 
 ## Asset Notes
 - `public/fonts`, `public/images`, and `public/videos` are the main static asset folders.

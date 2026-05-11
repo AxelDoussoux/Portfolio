@@ -17,7 +17,7 @@ import GalaxyBackground from './galaxyBackground';
 type Project = typeof PORTFOLIO_CONFIG.projects[number];
 
 const getYouTubeEmbedUrl = (url: string): string | null => {
-  const regex = /(?:youtube\.com\/(?:[^\/]+\/.+\/|(?:v|e(?:mbed)?)\/|.*[?&]v=)|youtu\.be\/)([^"&?\/\s]{11})/;
+  const regex = /* eslint-disable no-useless-escape */ /(?:youtube\.com\/(?:[^\/]+\/.+\/|(?:v|e(?:mbed)?)\/|.*[?&]v=)|youtu\.be\/)([^"&?\/\s]{11})/;
   const match = url.match(regex);
   if (match && match[1]) {
     return `https://www.youtube.com/embed/${match[1]}?autoplay=1&mute=1&loop=1&playlist=${match[1]}`;
@@ -206,7 +206,7 @@ const ProjectDetailPage: React.FC<ProjectDetailPageProps> = ({ project, onBack }
                     Résumé du projet
                   </h2>
                   <p className="text-[#47386B] leading-relaxed">
-                    {project.challenges || 'Ce projet m\'a permis d\'approfondir mes compétences techniques et de relever plusieurs défis intéressants en matière de développement et d\'optimisation.'}
+                    {project.challenges || "Ce projet m'a permis d'approfondir mes compétences techniques et de relever plusieurs défis intéressants en matière de développement et d'optimisation."}
                   </p>
                 </div>
               </div>
@@ -258,7 +258,7 @@ const ProjectDetailPage: React.FC<ProjectDetailPageProps> = ({ project, onBack }
                         onClick={toggleVideo}
                         type="button"
                         className="absolute top-4 left-4 bg-[#9D71E8]/90 hover:bg-[#BE99FF] text-[#241A42] p-2 rounded-full transition-all duration-300"
-                        aria-label={showVideo ? 'Afficher l\'image du projet' : 'Afficher la vidéo du projet'}
+                        aria-label={showVideo ? "Afficher l'image du projet" : 'Afficher la vidéo du projet'}
                       >
                         {showVideo ? <Eye size={20} /> : <Play size={20} />}
                       </button>
