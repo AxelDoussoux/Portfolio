@@ -1,42 +1,38 @@
 # AGENTS.md
 
 ## Project Overview
-This repository is a Vite + React + TypeScript portfolio app.
+Vite + React + TypeScript portfolio with 3D Galaxy background.
 
-- Entry point: `src/main.tsx`
-- Root app: `src/App.tsx`
-- Main portfolio implementation: `src/assets/scripts/portfolio.tsx`
-- Global styling: `src/index.css`
-- App-level stylesheet: `src/App.css` is currently empty
+- Entry: `src/main.tsx`
+- Root: `src/App.tsx`
+- Main: `src/assets/scripts/portfolio.tsx`
+- Data: `src/assets/scripts/portfolioData.tsx`
+- Styles: `src/index.css`
+- Components: `src/assets/scripts/` (projectCard, projectDetailPage, galaxyBackground, etc.)
 
-## Common Commands
-Use the package scripts defined in `package.json`:
+## Commands
+- `npm run dev` — dev server
+- `npm run build` — `tsc -b && vite build`
+- `npm run lint` — ESLint
+- `npm run preview` — preview build
 
-- `npm install` to install dependencies
-- `npm run dev` to start the Vite dev server
-- `npm run build` to type-check and build for production
-- `npm run lint` to run ESLint
-- `npm run preview` to preview a production build locally
+## Architecture
+- Intro animation system: `introPhase` state controls transitions ('center' → 'expand' → 'move' → 'exit')
+- GalaxyBackground: Three.js animated spiral galaxy with mobile performance optimization
+- Projects: defined in `portfolioData.tsx`, rendered via `ProjectCard` and `ProjectDetailPage`
+- Color palette: CSS variables in `index.css` (test palette active by default)
+- Mobile: burger menu, scroll progress bar, back-to-top button
 
-## Editing Guidelines
-- Keep changes minimal and focused on the requested task.
-- Preserve the current portfolio design language unless the user explicitly asks for a redesign.
-- Prefer TypeScript and React function components.
-- Reuse existing assets and components in `src/assets/scripts/` before adding new abstractions.
-- Avoid adding new dependencies unless they are clearly needed.
-- If you change visuals, check both desktop and mobile behavior.
-- Respect reduced-motion behavior and existing scroll/animation conventions in `src/index.css`.
+## CSS Fixes Applied
+- Mobile overflow fix: `html { overflow-x: hidden }` + `body { overflow-x: hidden }`
+- Tailwind v4: CSS-first config, no tailwind.config.js
 
-## Build Notes
-- `npm run build` runs `tsc -b && vite build` — type-checking is part of the build step.
-- Tailwind v4 with `@tailwindcss/vite` plugin — no separate `tailwind.config.js`; config is CSS-first.
-- ESLint uses `typescript-eslint` v8+ with recommended rules. `eslint.config.js` ignores `dist`.
+## Assets
+- Logo: `public/images/logo.svg` (A with gradient)
+- Images: `public/images/` (keep clean, verify usage before adding)
+- Videos: `public/videos/`
+- Fonts: Google Fonts (loaded via CSS)
 
-## Asset Notes
-- `public/fonts`, `public/images`, and `public/videos` are the main static asset folders.
-- The project uses `react-icons`, `motion`, and `three` already; prefer those before introducing another library.
-- For brand icons, note that `simple-icons` works for GitHub and Instagram, but LinkedIn may still need a local fallback icon object.
-
-## Windows / Tooling Notes
-- The workspace runs on Windows with PowerShell.
-- If `rg` is unavailable in PowerShell, use `Select-String` for text search.
+## Windows
+- PowerShell environment
+- Search: `Select-String` or `grep` tool

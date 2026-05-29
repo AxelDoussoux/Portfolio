@@ -30,7 +30,7 @@ const PORTFOLIO_CONFIG = {
     { name: "TailWindCSS", icon: Waves, category: "Développement Web" },
     { name: "Git", icon: GitBranch, category: "Contrôle de Versions" },
     { name: "Wordpress", icon: LayoutTemplate, category: "Création de Contenus" },
-    { name: "Starpi", icon: LayoutTemplate, category: "CMS Headless" },
+    { name: "Strapi", icon: LayoutTemplate, category: "CMS Headless" },
     { name: "Figma", icon: LayoutTemplate, category: "Design UI/UX" },
     { name: "Three.js", icon: Globe, category: "Web 3D" },
     { name: "Blender", icon: Palette, category: "Modélisation 3D" },
