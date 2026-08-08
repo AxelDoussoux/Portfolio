@@ -1,4 +1,4 @@
-import { 
+import {
   FiPenTool as Palette,
   FiZap as Zap,
   FiCpu as Atom,
@@ -16,12 +16,10 @@ import {
 const PORTFOLIO_CONFIG = {
   name: "Axel DOUSSOUX",
   title: "Développeur Fullstack",
-  email: "contact@axeldoussoux.fr",
   github: "https://github.com/AxelDoussoux",
   linkedin: "https://www.linkedin.com/in/axeldoussoux/",
-  instagram: "https://www.instagram.com/axel_in_the_pict/",
   bio: "Etudiant en développement informatique, je conçois des applications performantes, évolutives et intuitives, avec une attention forte au design, à la qualité du code et à l'expérience utilisateur.",
-  
+
   skills: [
     { name: "TypeScript", icon: Zap, category: "Développement Web" },
     { name: "React", icon: Atom, category: "Framework Frontend" },
@@ -43,8 +41,31 @@ const PORTFOLIO_CONFIG = {
     { name: "Next.js", icon: Globe, category: "Framework fullstack" },
     { name: "Node.js", icon: Server, category: "Back-end" },
   ],
-  
+
   projects: [
+    {
+      id: 4,
+      title: "Les Enfants Du Rhône",
+      description: "Site vitrine de la webradio lyonnaise Les Enfants Du Rhône : lecteur radio en direct, programmation des émissions, podcasts et ateliers, le tout alimenté par un back-office Strapi.",
+      image: "/images/enfantsduRhone_1.png",
+      images: ["/images/enfantsduRhone_1.png"],
+      video: "",
+      technologies: ["React", "TypeScript", "TailwindCSS", "Strapi", "API REST"],
+      github: "",
+      demo: "https://les-enfants-du-rhone.fr",
+      featured: true,
+      year: "2026",
+      duration: "3 mois",
+      type: "Site vitrine - Webradio",
+      status: "Terminé",
+      features: [
+        "Lecteur radio en direct intégré",
+        "Programmation des émissions et fiches podcasts",
+        "Back-office Strapi pour la gestion des contenus",
+        "Outil type Linktree pour partager les podcasts"
+      ],
+      challenges: "Le défi principal était de couvrir un contenu éditorial riche (émissions, podcasts, ateliers) avec un lecteur radio fonctionnel en direct, le tout géré dynamiquement via un back-office Strapi, sans sacrifier la fluidité ni la clarté de l'interface."
+    },
     {
       id: 1,
       title: "FlowSync",
@@ -102,7 +123,7 @@ const PORTFOLIO_CONFIG = {
       github: "https://github.com/AxelDoussoux/SatisfactoryCalculator",
       demo: "https://axeldoussoux.github.io/SatisfactoryCalculator/",
       featured: true,
-      
+
       year: "2026",
       type: "Outil de planification d'usine pour jeu vidéo",
       status: "En développement",
@@ -119,6 +140,20 @@ const PORTFOLIO_CONFIG = {
 
 
   experiences: [
+    {
+      id: 4,
+      role: "Développeur Fullstack",
+      company: "Les Enfants Du Rhône",
+      logo: "/images/LEDR_logo.png",
+      period: "Avril - Juillet 2026",
+      description: "Stage de développement web : création d'un site vitrine en React, TypeScript et Tailwind CSS, mise en place d'un back-office Strapi et développement d'un outil type Linktree pour partager les podcasts.",
+      technologies: ["React", "TypeScript", "TailwindCSS", "Strapi", "Git"],
+      achievements: [
+        "Développement d'un site vitrine en React, TypeScript et Tailwind CSS",
+        "Mise en place d'un back-office avec Strapi",
+        "Création d'un outil type Linktree pour partager les podcasts"
+      ]
+    },
     {
       id: 1,
       role: "Développeur Web Fullstack",

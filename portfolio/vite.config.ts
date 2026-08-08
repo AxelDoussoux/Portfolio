@@ -8,4 +8,13 @@ export default defineConfig({
   plugins: [
     tailwindcss(),
     react()],
+  build: {
+    rollupOptions: {
+      output: {
+        manualChunks: {
+          three: ['three'],
+        },
+      },
+    },
+  },
 })

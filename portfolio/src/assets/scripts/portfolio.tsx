@@ -1,7 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import {
   FiChevronDown as ChevronDown,
-  FiMail as Mail,
   FiCode as Code,
   FiBriefcase as Briefcase,
   FiCalendar as Calendar,
@@ -13,7 +12,6 @@ import {
   FiFileText as FileText,
   FiZap as Zap,
   FiGithub as Github,
-  FiInstagram as Instagram,
   FiLinkedin as Linkedin,
 } from 'react-icons/fi';
 import PORTFOLIO_CONFIG from './portfolioData';
@@ -439,16 +437,6 @@ const Portfolio: React.FC = () => {
                     <Github size={20} />
                   </a>
                   <a 
-                    href={PORTFOLIO_CONFIG.instagram} 
-                    className="p-3 rounded-full bg-[#B8B8FF]/58 hover:bg-[#9381FF]/42 border border-[#9381FF]/35 transition-colors text-[#2F2352]"
-                    target="_blank" 
-                    rel="noopener noreferrer"
-                    onClick={() => setIsMobileMenuOpen(false)}
-                    aria-label="Instagram"
-                  >
-                    <Instagram size={20} />
-                  </a>
-                  <a 
                     href={PORTFOLIO_CONFIG.linkedin} 
                     className="p-3 rounded-full bg-[#B8B8FF]/58 hover:bg-[#9381FF]/42 border border-[#9381FF]/35 transition-colors text-[#2F2352]"
                     target="_blank" 
@@ -457,14 +445,6 @@ const Portfolio: React.FC = () => {
                     aria-label="LinkedIn"
                   >
                     <Linkedin size={20} />
-                  </a>
-                  <a 
-                    href={`mailto:${PORTFOLIO_CONFIG.email}`} 
-                    className="p-3 rounded-full bg-[#B8B8FF]/58 hover:bg-[#9381FF]/42 border border-[#9381FF]/35 transition-colors text-[#2F2352]"
-                    onClick={() => setIsMobileMenuOpen(false)}
-                    aria-label="Email"
-                  >
-                    <Mail size={20} />
                   </a>
                 </div>
               </div>
@@ -499,14 +479,8 @@ const Portfolio: React.FC = () => {
               <a href={PORTFOLIO_CONFIG.github} className="p-4 rounded-full bg-white/35 border border-white/60 text-[#2F2352] shadow-[0_10px_30px_rgba(71,56,107,0.12)] hover:bg-[#C9DCFF]/85 hover:border-[#9D71E8]/70 hover:-translate-y-1 transition-all" target="_blank" rel="noopener noreferrer" aria-label="GitHub">
                 <Github size={24} />
               </a>
-              <a href={PORTFOLIO_CONFIG.instagram} className="p-4 rounded-full bg-white/35 border border-white/60 text-[#2F2352] shadow-[0_10px_30px_rgba(71,56,107,0.12)] hover:bg-[#C9DCFF]/85 hover:border-[#9D71E8]/70 hover:-translate-y-1 transition-all" target="_blank" rel="noopener noreferrer" aria-label="Instagram">
-                <Instagram size={24} />
-              </a>
               <a href={PORTFOLIO_CONFIG.linkedin} className="p-4 rounded-full bg-white/35 border border-white/60 text-[#2F2352] shadow-[0_10px_30px_rgba(71,56,107,0.12)] hover:bg-[#C9DCFF]/85 hover:border-[#9D71E8]/70 hover:-translate-y-1 transition-all" target="_blank" rel="noopener noreferrer" aria-label="LinkedIn">
                 <Linkedin size={24} />
-              </a>
-              <a href={`mailto:${PORTFOLIO_CONFIG.email}`} className="p-4 rounded-full bg-white/35 border border-white/60 text-[#2F2352] shadow-[0_10px_30px_rgba(71,56,107,0.12)] hover:bg-[#C9DCFF]/85 hover:border-[#9D71E8]/70 hover:-translate-y-1 transition-all" aria-label="Email">
-                <Mail size={24} />
               </a>
               <a
                 href="/cv.pdf"
@@ -572,7 +546,7 @@ const Portfolio: React.FC = () => {
           <p className="-mt-6 mb-10 text-center text-[#47386B] max-w-3xl mx-auto leading-relaxed">
             Chaque carte ouvre une page dédiée avec davantage de contexte, les fonctionnalités clés et un aperçu en direct quand le projet est déployé sur GitHub Pages.
           </p>
-          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+          <div className="flex flex-wrap justify-center gap-8">
             {PORTFOLIO_CONFIG.projects.map((project) => (
               <ProjectCard key={project.id} project={project} onOpenProject={openProjectPage} />
             ))}
@@ -733,15 +707,6 @@ const Portfolio: React.FC = () => {
           
           {/* Boutons de contact */}
           <div className="flex flex-wrap justify-center gap-4 sm:gap-8 mb-12">
-            <a 
-              href={`mailto:${PORTFOLIO_CONFIG.email}`}
-              className="flex items-center gap-3 px-6 sm:px-8 py-3 sm:py-4 bg-[#9D71E8] hover:bg-[#8A65CF] text-[#241A42] rounded-xl transition-colors text-base sm:text-lg font-semibold"
-              aria-label="Envoyer un email"
-            >
-              <Mail size={20} className="sm:hidden" />
-              <Mail size={24} className="hidden sm:block" />
-              Email
-            </a>
             <a 
               href={PORTFOLIO_CONFIG.linkedin}
               className="flex items-center gap-3 px-6 sm:px-8 py-3 sm:py-4 bg-[#BE99FF] hover:bg-[#9D71E8] text-[#35275B] rounded-xl transition-colors text-base sm:text-lg"

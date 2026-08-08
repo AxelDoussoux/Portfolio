@@ -187,7 +187,7 @@ const ProjectDetailPage: React.FC<ProjectDetailPageProps> = ({ project, onBack }
                       Voir le code
                     </a>
                   )}
-                  {hasLivePreview && project.demo && (
+                  {project.demo && (
                     <a
                       href={project.demo}
                       className="inline-flex items-center gap-2 px-5 py-3 rounded-full bg-[#9D71E8] text-[#241A42] hover:bg-[#BE99FF] transition-colors"

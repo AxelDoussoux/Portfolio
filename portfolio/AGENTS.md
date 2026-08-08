@@ -3,6 +3,7 @@
 ## Project Overview
 Vite + React + TypeScript portfolio with 3D Galaxy background.
 
+- Repo root is the parent dir `Portfolio S6`; the entire app lives in this `portfolio/` subfolder — run all commands here.
 - Entry: `src/main.tsx`
 - Root: `src/App.tsx`
 - Main: `src/assets/scripts/portfolio.tsx`
@@ -12,15 +13,16 @@ Vite + React + TypeScript portfolio with 3D Galaxy background.
 
 ## Commands
 - `npm run dev` — dev server
-- `npm run build` — `tsc -b && vite build`
+- `npm run build` — `tsc -b && vite build` (typecheck + build; no test suite exists, this is the verification)
 - `npm run lint` — ESLint
 - `npm run preview` — preview build
 
 ## Architecture
 - Intro animation system: `introPhase` state controls transitions ('center' → 'expand' → 'move' → 'exit')
-- GalaxyBackground: Three.js animated spiral galaxy with mobile performance optimization
+- GalaxyBackground: Three.js animated spiral galaxy with mobile performance optimization (reduced particles/DPR/FPS on mobile, respects prefers-reduced-motion)
+- Animations: `motion` (v12) used for transitions — not CSS-only, reach for it before adding another anim lib
 - Projects: defined in `portfolioData.tsx`, rendered via `ProjectCard` and `ProjectDetailPage`
-- Color palette: CSS variables in `index.css` (test palette active by default)
+- Color palette: CSS variables in `index.css` (cozy/blue/test palettes; test palette active by default)
 - Mobile: burger menu, scroll progress bar, back-to-top button
 
 ## CSS Fixes Applied

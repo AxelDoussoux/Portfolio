@@ -80,7 +80,7 @@ const ProjectCard: React.FC<ProjectCardProps> = ({ project, onOpenProject }) => 
 
   return (
     <article
-      className="group relative h-full bg-white/74 backdrop-blur-lg border border-white/85 rounded-xl overflow-hidden shadow-[0_14px_36px_rgba(71,56,107,0.1)] hover:border-[#9D71E8]/80 transition-all duration-500 cursor-pointer flex flex-col"
+      className="group relative h-full w-full md:w-[calc(50%-1rem)] lg:w-[calc(33.333%-1.334rem)] bg-white/74 backdrop-blur-lg border border-white/85 rounded-xl overflow-hidden shadow-[0_14px_36px_rgba(71,56,107,0.1)] hover:border-[#9D71E8]/80 transition-all duration-500 cursor-pointer flex flex-col"
       onClick={handleOpenProject}
       onKeyDown={handleKeyDown}
       role="button"
