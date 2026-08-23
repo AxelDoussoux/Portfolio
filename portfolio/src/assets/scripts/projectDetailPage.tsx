@@ -358,13 +358,6 @@ const ProjectDetailPage: React.FC<ProjectDetailPageProps> = ({ project, onBack }
                   </li>
                 ))}
               </ul>
-
-              <div className="mt-6 rounded-2xl bg-white/55 border border-white/70 p-4">
-                <p className="text-xs uppercase tracking-[0.18em] text-[#5A4690] mb-2">Défis relevés</p>
-                <p className="text-[#47386B] leading-relaxed">
-                  {project.challenges || "Ce projet m'a permis d'approfondir mes compétences techniques et de relever plusieurs défis intéressants en matière de développement et d'optimisation."}
-                </p>
-              </div>
             </section>
           </div>
 

@@ -13,6 +13,7 @@ import {
   FiZap as Zap,
   FiGithub as Github,
   FiLinkedin as Linkedin,
+  FiMail as Mail,
 } from 'react-icons/fi';
 import PORTFOLIO_CONFIG from './portfolioData';
 import GalaxyBackground from './galaxyBackground';
@@ -468,9 +469,12 @@ const Portfolio: React.FC = () => {
       <section id="hero" className="min-h-screen flex items-center justify-center relative z-10 pt-28 pb-16 scroll-mt-28">
         <div className="max-w-5xl mx-auto px-2 w-full">
           <div className="text-center">
-            <h1 className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-bold mb-6 leading-[1.05] tracking-tight text-[#2F2352]">
-              {PORTFOLIO_CONFIG.title}
+            <h1 className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-bold mb-3 leading-[1.05] tracking-tight text-[#2F2352]">
+              {PORTFOLIO_CONFIG.name}
             </h1>
+            <p className="text-2xl sm:text-3xl font-semibold text-[#9D71E8] mb-6 tracking-tight">
+              {PORTFOLIO_CONFIG.title}
+            </p>
             <p className="text-lg sm:text-xl text-[#47386B] max-w-3xl mx-auto leading-relaxed mb-8 sm:mb-10">
               {PORTFOLIO_CONFIG.bio}
             </p>
@@ -498,7 +502,7 @@ const Portfolio: React.FC = () => {
           <div className="mt-10 flex justify-center">
             <button 
               onClick={() => scrollToSection('about')}
-              className="animate-bounce p-3 bg-white/35 hover:bg-[#BE99FF]/85 rounded-full border border-white/60 transition-colors backdrop-blur-sm text-[#241A42]"
+              className="scroll-hint p-3 bg-white/35 hover:bg-[#BE99FF]/85 rounded-full border border-white/60 transition-colors backdrop-blur-sm text-[#241A42]"
               aria-label="Descendre vers la section À propos"
             >
               <ChevronDown size={24} />
@@ -567,38 +571,39 @@ const Portfolio: React.FC = () => {
                 <div className="grid md:grid-cols-3 gap-6">
                   {/* Info principale */}
                   <div className="md:col-span-2">
-                    <div className="flex flex-wrap items-start gap-4 mb-1">
-                      <div className="flex items-center gap-3">
-                        <Briefcase className="text-[#9D71E8]" size={20} />
-                        <h3 className="text-2xl font-bold text-[#2F2352]">{experience.role}</h3>
+                    <div className="flex items-start justify-between gap-4 mb-1">
+                      <div>
+                        <div className="flex flex-wrap items-start gap-4 mb-1">
+                          <div className="flex items-center gap-3">
+                            <Briefcase className="text-[#9D71E8]" size={20} />
+                            <h3 className="text-2xl font-bold text-[#2F2352]">{experience.role}</h3>
+                          </div>
+                          <div className="flex mt-2 items-top gap-3 text-[#47386B]">
+                            <MapPin size={16} />
+                            <span className="font-semibold">{experience.company}</span>
+                          </div>
+                        </div>
+
+                        <div className="flex items-center gap-2 mb-4 text-[#47386B]">
+                          <Calendar size={16} />
+                          <span>{experience.period}</span>
+                        </div>
                       </div>
-                      <div className="flex mt-2 items-top gap-3 text-[#47386B]">
-                        <MapPin size={16} />
-                        <span className="font-semibold">{experience.company}</span>
-                        
-                      </div>
-                    </div>
-                    
-                    <div className="flex items-center gap-2 mb-4 text-[#47386B]">
-                      <Calendar size={16} />
-                      <span>{experience.period}</span>
+
+                      {experience.logo && (
+                        <img
+                          src={experience.logo}
+                          alt={`${experience.company} logo`}
+                          loading="lazy"
+                          className="w-14 h-14 md:w-16 md:h-16 flex-shrink-0 object-contain bg-white/60 rounded-lg p-1.5"
+                        />
+                      )}
                     </div>
                     
                     <p className="text-[#2F2352]/90 mb-6 leading-relaxed">
                       {experience.description}
                     </p>
 
-                    {/* Logo de l'entreprise */}
-                    {experience.logo && (
-                    <div className="absolute top-20 md:top-3 right-4 w-16 h-16 md:w-20 md:h-20 p-1 flex items-center justify-center">
-                      <img 
-                        src={experience.logo} 
-                        alt={`${experience.company} logo`}
-                        className="w-full h-full object-contain"
-                      />
-                    </div>
-                    )}
-                    
                     {/* Technologies */}
                     <div className="mb-6">
                       <h4 className="text-lg font-semibold mb-3 text-[#47386B]">Compétences utilisées</h4>
@@ -649,21 +654,33 @@ const Portfolio: React.FC = () => {
                 <CheckCircle size={22} className="text-[#9D71E8]" />
                 Ce que je maîtrise
               </h3>
-              <div className="flex flex-wrap justify-center gap-4">
-                {PORTFOLIO_CONFIG.skills.map((skill, index) => {
-                  const IconComponent = skill.icon;
-                  return (
-                    <div key={index} className="w-full sm:w-[calc((100%-1rem)/2)] lg:w-[calc((100%-3rem)/4)] p-5 rounded-xl bg-[#C9DCFF]/80 border border-[#BE99FF]/70 hover:border-[#9D71E8]/80 transition-all duration-300 group">
-                      <div className="text-center">
-                        <div className="flex justify-center mb-3">
-                          <IconComponent size={42} className="text-[#9D71E8] group-hover:text-[#2F2352] transition-colors" />
-                        </div>
-                        <h4 className="text-base font-semibold mb-1">{skill.name}</h4>
-                        <p className="text-xs text-[#47386B]">{skill.category}</p>
-                      </div>
+              <div className="space-y-6">
+                {Object.entries(
+                  PORTFOLIO_CONFIG.skills.reduce<Record<string, (typeof PORTFOLIO_CONFIG.skills)[number][]>>(
+                    (groups, skill) => {
+                      (groups[skill.category] ??= []).push(skill);
+                      return groups;
+                    },
+                    {}
+                  )
+                ).map(([category, skills]) => (
+                  <div key={category}>
+                    <p className="text-xs font-semibold uppercase tracking-[0.18em] text-[#5A4690] mb-3">
+                      {category}
+                    </p>
+                    <div className="flex flex-wrap gap-3">
+                      {skills.map((skill, skillIndex) => {
+                        const IconComponent = skill.icon;
+                        return (
+                          <div key={`${category}-${skillIndex}`} className="flex items-center gap-3 px-4 py-2.5 rounded-xl bg-[#C9DCFF]/80 border border-[#BE99FF]/70 hover:border-[#9D71E8]/80 hover:bg-[#C9DCFF] transition-all duration-300 group">
+                            <IconComponent size={22} className="text-[#9D71E8] group-hover:text-[#2F2352] transition-colors" />
+                            <span className="text-sm font-semibold">{skill.name}</span>
+                          </div>
+                        );
+                      })}
                     </div>
-                  );
-                })}
+                  </div>
+                ))}
               </div>
             </div>
 
@@ -676,14 +693,9 @@ const Portfolio: React.FC = () => {
                 {PORTFOLIO_CONFIG.learningSkills.map((skill, index) => {
                   const IconComponent = skill.icon;
                   return (
-                    <div key={index} className="w-full sm:w-[calc((100%-1rem)/2)] lg:w-[calc((100%-3rem)/4)] p-5 rounded-xl bg-[#B2C9FF]/70 border border-[#BE99FF]/80 hover:border-[#9D71E8]/80 transition-all duration-300 group">
-                      <div className="text-center">
-                        <div className="flex justify-center mb-3">
-                          <IconComponent size={40} className="text-[#5A4690] group-hover:text-[#2F2352] transition-colors" />
-                        </div>
-                        <h4 className="text-base font-semibold mb-1">{skill.name}</h4>
-                        <p className="text-xs text-[#47386B]">{skill.category}</p>
-                      </div>
+                    <div key={index} className="flex items-center gap-3 px-4 py-2.5 rounded-xl bg-[#B2C9FF]/70 border border-[#BE99FF]/80 hover:border-[#9D71E8]/80 hover:bg-[#B2C9FF] transition-all duration-300 group">
+                      <IconComponent size={22} className="text-[#5A4690] group-hover:text-[#2F2352] transition-colors" />
+                      <span className="text-sm font-semibold">{skill.name}</span>
                     </div>
                   );
                 })}
@@ -729,6 +741,17 @@ const Portfolio: React.FC = () => {
               <Github size={24} className="hidden sm:block" />
               GitHub
             </a>
+            {PORTFOLIO_CONFIG.email && (
+              <a
+                href={`mailto:${PORTFOLIO_CONFIG.email}`}
+                className="flex items-center gap-3 px-6 sm:px-8 py-3 sm:py-4 bg-[#B8B8FF] hover:bg-[#9381FF] text-[#35275B] rounded-xl transition-colors text-base sm:text-lg"
+                aria-label={`Envoyer un e-mail à ${PORTFOLIO_CONFIG.email}`}
+              >
+                <Mail size={20} className="sm:hidden" />
+                <Mail size={24} className="hidden sm:block" />
+                E-mail
+              </a>
+            )}
           </div>
         </div>
       </section>

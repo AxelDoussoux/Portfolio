@@ -42,13 +42,6 @@ const ProjectCard: React.FC<ProjectCardProps> = ({ project, onOpenProject }) => 
     onOpenProject(project.id);
   };
 
-  const handleKeyDown = (event: React.KeyboardEvent<HTMLElement>) => {
-    if (event.key === 'Enter' || event.key === ' ') {
-      event.preventDefault();
-      handleOpenProject();
-    }
-  };
-
   const toggleVideo = (event: React.MouseEvent) => {
     event.stopPropagation();
     if (project.video) {
@@ -80,13 +73,17 @@ const ProjectCard: React.FC<ProjectCardProps> = ({ project, onOpenProject }) => 
 
   return (
     <article
-      className="group relative h-full w-full md:w-[calc(50%-1rem)] lg:w-[calc(33.333%-1.334rem)] bg-white/74 backdrop-blur-lg border border-white/85 rounded-xl overflow-hidden shadow-[0_14px_36px_rgba(71,56,107,0.1)] hover:border-[#9D71E8]/80 transition-all duration-500 cursor-pointer flex flex-col"
-      onClick={handleOpenProject}
-      onKeyDown={handleKeyDown}
-      role="button"
-      tabIndex={0}
-      aria-label={`Ouvrir la page détaillée du projet ${project.title}`}
+      className="group relative h-full w-full md:w-[calc(50%-1rem)] lg:w-[calc(33.333%-1.334rem)] bg-white/74 backdrop-blur-lg border border-white/85 rounded-xl overflow-hidden shadow-[0_14px_36px_rgba(71,56,107,0.1)] hover:border-[#9D71E8]/80 transition-all duration-500 flex flex-col"
     >
+      <a
+        href={`#project-${project.id}`}
+        onClick={(event) => {
+          event.preventDefault();
+          handleOpenProject();
+        }}
+        className="absolute inset-0 z-10"
+        aria-label={`Ouvrir la page détaillée du projet ${project.title}`}
+      />
       <div className="relative aspect-video overflow-hidden flex-shrink-0 bg-[#C9DCFF]/80">
         {showVideo && project.video ? (
           <div className="relative w-full h-full">
@@ -113,7 +110,7 @@ const ProjectCard: React.FC<ProjectCardProps> = ({ project, onOpenProject }) => 
             <button
               onClick={togglePlayPause}
               type="button"
-              className="absolute top-2 right-4 bg-black/50 hover:bg-black/70 text-white p-2 rounded-full transition-colors z-10"
+              className="absolute top-2 right-4 bg-black/50 hover:bg-black/70 text-white p-2 rounded-full transition-colors z-10 md:z-30"
               aria-label={isVideoPlaying ? 'Mettre la video en pause' : 'Lancer la video'}
             >
               {isVideoPlaying ? <Pause size={20} /> : <Play size={20} />}
@@ -129,7 +126,7 @@ const ProjectCard: React.FC<ProjectCardProps> = ({ project, onOpenProject }) => 
           <button
             onClick={toggleVideo}
             type="button"
-            className="absolute top-4 left-4 bg-[#9D71E8]/90 hover:bg-[#BE99FF] text-[#241A42] p-2 rounded-full transition-all duration-300 opacity-100 md:opacity-0 md:group-hover:opacity-100"
+            className="absolute top-4 left-4 bg-[#9D71E8]/90 hover:bg-[#BE99FF] text-[#241A42] p-2 rounded-full transition-all duration-300 opacity-100 md:opacity-0 md:group-hover:opacity-100 z-10 md:z-30"
             aria-label={showVideo ? "Afficher l'image du projet" : 'Afficher la video du projet'}
           >
             {showVideo ? <Eye size={20} /> : <Play size={20} />}
@@ -168,7 +165,7 @@ const ProjectCard: React.FC<ProjectCardProps> = ({ project, onOpenProject }) => 
 
         <p className="text-[#47386B] mb-4 leading-relaxed line-clamp-2 flex-grow">{project.description}</p>
 
-        <div className="flex items-end justify-between gap-3 mt-auto">
+        <div className="flex items-end justify-between gap-3 mt-auto relative z-20">
           <div className="flex gap-2.5">
             {project.github && (
               <a
@@ -176,7 +173,6 @@ const ProjectCard: React.FC<ProjectCardProps> = ({ project, onOpenProject }) => 
                 className="inline-flex items-center justify-center w-10 h-10 bg-[#2F2352] hover:bg-[#35275B] text-[#F2F7FF] rounded-lg transition-colors"
                 target="_blank"
                 rel="noopener noreferrer"
-                onClick={(event) => event.stopPropagation()}
                 aria-label={`Voir le code source du projet ${project.title}`}
               >
                 <Github size={16} />
@@ -188,7 +184,6 @@ const ProjectCard: React.FC<ProjectCardProps> = ({ project, onOpenProject }) => 
                 className="inline-flex items-center justify-center w-10 h-10 bg-[#9D71E8] hover:bg-[#BE99FF] text-[#241A42] rounded-lg transition-colors"
                 target="_blank"
                 rel="noopener noreferrer"
-                onClick={(event) => event.stopPropagation()}
                 aria-label={`Ouvrir l'aperçu en direct du projet ${project.title}`}
               >
                 <ExternalLink size={16} />
