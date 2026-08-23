@@ -8,7 +8,10 @@ import {
   FiDatabase as Database,
   FiLayers as Layers,
   FiWind as Waves,
-  FiLayout as LayoutTemplate
+  FiLayout as LayoutTemplate,
+  FiBox as Box,
+  FiDisc as Disc,
+  FiList as List,
 } from 'react-icons/fi';
 
 // Configuration du portfolio
@@ -26,21 +29,29 @@ const PORTFOLIO_CONFIG = {
     { name: "TypeScript", icon: Zap, category: "Frontend" },
     { name: "TailWindCSS", icon: Waves, category: "Frontend" },
     { name: "Three.js", icon: Globe, category: "Frontend" },
+    { name: "Next.js", icon: Globe, category: "Frontend" },
+    { name: "Vite", icon: Zap, category: "Frontend" },
     { name: "Supabase", icon: Database, category: "Backend & Données" },
     { name: "PostgreSQL", icon: Database, category: "Backend & Données" },
     { name: "Strapi", icon: LayoutTemplate, category: "Backend & Données" },
     { name: "API REST", icon: Server, category: "Backend & Données" },
+    { name: "Express", icon: Server, category: "Backend & Données" },
     { name: "Git", icon: GitBranch, category: "Outils" },
+    { name: "Docker", icon: Box, category: "Outils" },
+    { name: "Jira / Notion", icon: List, category: "Outils" },
     { name: "Blender", icon: Palette, category: "Création 3D" },
+    { name: "Unity", icon: Disc, category: "Création 3D" },
     { name: "Figma", icon: LayoutTemplate, category: "Design" },
     { name: "Adobe Suite", icon: Layers, category: "Design" },
     { name: "WordPress", icon: LayoutTemplate, category: "Design" },
+    { name: "Canva", icon: Palette, category: "Design" },
+    { name: "Framer", icon: LayoutTemplate, category: "Design" },
   ],
 
   learningSkills: [
     { name: "Rust", icon: GitBranch, category: "En cours d'apprentissage" },
-    { name: "Next.js", icon: Globe, category: "En cours d'apprentissage" },
     { name: "Node.js", icon: Server, category: "En cours d'apprentissage" },
+    { name: "GitHub Actions", icon: GitBranch, category: "En cours d'apprentissage" },
   ],
 
   projects: [
@@ -49,7 +60,7 @@ const PORTFOLIO_CONFIG = {
       title: "Les Enfants Du Rhône",
       description: "Site vitrine de la webradio lyonnaise Les Enfants Du Rhône : lecteur radio en direct, programmation des émissions, podcasts et ateliers, le tout alimenté par un back-office Strapi.",
       image: "/images/enfantsduRhone_1.png",
-      images: ["/images/enfantsduRhone_1.png"],
+      images: ["/images/enfantsduRhone_1.png", "/images/enfantsduRhone_2.png", "/images/enfantsduRhone_3.png"],
       video: "",
       technologies: ["React", "TypeScript", "TailwindCSS", "Strapi", "API REST"],
       github: "",
@@ -145,7 +156,7 @@ const PORTFOLIO_CONFIG = {
       id: 4,
       role: "Développeur Fullstack",
       company: "Les Enfants Du Rhône",
-      logo: "/images/enfantsduRhone_1.png",
+      logo: "/images/LEDR_logo.png",
       period: "Avril - Juillet 2026",
       description: "Stage de développement web : création d'un site vitrine en React, TypeScript et Tailwind CSS, mise en place d'un back-office Strapi et développement d'un outil type Linktree pour partager les podcasts.",
       technologies: ["React", "TypeScript", "TailwindCSS", "Strapi", "Git"],

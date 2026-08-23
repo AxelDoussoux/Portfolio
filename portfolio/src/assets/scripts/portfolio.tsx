@@ -668,7 +668,7 @@ const Portfolio: React.FC = () => {
                     <p className="text-xs font-semibold uppercase tracking-[0.18em] text-[#5A4690] mb-3">
                       {category}
                     </p>
-                    <div className="flex flex-wrap gap-3">
+                    <div className="grid grid-cols-[repeat(auto-fit,minmax(200px,1fr))] gap-3">
                       {skills.map((skill, skillIndex) => {
                         const IconComponent = skill.icon;
                         return (
@@ -689,7 +689,7 @@ const Portfolio: React.FC = () => {
                 <Zap size={22} className="text-[#9D71E8]" />
                 Ce que j'apprends
               </h3>
-              <div className="flex flex-wrap justify-center gap-4">
+              <div className="grid grid-cols-[repeat(auto-fit,minmax(200px,1fr))] gap-4">
                 {PORTFOLIO_CONFIG.learningSkills.map((skill, index) => {
                   const IconComponent = skill.icon;
                   return (
