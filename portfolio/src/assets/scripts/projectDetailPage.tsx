@@ -17,7 +17,8 @@ import GalaxyBackground from './galaxyBackground';
 type Project = typeof PORTFOLIO_CONFIG.projects[number];
 
 const getYouTubeEmbedUrl = (url: string): string | null => {
-  const regex = /* eslint-disable no-useless-escape */ /(?:youtube\.com\/(?:[^\/]+\/.+\/|(?:v|e(?:mbed)?)\/|.*[?&]v=)|youtu\.be\/)([^"&?\/\s]{11})/;
+  // eslint-disable-next-line no-useless-escape
+  const regex = /(?:youtube\.com\/(?:[^\/]+\/.+\/|(?:v|e(?:mbed)?)\/|.*[?&]v=)|youtu\.be\/)([^"&?\/\s]{11})/;
   const match = url.match(regex);
   if (match && match[1]) {
     return `https://www.youtube.com/embed/${match[1]}?autoplay=1&mute=1&loop=1&playlist=${match[1]}`;
@@ -125,95 +126,123 @@ const ProjectDetailPage: React.FC<ProjectDetailPageProps> = ({ project, onBack }
     }
   };
 
+  const formattedId = String(project.id).padStart(2, '0');
+
   return (
-    <div className="min-h-screen text-[#2F2352] relative overflow-x-hidden">
+    <div className="min-h-screen text-[#0A0A0E] relative overflow-x-hidden bg-[#F4F5F8]">
       <GalaxyBackground />
 
-      <main id="main-content" className="relative z-10 pt-28 pb-16">
+      <main id="main-content" className="relative z-10 pt-24 pb-20">
         <div className="max-w-7xl mx-auto px-4 sm:px-6">
-          <div className="mb-8 flex flex-wrap items-center justify-between gap-4">
+          {/* Top navigation bar */}
+          <div className="mb-8 flex flex-wrap items-center justify-between gap-4 border-b border-black/15 pb-5">
             <button
               onClick={onBack}
-              className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white/40 backdrop-blur-xl border border-white/60 text-[#2F2352] shadow-[0_12px_30px_rgba(71,56,107,0.12)] hover:bg-[#C9DCFF]/85 transition-all"
+              className="brutal-btn px-5 py-2.5 bg-white text-black hover:bg-[#0055FF] hover:text-white border border-black text-xs tracking-wider shadow-[3px_3px_0px_#000000]"
               aria-label="Retour au portfolio"
             >
-              <ArrowLeft size={18} />
-              Retour au portfolio
+              <ArrowLeft size={16} className="mr-2" />
+              [← RETOUR_PORTFOLIO]
             </button>
+
+            {/* Breadcrumb / System path */}
+            <div className="font-mono text-xs text-[#64748B] flex items-center gap-2">
+              <span>ROOT</span>
+              <span className="text-[#0055FF]">/</span>
+              <span>WORKS</span>
+              <span className="text-[#0055FF]">/</span>
+              <span className="text-black font-bold">PRJ_{formattedId}_{project.title.replace(/\s+/g, '_').toUpperCase()}</span>
+            </div>
           </div>
 
-          <section className="rounded-[2rem] bg-white/30 backdrop-blur-xl border border-white/50 shadow-[0_24px_70px_rgba(71,56,107,0.14)] p-6 sm:p-8 lg:p-10">
+          {/* Main Hero Section of Project */}
+          <section className="bg-white border border-black shadow-[6px_6px_0px_#000000] p-6 sm:p-8 lg:p-10 mb-8">
             <div className="grid gap-8 lg:grid-cols-[1.05fr_0.95fr]">
+              {/* Left Column: Details */}
               <div className="space-y-6">
-                <div className="space-y-4">
-                  <p className="text-xs uppercase tracking-[0.3em] text-[#5A4690]">Projet détaillé</p>
-                  <div className="flex flex-wrap items-center gap-3">
-                    <h1 className="text-4xl sm:text-5xl lg:text-6xl font-bold tracking-tight leading-[1.03] text-[#2F2352]">
-                      {project.title}
-                    </h1>
-                    <span className="px-3 py-1 rounded-full bg-[#B2C9FF]/90 border border-[#BE99FF]/75 text-sm text-[#2F2352]">
-                      {project.status || 'Terminé'}
+                <div className="space-y-3">
+                  <div className="flex items-center gap-3">
+                    <span className="px-2.5 py-1 bg-[#E0EBFF] border border-[#0055FF] text-[#0055FF] text-xs font-mono font-bold tracking-wider">
+                      [STATUS: {project.status?.toUpperCase() || 'TERMINE'}]
+                    </span>
+                    <span className="text-xs font-mono text-[#64748B]">
+                      SYS_ID: #00{project.id}
                     </span>
                   </div>
-                  <p className="text-lg sm:text-xl text-[#47386B] leading-relaxed max-w-3xl">
+
+                  <h1 className="text-3xl sm:text-4xl lg:text-5xl font-extrabold font-display uppercase tracking-tight text-black leading-none">
+                    {project.title}
+                  </h1>
+
+                  <p className="text-base sm:text-lg text-[#475569] font-body leading-relaxed">
                     {project.description}
                   </p>
                 </div>
 
-                <div className="flex flex-wrap gap-3">
-                  <div className="px-4 py-2 rounded-2xl bg-white/55 border border-white/70 text-sm text-[#47386B]">
-                    <span className="block text-xs uppercase tracking-[0.2em] text-[#5A4690]">Année</span>
-                    <span className="font-semibold text-[#2F2352]">{project.year || '2025'}</span>
+                {/* Specification Grid */}
+                <div className="grid grid-cols-3 gap-3">
+                  <div className="p-3 bg-[#F8FAFC] border border-black/20">
+                    <span className="block text-[10px] font-mono uppercase tracking-wider text-[#64748B]">Année</span>
+                    <span className="font-mono font-bold text-black text-sm">{project.year || '2026'}</span>
                   </div>
-                  <div className="px-4 py-2 rounded-2xl bg-white/55 border border-white/70 text-sm text-[#47386B]">
-                    <span className="block text-xs uppercase tracking-[0.2em] text-[#5A4690]">Durée</span>
-                    <span className="font-semibold text-[#2F2352]">{project.duration || '2-3 mois'}</span>
+                  <div className="p-3 bg-[#F8FAFC] border border-black/20">
+                    <span className="block text-[10px] font-mono uppercase tracking-wider text-[#64748B]">Durée</span>
+                    <span className="font-mono font-bold text-black text-sm">{project.duration || '2-3 mois'}</span>
                   </div>
-                  <div className="px-4 py-2 rounded-2xl bg-white/55 border border-white/70 text-sm text-[#47386B]">
-                    <span className="block text-xs uppercase tracking-[0.2em] text-[#5A4690]">Type</span>
-                    <span className="font-semibold text-[#2F2352]">{project.type || 'Projet personnel'}</span>
+                  <div className="p-3 bg-[#F8FAFC] border border-black/20">
+                    <span className="block text-[10px] font-mono uppercase tracking-wider text-[#64748B]">Type</span>
+                    <span className="font-mono font-bold text-black text-sm truncate block" title={project.type}>{project.type || 'Projet'}</span>
                   </div>
                 </div>
 
-                <div className="flex flex-wrap gap-3">
+                {/* Primary CTA Buttons */}
+                <div className="flex flex-wrap gap-4 pt-2">
                   {project.github && (
                     <a
                       href={project.github}
-                      className="inline-flex items-center gap-2 px-5 py-3 rounded-full bg-[#2F2352] text-[#F2F7FF] hover:bg-[#35275B] transition-colors"
+                      className="brutal-btn px-5 py-3 bg-white text-black hover:bg-black hover:text-white border border-black text-xs tracking-wider shadow-[4px_4px_0px_#000000]"
                       target="_blank"
                       rel="noopener noreferrer"
                     >
-                      <Github size={18} />
-                      Voir le code
+                      <Github size={18} className="mr-2" />
+                      VOIR LE CODE REPO →
                     </a>
                   )}
                   {project.demo && (
                     <a
                       href={project.demo}
-                      className="inline-flex items-center gap-2 px-5 py-3 rounded-full bg-[#9D71E8] text-[#241A42] hover:bg-[#BE99FF] transition-colors"
+                      className="brutal-btn px-5 py-3 bg-[#0055FF] text-white hover:bg-black hover:text-white border border-black text-xs tracking-wider shadow-[4px_4px_0px_#000000]"
                       target="_blank"
                       rel="noopener noreferrer"
                     >
-                      <ExternalLink size={18} />
-                      Aperçu en direct
+                      <ExternalLink size={18} className="mr-2" />
+                      DEMO EN DIRECT ↗
                     </a>
                   )}
                 </div>
 
-                <div className="rounded-[1.75rem] bg-white/45 border border-white/70 p-5 sm:p-6 shadow-[0_14px_30px_rgba(71,56,107,0.08)]">
-                  <h2 className="text-2xl font-semibold text-[#2F2352] mb-4 flex items-center gap-2">
-                    <Code size={22} className="text-[#9D71E8]" />
-                    Résumé du projet
+                {/* Challenges Block */}
+                <div className="p-5 bg-[#F1F5F9] border-l-4 border-l-[#0055FF] border border-black/15">
+                  <h2 className="text-sm font-mono font-bold text-black uppercase tracking-wider mb-2 flex items-center gap-2">
+                    <Code size={16} className="text-[#0055FF]" />
+                    [DEFIS_TECHNIQUES & RESOLUTION]
                   </h2>
-                  <p className="text-[#47386B] leading-relaxed">
-                    {project.challenges || "Ce projet m'a permis d'approfondir mes compétences techniques et de relever plusieurs défis intéressants en matière de développement et d'optimisation."}
+                  <p className="text-sm text-[#475569] leading-relaxed font-body">
+                    {project.challenges || "Conception modulaire et optimisation poussée pour garantir fluidité, performance et évolutivité."}
                   </p>
                 </div>
               </div>
 
-              <div className="space-y-4">
-                <div className="overflow-hidden rounded-[1.9rem] border border-white/80 bg-[#C9DCFF]/75 shadow-[0_20px_40px_rgba(71,56,107,0.12)]">
-                  <div className="relative aspect-video">
+              {/* Right Column: Visual Frame */}
+              <div className="space-y-3">
+                <div className="border border-black bg-black shadow-[4px_4px_0px_#000000]">
+                  {/* Visual Header */}
+                  <div className="flex items-center justify-between px-3 py-1.5 bg-[#EEF2F7] border-b border-black text-[11px] font-mono text-[#64748B]">
+                    <span>VIEWPORT // {showVideo ? 'VIDEO_STREAM' : `FRAME_${currentImageIndex + 1}_OF_${projectImages.length}`}</span>
+                    <span className="text-[#0055FF] font-bold">● ACTIVE</span>
+                  </div>
+
+                  <div className="relative aspect-video bg-[#0A0A0E] overflow-hidden">
                     {showVideo && project.video ? (
                       <div className="relative h-full w-full">
                         {isYouTube && youtubeEmbedUrl ? (
@@ -229,7 +258,7 @@ const ProjectDetailPage: React.FC<ProjectDetailPageProps> = ({ project, onBack }
                           <video
                             ref={videoRef}
                             src={project.video}
-                            className="h-full w-full object-contain bg-[#C9DCFF]"
+                            className="h-full w-full object-contain bg-black"
                             loop
                             muted
                             autoPlay
@@ -239,17 +268,17 @@ const ProjectDetailPage: React.FC<ProjectDetailPageProps> = ({ project, onBack }
                         <button
                           onClick={togglePlayPause}
                           type="button"
-                          className="absolute top-4 right-4 bg-black/50 hover:bg-black/70 text-white p-2 rounded-full transition-colors"
+                          className="absolute top-3 right-3 bg-black text-white border border-black p-2 transition-colors hover:bg-[#0055FF]"
                           aria-label={isVideoPlaying ? 'Mettre la vidéo en pause' : 'Lancer la vidéo'}
                         >
-                          {isVideoPlaying ? <Pause size={20} /> : <Play size={20} />}
+                          {isVideoPlaying ? <Pause size={18} /> : <Play size={18} />}
                         </button>
                       </div>
                     ) : (
                       <img
                         src={projectImages[currentImageIndex]}
                         alt={project.title}
-                        className="h-full w-full object-cover transition-transform duration-500"
+                        className="h-full w-full object-cover"
                       />
                     )}
 
@@ -257,10 +286,11 @@ const ProjectDetailPage: React.FC<ProjectDetailPageProps> = ({ project, onBack }
                       <button
                         onClick={toggleVideo}
                         type="button"
-                        className="absolute top-4 left-4 bg-[#9D71E8]/90 hover:bg-[#BE99FF] text-[#241A42] p-2 rounded-full transition-all duration-300"
+                        className="absolute top-3 left-3 bg-black text-white border border-black px-2.5 py-1 font-mono text-xs flex items-center gap-1.5 hover:bg-[#0055FF] transition-colors"
                         aria-label={showVideo ? "Afficher l'image du projet" : 'Afficher la vidéo du projet'}
                       >
-                        {showVideo ? <Eye size={20} /> : <Play size={20} />}
+                        {showVideo ? <Eye size={14} /> : <Play size={14} />}
+                        <span>{showVideo ? 'IMG' : 'VIDEO'}</span>
                       </button>
                     )}
 
@@ -269,118 +299,119 @@ const ProjectDetailPage: React.FC<ProjectDetailPageProps> = ({ project, onBack }
                         <button
                           type="button"
                           onClick={() => goToRelativeImage(-1)}
-                          className="absolute left-3 top-1/2 -translate-y-1/2 z-10 inline-flex h-8 w-8 items-center justify-center rounded-full bg-white/70 hover:bg-white text-[#2F2352] border border-white/80 transition-colors"
-                          aria-label={`Image précédente du projet ${project.title}`}
+                          className="absolute left-2 top-1/2 -translate-y-1/2 z-10 w-9 h-9 flex items-center justify-center bg-black/80 hover:bg-[#0055FF] text-white border border-white/50 hover:border-[#0055FF] transition-colors"
+                          aria-label={`Image précédente`}
                         >
-                          <ChevronLeft size={16} />
+                          <ChevronLeft size={18} />
                         </button>
 
                         <button
                           type="button"
                           onClick={() => goToRelativeImage(1)}
-                          className="absolute right-3 top-1/2 -translate-y-1/2 z-10 inline-flex h-8 w-8 items-center justify-center rounded-full bg-white/70 hover:bg-white text-[#2F2352] border border-white/80 transition-colors"
-                          aria-label={`Image suivante du projet ${project.title}`}
+                          className="absolute right-2 top-1/2 -translate-y-1/2 z-10 w-9 h-9 flex items-center justify-center bg-black/80 hover:bg-[#0055FF] text-white border border-white/50 hover:border-[#0055FF] transition-colors"
+                          aria-label={`Image suivante`}
                         >
-                          <ChevronRight size={16} />
+                          <ChevronRight size={18} />
                         </button>
-
-                        <div className="absolute bottom-3 right-3 z-10 flex items-center gap-1.5">
-                          {projectImages.map((_, index) => (
-                            <button
-                              key={`${project.id}-detail-dot-${index}`}
-                              type="button"
-                              onClick={() => goToImage(index)}
-                              className={`h-2 rounded-full transition-all ${
-                                currentImageIndex === index
-                                  ? 'w-5 bg-[#9D71E8]'
-                                  : 'w-2 bg-white/75 hover:bg-white'
-                              }`}
-                              aria-label={`Afficher l'image ${index + 1} du projet ${project.title}`}
-                            />
-                          ))}
-                        </div>
                       </>
                     )}
                   </div>
                 </div>
 
+                {/* Carousel thumbnail pills */}
+                {hasImageCarousel && !showVideo && (
+                  <div className="flex items-center justify-end gap-2 font-mono text-xs">
+                    {projectImages.map((_, index) => (
+                      <button
+                        key={`${project.id}-detail-dot-${index}`}
+                        type="button"
+                        onClick={() => goToImage(index)}
+                        className={`px-2.5 py-1 border transition-colors ${
+                          currentImageIndex === index
+                            ? 'bg-[#0055FF] text-white border-black font-bold shadow-[2px_2px_0px_#000000]'
+                            : 'bg-white text-[#475569] border-black/30 hover:border-black'
+                        }`}
+                      >
+                        [0{index + 1}]
+                      </button>
+                    ))}
+                  </div>
+                )}
               </div>
             </div>
           </section>
 
-          <div className="mt-8 grid gap-6 lg:grid-cols-[1fr_1.1fr]">
-            <section className="rounded-[1.75rem] bg-white/30 backdrop-blur-xl border border-white/50 shadow-[0_18px_45px_rgba(71,56,107,0.1)] p-6 sm:p-7">
-              <h2 className="text-2xl font-semibold text-[#2F2352] mb-5 flex items-center gap-2">
-                <Calendar size={22} className="text-[#9D71E8]" />
-                Informations clés
+          {/* Secondary Grid: Technologies & Features */}
+          <div className="grid gap-6 lg:grid-cols-2">
+            {/* Technologies Used */}
+            <section className="bg-white border border-black p-6 shadow-[4px_4px_0px_#000000]">
+              <h2 className="text-lg font-mono font-bold text-black uppercase tracking-wider mb-4 flex items-center gap-2 border-b border-black/15 pb-3">
+                <Calendar size={18} className="text-[#0055FF]" />
+                [01 // STACK_TECHNIQUE]
               </h2>
-
-              <div className="grid sm:grid-cols-2 gap-4">
-                <div className="rounded-2xl bg-[#C9DCFF]/70 border border-[#BE99FF]/65 p-4">
-                  <p className="text-xs uppercase tracking-[0.18em] text-[#5A4690] mb-1">Technologies</p>
-                  <div className="flex flex-wrap gap-2">
-                    {project.technologies.map((technology, index) => (
-                      <span key={`${project.id}-tech-${index}`} className="px-3 py-1 rounded-full bg-white/80 border border-white/90 text-sm text-[#2F2352]">
-                        {technology}
-                      </span>
-                    ))}
-                  </div>
-                </div>
-
-                <div className="rounded-2xl bg-[#B2C9FF]/60 border border-[#BE99FF]/65 p-4">
-                  <p className="text-xs uppercase tracking-[0.18em] text-[#5A4690] mb-1">Contexte</p>
-                  <div className="space-y-2 text-sm text-[#47386B]">
-                    <p><span className="font-semibold text-[#2F2352]">Année :</span> {project.year || '2025'}</p>
-                    <p><span className="font-semibold text-[#2F2352]">Durée :</span> {project.duration || '2-3 mois'}</p>
-                    <p><span className="font-semibold text-[#2F2352]">Type :</span> {project.type || 'Projet personnel'}</p>
-                    <p><span className="font-semibold text-[#2F2352]">Statut :</span> {project.status || 'Terminé'}</p>
-                  </div>
-                </div>
+              <div className="flex flex-wrap gap-2 mb-4">
+                {project.technologies.map((tech, index) => (
+                  <span
+                    key={`${project.id}-tech-${index}`}
+                    className="px-3 py-1 bg-[#F1F5F9] border border-black/20 text-xs font-mono text-[#0A0A0E] font-medium"
+                  >
+                    {tech}
+                  </span>
+                ))}
               </div>
+              <p className="text-xs font-mono text-[#64748B]">
+                Architecture sélectionnée pour optimiser la réactivité et la scalabilité logicielle.
+              </p>
             </section>
 
-            <section className="rounded-[1.75rem] bg-white/30 backdrop-blur-xl border border-white/50 shadow-[0_18px_45px_rgba(71,56,107,0.1)] p-6 sm:p-7">
-              <h2 className="text-2xl font-semibold text-[#2F2352] mb-5 flex items-center gap-2">
-                <Code size={22} className="text-[#9D71E8]" />
-                Fonctionnalités et apprentissages
+            {/* Features */}
+            <section className="bg-white border border-black p-6 shadow-[4px_4px_0px_#000000]">
+              <h2 className="text-lg font-mono font-bold text-black uppercase tracking-wider mb-4 flex items-center gap-2 border-b border-black/15 pb-3">
+                <Code size={18} className="text-[#0055FF]" />
+                [02 // SPECIFICATIONS_FONCTIONNELLES]
               </h2>
-
-              <ul className="space-y-3 text-[#47386B]">
+              <ul className="space-y-2.5">
                 {(project.features || [
                   'Interface utilisateur intuitive',
                   'Performance optimisée',
                   'Design responsive',
                   "Intégration d'APIs",
                 ]).map((feature, index) => (
-                  <li key={`${project.id}-feature-${index}`} className="flex items-start gap-3">
-                    <span className="mt-2 h-2 w-2 rounded-full bg-[#9D71E8] flex-shrink-0" aria-hidden="true" />
-                    <span>{feature}</span>
+                  <li key={`${project.id}-feature-${index}`} className="flex items-start gap-2.5 text-sm text-[#475569] font-body">
+                    <span className="text-[#0055FF] font-mono font-bold text-xs mt-0.5">■</span>
+                    <span className="leading-relaxed">{feature}</span>
                   </li>
                 ))}
               </ul>
             </section>
           </div>
 
+          {/* Live Preview Section if Available */}
           {hasLivePreview ? (
-            <section className="mt-8 w-full rounded-[1.9rem] bg-white/30 backdrop-blur-xl border border-white/50 shadow-[0_18px_45px_rgba(71,56,107,0.12)] overflow-hidden">
-              <div className="flex flex-wrap items-center justify-between gap-3 border-b border-[#BE99FF]/40 px-5 sm:px-6 py-4">
-                <div>
-                  <p className="text-2xl font-semibold text-[#2F2352]">Aperçu en direct</p>
+            <section className="mt-8 bg-white border border-black shadow-[6px_6px_0px_#000000] overflow-hidden">
+              <div className="flex flex-wrap items-center justify-between gap-3 border-b border-black px-5 py-3 bg-[#EEF2F7]">
+                <div className="flex items-center gap-2">
+                  <div className="w-3 h-3 bg-[#FF3366] border border-black" />
+                  <div className="w-3 h-3 bg-[#FFE500] border border-black" />
+                  <div className="w-3 h-3 bg-[#0055FF] border border-black" />
+                  <span className="font-mono text-xs text-black ml-2 font-bold">
+                    BROWSER_VIEW // {project.demo}
+                  </span>
                 </div>
-                <span className="rounded-full bg-[#C9DCFF]/90 px-3 py-1 text-xs font-semibold text-[#2F2352]">
-                  Live
+                <span className="px-2 py-0.5 bg-[#0055FF] text-white font-mono text-xs font-bold border border-black">
+                  LIVE_PAGES
                 </span>
               </div>
-              <div className="p-4 sm:p-6">
-                <div className="relative h-[80vh] min-h-[720px] w-full overflow-hidden rounded-[1.4rem] border border-white/70 bg-white shadow-[0_14px_30px_rgba(71,56,107,0.08)]">
-                <iframe
-                  ref={iframeRef}
-                  src={project.demo}
-                  className="h-full w-full bg-white"
-                  style={{ zoom: 0.7 }}
-                  title={`Aperçu en direct du projet ${project.title}`}
-                  loading="lazy"
-                />
+              <div className="p-4 sm:p-6 bg-[#F4F5F8]">
+                <div className="relative h-[80vh] min-h-[640px] w-full overflow-hidden border border-black shadow-[4px_4px_0px_#000000]">
+                  <iframe
+                    ref={iframeRef}
+                    src={project.demo}
+                    className="h-full w-full bg-white"
+                    style={{ zoom: 0.8 }}
+                    title={`Aperçu en direct du projet ${project.title}`}
+                    loading="lazy"
+                  />
                 </div>
               </div>
             </section>

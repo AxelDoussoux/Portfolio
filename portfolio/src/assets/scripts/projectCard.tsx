@@ -6,13 +6,14 @@ import {
   FiGithub as Github,
   FiPause as Pause,
   FiPlay as Play,
-  FiPlus as Plus,
+  FiArrowUpRight as ArrowUpRight,
 } from 'react-icons/fi';
 
 type Project = typeof PORTFOLIO_CONFIG.projects[number];
 
 const getYouTubeEmbedUrl = (url: string): string | null => {
-  const regex = /* eslint-disable no-useless-escape */ /(?:youtube\.com\/(?:[^\/]+\/.+\/|(?:v|e(?:mbed)?)\/|.*[?&]v=)|youtu\.be\/)([^"&?\/\s]{11})/;
+  // eslint-disable-next-line no-useless-escape
+  const regex = /(?:youtube\.com\/(?:[^\/]+\/.+\/|(?:v|e(?:mbed)?)\/|.*[?&]v=)|youtu\.be\/)([^"&?\/\s]{11})/;
   const match = url.match(regex);
   if (match && match[1]) {
     return `https://www.youtube.com/embed/${match[1]}?autoplay=1&mute=1&loop=1&playlist=${match[1]}`;
@@ -71,10 +72,20 @@ const ProjectCard: React.FC<ProjectCardProps> = ({ project, onOpenProject }) => 
     }
   };
 
+  const formattedId = String(project.id).padStart(2, '0');
+
   return (
-    <article
-      className="group relative h-full w-full md:w-[calc(50%-1rem)] lg:w-[calc(33.333%-1.334rem)] bg-white/74 backdrop-blur-lg border border-white/85 rounded-xl overflow-hidden shadow-[0_14px_36px_rgba(71,56,107,0.1)] hover:border-[#9D71E8]/80 transition-all duration-500 flex flex-col"
-    >
+    <article className="group relative h-full w-full md:w-[calc(50%-1rem)] lg:w-[calc(33.333%-1.334rem)] bg-white border border-black shadow-[4px_4px_0px_#000000] hover:shadow-[6px_6px_0px_#0055FF] transition-all duration-150 flex flex-col">
+      {/* Top wireframe header bar */}
+      <div className="flex items-center justify-between px-4 py-2 border-b border-black bg-[#EEF2F7] text-xs font-mono">
+        <span className="text-[#0055FF] font-bold">
+          PRJ_{formattedId} // {project.year}
+        </span>
+        <span className="text-[#64748B] uppercase tracking-wider text-[10px] font-bold">
+          {project.type}
+        </span>
+      </div>
+
       <a
         href={`#project-${project.id}`}
         onClick={(event) => {
@@ -84,7 +95,9 @@ const ProjectCard: React.FC<ProjectCardProps> = ({ project, onOpenProject }) => 
         className="absolute inset-0 z-10"
         aria-label={`Ouvrir la page détaillée du projet ${project.title}`}
       />
-      <div className="relative aspect-video overflow-hidden flex-shrink-0 bg-[#C9DCFF]/80">
+
+      {/* Media display */}
+      <div className="relative aspect-video overflow-hidden flex-shrink-0 bg-[#E2E8F0] border-b border-black">
         {showVideo && project.video ? (
           <div className="relative w-full h-full">
             {isYouTube && youtubeEmbedUrl ? (
@@ -92,7 +105,6 @@ const ProjectCard: React.FC<ProjectCardProps> = ({ project, onOpenProject }) => 
                 ref={iframeRef}
                 src={youtubeEmbedUrl}
                 className="w-full h-full"
-                frameBorder="0"
                 allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
                 allowFullScreen
                 title={project.title}
@@ -101,7 +113,7 @@ const ProjectCard: React.FC<ProjectCardProps> = ({ project, onOpenProject }) => 
               <video
                 ref={videoRef}
                 src={project.video}
-                className="w-full h-full object-contain bg-[#C9DCFF]"
+                className="w-full h-full object-contain bg-black"
                 loop
                 muted
                 autoPlay
@@ -110,89 +122,98 @@ const ProjectCard: React.FC<ProjectCardProps> = ({ project, onOpenProject }) => 
             <button
               onClick={togglePlayPause}
               type="button"
-              className="absolute top-2 right-4 bg-black/50 hover:bg-black/70 text-white p-2 rounded-full transition-colors z-10 md:z-30"
-              aria-label={isVideoPlaying ? 'Mettre la video en pause' : 'Lancer la video'}
+              className="absolute top-2 right-2 bg-black text-white border border-black p-1.5 transition-colors z-20 hover:bg-[#0055FF]"
+              aria-label={isVideoPlaying ? 'Mettre la vidéo en pause' : 'Lancer la vidéo'}
             >
-              {isVideoPlaying ? <Pause size={20} /> : <Play size={20} />}
+              {isVideoPlaying ? <Pause size={18} /> : <Play size={18} />}
             </button>
           </div>
         ) : (
-          <img src={project.image} alt={project.title} className="w-full h-full object-cover bg-[#C9DCFF] group-hover:scale-105 transition-transform duration-500" />
+          <img
+            src={project.image}
+            alt={project.title}
+            className="w-full h-full object-cover group-hover:scale-105 transition-all duration-300"
+          />
         )}
 
-        <div className="absolute inset-0 bg-gradient-to-t from-[#2F2352]/8 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
-
+        {/* Video button toggle */}
         {project.video && (
           <button
             onClick={toggleVideo}
             type="button"
-            className="absolute top-4 left-4 bg-[#9D71E8]/90 hover:bg-[#BE99FF] text-[#241A42] p-2 rounded-full transition-all duration-300 opacity-100 md:opacity-0 md:group-hover:opacity-100 z-10 md:z-30"
-            aria-label={showVideo ? "Afficher l'image du projet" : 'Afficher la video du projet'}
+            className="absolute top-3 left-3 bg-black text-white border border-black px-2 py-1 font-mono text-xs z-20 flex items-center gap-1.5 hover:bg-[#0055FF] transition-colors"
+            aria-label={showVideo ? "Afficher l'image du projet" : 'Afficher la vidéo du projet'}
           >
-            {showVideo ? <Eye size={20} /> : <Play size={20} />}
+            {showVideo ? <Eye size={14} /> : <Play size={14} />}
+            <span>{showVideo ? 'IMG' : 'VIDEO'}</span>
           </button>
         )}
 
-        <div className="absolute bottom-4 right-4 bg-[#9D71E8]/90 text-[#241A42] p-2 rounded-full transition-all duration-300 opacity-0 group-hover:opacity-100" aria-hidden="true">
-          <Plus size={16} />
-        </div>
-
-        <div className="absolute bottom-4 left-4 right-16 opacity-100 md:opacity-0 md:group-hover:opacity-100 transition-opacity duration-300">
-          <div className="flex gap-2 mb-2">
-            {project.technologies.slice(0, 3).map((technology, index) => (
-              <span key={`${project.id}-tech-${index}`} className="px-2 py-1 bg-[#BE99FF]/95 text-xs rounded-full text-[#35275B] font-medium backdrop-blur-sm">
-                {technology}
-              </span>
-            ))}
-            {project.technologies.length > 3 && (
-              <span className="px-2 py-1 bg-[#BE99FF]/95 text-xs rounded-full text-[#35275B] font-medium backdrop-blur-sm">
-                +{project.technologies.length - 3} autres
-              </span>
-            )}
-          </div>
-        </div>
+        {/* Corner accent mark */}
+        <div className="absolute top-0 right-0 w-3 h-3 border-b border-l border-black/40 pointer-events-none" />
       </div>
 
-      <div className="p-5 sm:p-6 flex flex-col flex-grow">
-        <div className="flex justify-between items-start mb-2 gap-3">
-          <h3 className="text-xl font-bold text-[#2F2352] group-hover:text-[#5A4690] transition-colors flex-1">
-            {project.title}
+      {/* Content */}
+      <div className="p-5 sm:p-6 flex flex-col flex-grow bg-white">
+        {/* Title */}
+        <div className="mb-3">
+          <h3 className="text-xl font-bold font-display text-black group-hover:text-[#0055FF] transition-colors leading-tight flex items-center justify-between">
+            <span>{project.title}</span>
+            <ArrowUpRight size={20} className="text-[#64748B] group-hover:text-[#0055FF] group-hover:translate-x-1 group-hover:-translate-y-1 transition-transform" />
           </h3>
-          <span className="bg-[#B2C9FF] text-[#2F2352] rounded-full px-3 py-1 text-xs font-semibold border border-[#BE99FF]/90 whitespace-nowrap">
-            {project.year}
-          </span>
         </div>
 
-        <p className="text-[#47386B] mb-4 leading-relaxed line-clamp-2 flex-grow">{project.description}</p>
+        {/* Description */}
+        <p className="text-[#475569] font-body text-sm mb-5 leading-relaxed line-clamp-2 flex-grow">
+          {project.description}
+        </p>
 
-        <div className="flex items-end justify-between gap-3 mt-auto relative z-20">
-          <div className="flex gap-2.5">
+        {/* Technologies - Monospace tags */}
+        <div className="flex flex-wrap gap-1.5 mb-5">
+          {project.technologies.slice(0, 4).map((tech, index) => (
+            <span
+              key={`${project.id}-tech-${index}`}
+              className="px-2 py-0.5 bg-[#F1F5F9] border border-black/20 text-[#0A0A0E] text-xs font-mono font-medium"
+            >
+              {tech}
+            </span>
+          ))}
+          {project.technologies.length > 4 && (
+            <span className="px-1.5 py-0.5 bg-[#E0EBFF] border border-[#0055FF] text-[#0055FF] text-xs font-mono font-bold">
+              +{project.technologies.length - 4}
+            </span>
+          )}
+        </div>
+
+        {/* Footer actions */}
+        <div className="flex items-center justify-between gap-3 pt-4 border-t border-black/10 mt-auto relative z-20">
+          <div className="flex gap-2">
             {project.github && (
               <a
                 href={project.github}
-                className="inline-flex items-center justify-center w-10 h-10 bg-[#2F2352] hover:bg-[#35275B] text-[#F2F7FF] rounded-lg transition-colors"
+                className="inline-flex items-center justify-center w-8 h-8 bg-white hover:bg-black text-black hover:text-white border border-black transition-colors"
                 target="_blank"
                 rel="noopener noreferrer"
                 aria-label={`Voir le code source du projet ${project.title}`}
               >
-                <Github size={16} />
+                <Github size={15} />
               </a>
             )}
             {project.demo && (
               <a
                 href={project.demo}
-                className="inline-flex items-center justify-center w-10 h-10 bg-[#9D71E8] hover:bg-[#BE99FF] text-[#241A42] rounded-lg transition-colors"
+                className="inline-flex items-center justify-center w-8 h-8 bg-[#0055FF] hover:bg-black text-white border border-black transition-colors"
                 target="_blank"
                 rel="noopener noreferrer"
                 aria-label={`Ouvrir l'aperçu en direct du projet ${project.title}`}
               >
-                <ExternalLink size={16} />
+                <ExternalLink size={15} />
               </a>
             )}
           </div>
 
-          <span className="hidden sm:inline-flex items-center rounded-full bg-white/75 px-3 py-1 text-xs font-semibold text-[#47386B] border border-white/85">
-            Ouvrir la page
+          <span className="font-mono text-xs font-bold text-black group-hover:text-[#0055FF] flex items-center gap-1 transition-colors">
+            DETAILS // →
           </span>
         </div>
       </div>
