@@ -1,5 +1,6 @@
 import React, { useEffect, useRef, useState } from 'react';
-import { animate, stagger, steps } from 'animejs';
+import { animate, createTimeline, steps } from 'animejs';
+import { useReducedMotion } from './useReducedMotion';
 
 interface TypewriterTextProps {
   text: string;
@@ -8,88 +9,85 @@ interface TypewriterTextProps {
   className?: string;
 }
 
-const TypewriterText: React.FC<TypewriterTextProps> = ({
-  text,
-  play = true,
-  speed = 45,
-  className,
-}) => {
-  const ref = useRef<HTMLSpanElement>(null);
+const TypewriterText: React.FC<TypewriterTextProps> = ({ text, play = true, speed = 45, className }) => {
+  const reducedMotion = useReducedMotion();
+  const rootRef = useRef<HTMLSpanElement>(null);
+  const outputRef = useRef<HTMLSpanElement>(null);
   const cursorRef = useRef<HTMLSpanElement>(null);
+  const renderedTextRef = useRef('');
   const [inView, setInView] = useState(false);
 
   useEffect(() => {
-    const el = ref.current;
-    if (!el) return;
-
-    const observer = new IntersectionObserver(
-      (entries) => {
-        entries.forEach((entry) => {
-          if (entry.isIntersecting) {
-            setInView(true);
-            observer.disconnect();
-          }
-        });
-      },
-      { threshold: 0.4 },
-    );
-
-    observer.observe(el);
+    const element = rootRef.current;
+    if (!element) return;
+    const observer = new IntersectionObserver(([entry]) => {
+      if (!entry.isIntersecting) return;
+      setInView(true);
+      observer.disconnect();
+    }, { threshold: 0.35 });
+    observer.observe(element);
     return () => observer.disconnect();
   }, []);
 
   useEffect(() => {
-    const el = ref.current;
-    if (!el || !play || !inView) return;
-
-    const chars = Array.from(el.querySelectorAll<HTMLElement>('[data-type-char]'));
-
-    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
-      chars.forEach((char) => {
-        char.style.opacity = '1';
-      });
+    const output = outputRef.current;
+    const cursor = cursorRef.current;
+    if (!output) return;
+    if (reducedMotion) {
+      output.textContent = text;
+      renderedTextRef.current = text;
       return;
     }
+    if (!play || !inView) return;
 
-    const cursor = cursorRef.current;
-    let cursorAnimation: ReturnType<typeof animate> | null = null;
-    if (cursor) {
-      cursorAnimation = animate(cursor, {
-        opacity: [1, 0],
-        duration: 530,
-        loop: true,
-        alternate: true,
-        ease: steps(1),
-      });
-    }
-
-    const animation = animate(chars, {
-      opacity: [0, 1],
-      duration: 1,
-      delay: stagger(speed),
-      ease: 'linear',
-    });
-
-    return () => {
-      animation.cancel();
-      cursorAnimation?.cancel();
+    const previousChars = Array.from(renderedTextRef.current);
+    const nextChars = Array.from(text);
+    const state = { count: previousChars.length };
+    const render = (chars: string[]) => {
+      const count = Math.max(0, Math.min(chars.length, Math.round(state.count)));
+      const value = chars.slice(0, count).join('');
+      output.textContent = value;
+      renderedTextRef.current = value;
     };
-  }, [play, inView, speed]);
+    const cursorAnimation = cursor ? animate(cursor, {
+      opacity: [1, 0.18], scaleY: [1, 0.72], duration: 420,
+      alternate: true, loop: true, ease: steps(1),
+    }) : null;
+    const timeline = createTimeline();
+    if (previousChars.length > 0 && renderedTextRef.current !== text) {
+      timeline
+        .add(state, {
+          count: 0,
+          duration: Math.max(160, previousChars.length * Math.min(speed * 0.45, 22)),
+          ease: steps(previousChars.length),
+          onUpdate: () => render(previousChars),
+        })
+        .add(cursor ?? output, { opacity: [1, 0.25, 1], duration: 80, ease: steps(2) });
+    }
+    timeline.add(state, {
+      count: nextChars.length,
+      duration: Math.max(240, nextChars.length * speed),
+      delay: previousChars.length ? 25 : 120,
+      ease: steps(Math.max(1, nextChars.length)),
+      onUpdate: () => render(nextChars),
+      onComplete: () => {
+        output.textContent = text;
+        renderedTextRef.current = text;
+      },
+    });
+    return () => {
+      timeline.pause();
+      cursorAnimation?.revert();
+    };
+  }, [text, play, inView, speed, reducedMotion]);
 
   return (
-    <span ref={ref} className={className}>
-      <span aria-hidden="true">
-        {text.split('').map((char, index) => (
-          <span key={index} data-type-char style={{ opacity: 0 }}>
-            {char === ' ' ? '\u00A0' : char}
-          </span>
-        ))}
+    <span ref={rootRef} className={`typewriter ${className ?? ''}`}>
+      <span className="typewriter-sizer" aria-hidden="true">{text}</span>
+      <span className="typewriter-output" aria-hidden="true">
+        <span ref={outputRef}>{reducedMotion ? text : ''}</span>
+        <span ref={cursorRef} className="type-cursor" />
       </span>
-      <span
-        ref={cursorRef}
-        aria-hidden="true"
-        className="inline-block ml-1 w-[0.55em] h-[1em] align-[-0.15em] bg-[#0055FF]"
-      />
       <span className="sr-only">{text}</span>
     </span>
   );

@@ -1,6 +1,8 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { animate } from 'animejs';
 
+import { useReducedMotion } from './useReducedMotion';
+
 interface AnimatedCounterProps {
   value: number;
   prefix?: string;
@@ -18,6 +20,7 @@ const AnimatedCounter: React.FC<AnimatedCounterProps> = ({
   play = true,
   className,
 }) => {
+  const reducedMotion = useReducedMotion();
   const ref = useRef<HTMLSpanElement>(null);
   const [inView, setInView] = useState(false);
 
@@ -43,12 +46,13 @@ const AnimatedCounter: React.FC<AnimatedCounterProps> = ({
     const element = ref.current;
     if (!element || !play || !inView) return;
 
-    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+    if (reducedMotion) {
       element.textContent = `${prefix}${value}${suffix}`;
       return;
     }
 
     const counter = { value: 0 };
+    let emphasis: ReturnType<typeof animate> | null = null;
     const animation = animate(counter, {
       value,
       duration,
@@ -56,12 +60,21 @@ const AnimatedCounter: React.FC<AnimatedCounterProps> = ({
       onUpdate: () => {
         element.textContent = `${prefix}${Math.round(counter.value)}${suffix}`;
       },
+      onComplete: () => {
+        emphasis = animate(element, {
+          scale: [1, 1.12, 1],
+          color: ['#0055FF', '#0A0A0E', '#0055FF'],
+          duration: 420,
+          ease: 'outCubic',
+        });
+      },
     });
 
     return () => {
-      animation.cancel();
+      animation.revert();
+      emphasis?.revert();
     };
-  }, [play, inView, value, duration, prefix, suffix]);
+  }, [play, inView, value, duration, prefix, suffix, reducedMotion]);
 
   return (
     <span ref={ref} className={className} aria-label={`${prefix}${value}${suffix}`}>

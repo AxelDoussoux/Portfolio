@@ -11,6 +11,10 @@ import {
   FiChevronLeft as ChevronLeft,
   FiChevronRight as ChevronRight,
 } from 'react-icons/fi';
+import { animate } from 'animejs';
+import { useReducedMotion } from './useReducedMotion';
+import { useRevealMotion } from './useRevealMotion';
+import { useStaticInteractions } from './useStaticInteractions';
 import type PORTFOLIO_CONFIG from './portfolioData';
 import GalaxyBackground from './galaxyBackground';
 
@@ -40,6 +44,15 @@ interface ProjectDetailPageProps {
 }
 
 const ProjectDetailPage: React.FC<ProjectDetailPageProps> = ({ project, onBack }) => {
+  const reducedMotion = useReducedMotion();
+  const pageRef = useRef<HTMLDivElement>(null);
+  const imageRef = useRef<HTMLImageElement>(null);
+  const progressRef = useRef<HTMLSpanElement>(null);
+  const [carouselPaused, setCarouselPaused] = useState(false);
+  const [carouselInteracting, setCarouselInteracting] = useState(false);
+  const [pageVisible, setPageVisible] = useState(() => !document.hidden);
+  useRevealMotion(pageRef);
+  useStaticInteractions(pageRef);
   const [isVideoPlaying, setIsVideoPlaying] = useState(false);
   const [showVideo, setShowVideo] = useState(false);
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
@@ -76,14 +89,31 @@ const ProjectDetailPage: React.FC<ProjectDetailPageProps> = ({ project, onBack }
   }, [onBack]);
 
   useEffect(() => {
-    if (!hasImageCarousel || showVideo) return;
+    if (!hasImageCarousel || showVideo || reducedMotion || carouselPaused || carouselInteracting || !pageVisible) return;
 
+    const progress = progressRef.current ? animate(progressRef.current, {
+      scaleX: [0, 1], duration: 4500, ease: 'linear',
+    }) : null;
     const autoSlide = window.setInterval(() => {
       setCurrentImageIndex((previousIndex) => (previousIndex + 1) % projectImages.length);
     }, 4500);
 
-    return () => window.clearInterval(autoSlide);
-  }, [hasImageCarousel, projectImages.length, showVideo, carouselResetKey]);
+    return () => { window.clearInterval(autoSlide); progress?.revert(); };
+  }, [hasImageCarousel, projectImages.length, showVideo, carouselResetKey, currentImageIndex, reducedMotion, carouselPaused, carouselInteracting, pageVisible]);
+
+  useEffect(() => {
+    const handleVisibility = () => setPageVisible(!document.hidden);
+    document.addEventListener('visibilitychange', handleVisibility);
+    return () => document.removeEventListener('visibilitychange', handleVisibility);
+  }, []);
+
+  useEffect(() => {
+    if (!imageRef.current || showVideo || reducedMotion) return;
+    const animation = animate(imageRef.current, {
+      opacity: [0, 1], scale: [1.035, 1], duration: 480, ease: 'outCubic',
+    });
+    return () => { animation.revert(); };
+  }, [currentImageIndex, showVideo, reducedMotion]);
 
   const goToImage = (index: number) => {
     const normalizedIndex = ((index % projectImages.length) + projectImages.length) % projectImages.length;
@@ -129,13 +159,13 @@ const ProjectDetailPage: React.FC<ProjectDetailPageProps> = ({ project, onBack }
   const formattedId = String(project.id).padStart(2, '0');
 
   return (
-    <div className="min-h-screen text-[#0A0A0E] relative overflow-x-hidden bg-[#F4F5F8]">
+    <div ref={pageRef} className="project-page min-h-screen text-[#0A0A0E] relative overflow-x-hidden bg-[#F4F5F8]">
       <GalaxyBackground />
 
       <main id="main-content" className="relative z-10 pt-24 pb-20">
         <div className="max-w-7xl mx-auto px-4 sm:px-6">
           {/* Top navigation bar */}
-          <div className="mb-8 flex flex-wrap items-center justify-between gap-4 border-b border-black/15 pb-5">
+          <div data-anim className="mb-8 flex flex-wrap items-center justify-between gap-4 border-b border-black/15 pb-5">
             <button
               onClick={onBack}
               className="brutal-btn px-5 py-2.5 bg-white text-black hover:bg-[#0055FF] hover:text-white border border-black text-xs tracking-wider shadow-[3px_3px_0px_#000000]"
@@ -146,7 +176,7 @@ const ProjectDetailPage: React.FC<ProjectDetailPageProps> = ({ project, onBack }
             </button>
 
             {/* Breadcrumb / System path */}
-            <div className="font-mono text-xs text-[#64748B] flex items-center gap-2">
+            <div className="project-breadcrumb font-mono text-[10px] sm:text-xs text-[#64748B] flex flex-wrap items-center gap-2 min-w-0">
               <span>ROOT</span>
               <span className="text-[#0055FF]">/</span>
               <span>WORKS</span>
@@ -159,9 +189,9 @@ const ProjectDetailPage: React.FC<ProjectDetailPageProps> = ({ project, onBack }
           <section className="bg-white border border-black shadow-[6px_6px_0px_#000000] p-6 sm:p-8 lg:p-10 mb-8">
             <div className="grid gap-8 lg:grid-cols-[1.05fr_0.95fr]">
               {/* Left Column: Details */}
-              <div className="space-y-6">
+              <div data-anim className="space-y-6">
                 <div className="space-y-3">
-                  <div className="flex items-center gap-3">
+                  <div className="flex flex-wrap items-center gap-3">
                     <span className="px-2.5 py-1 bg-[#E0EBFF] border border-[#0055FF] text-[#0055FF] text-xs font-mono font-bold tracking-wider">
                       [STATUS: {project.status?.toUpperCase() || 'TERMINE'}]
                     </span>
@@ -170,7 +200,7 @@ const ProjectDetailPage: React.FC<ProjectDetailPageProps> = ({ project, onBack }
                     </span>
                   </div>
 
-                  <h1 className="text-3xl sm:text-4xl lg:text-5xl font-extrabold font-display uppercase tracking-tight text-black leading-none">
+                  <h1 className="text-[clamp(1.75rem,5vw,3rem)] font-extrabold font-display uppercase tracking-tight text-black leading-none">
                     {project.title}
                   </h1>
 
@@ -180,16 +210,16 @@ const ProjectDetailPage: React.FC<ProjectDetailPageProps> = ({ project, onBack }
                 </div>
 
                 {/* Specification Grid */}
-                <div className="grid grid-cols-3 gap-3">
-                  <div className="p-3 bg-[#F8FAFC] border border-black/20">
+                <div className="grid grid-cols-1 min-[400px]:grid-cols-3 gap-3">
+                  <div data-static-motion="lift" className="p-3 bg-[#F8FAFC] border border-black/20">
                     <span className="block text-[10px] font-mono uppercase tracking-wider text-[#64748B]">Année</span>
                     <span className="font-mono font-bold text-black text-sm">{project.year || '2026'}</span>
                   </div>
-                  <div className="p-3 bg-[#F8FAFC] border border-black/20">
+                  <div data-static-motion="lift" className="p-3 bg-[#F8FAFC] border border-black/20">
                     <span className="block text-[10px] font-mono uppercase tracking-wider text-[#64748B]">Durée</span>
                     <span className="font-mono font-bold text-black text-sm">{project.duration || '2-3 mois'}</span>
                   </div>
-                  <div className="p-3 bg-[#F8FAFC] border border-black/20">
+                  <div data-static-motion="lift" className="p-3 bg-[#F8FAFC] border border-black/20">
                     <span className="block text-[10px] font-mono uppercase tracking-wider text-[#64748B]">Type</span>
                     <span className="font-mono font-bold text-black text-sm truncate block" title={project.type}>{project.type || 'Projet'}</span>
                   </div>
@@ -222,9 +252,9 @@ const ProjectDetailPage: React.FC<ProjectDetailPageProps> = ({ project, onBack }
                 </div>
 
                 {/* Challenges Block */}
-                <div className="p-5 bg-[#F1F5F9] border-l-4 border-l-[#0055FF] border border-black/15">
+                <div data-static-motion="nudge" className="p-5 bg-[#F1F5F9] border-l-4 border-l-[#0055FF] border border-black/15">
                   <h2 className="text-sm font-mono font-bold text-black uppercase tracking-wider mb-2 flex items-center gap-2">
-                    <Code size={16} className="text-[#0055FF]" />
+                    <Code data-motion-icon size={16} className="text-[#0055FF]" />
                     [DEFIS_TECHNIQUES & RESOLUTION]
                   </h2>
                   <p className="text-sm text-[#475569] leading-relaxed font-body">
@@ -234,10 +264,20 @@ const ProjectDetailPage: React.FC<ProjectDetailPageProps> = ({ project, onBack }
               </div>
 
               {/* Right Column: Visual Frame */}
-              <div className="space-y-3">
+              <div
+                data-anim
+                className="space-y-3"
+                role="region"
+                aria-label={`Galerie du projet ${project.title}`}
+                onMouseEnter={() => setCarouselInteracting(true)}
+                onMouseLeave={() => setCarouselInteracting(false)}
+                onFocusCapture={(event) => {
+                  if (!(event.target instanceof Element) || !event.target.closest('[data-carousel-playback]')) setCarouselPaused(true);
+                }}
+              >
                 <div className="border border-black bg-black shadow-[4px_4px_0px_#000000]">
                   {/* Visual Header */}
-                  <div className="flex items-center justify-between px-3 py-1.5 bg-[#EEF2F7] border-b border-black text-[11px] font-mono text-[#64748B]">
+                  <div className="flex flex-wrap gap-2 items-center justify-between px-3 py-1.5 bg-[#EEF2F7] border-b border-black text-[11px] font-mono text-[#64748B]">
                     <span>VIEWPORT // {showVideo ? 'VIDEO_STREAM' : `FRAME_${currentImageIndex + 1}_OF_${projectImages.length}`}</span>
                     <span className="text-[#0055FF] font-bold">● ACTIVE</span>
                   </div>
@@ -276,9 +316,11 @@ const ProjectDetailPage: React.FC<ProjectDetailPageProps> = ({ project, onBack }
                       </div>
                     ) : (
                       <img
+                        ref={imageRef}
+                        key={currentImageIndex}
                         src={projectImages[currentImageIndex]}
-                        alt={project.title}
-                        className="h-full w-full object-cover"
+                        alt={`${project.title} — aperçu ${currentImageIndex + 1} sur ${projectImages.length}`}
+                        className="h-full w-full object-contain"
                       />
                     )}
 
@@ -299,6 +341,7 @@ const ProjectDetailPage: React.FC<ProjectDetailPageProps> = ({ project, onBack }
                         <button
                           type="button"
                           onClick={() => goToRelativeImage(-1)}
+                          data-static-motion="lift"
                           className="absolute left-2 top-1/2 -translate-y-1/2 z-10 w-9 h-9 flex items-center justify-center bg-black/80 hover:bg-[#0055FF] text-white border border-white/50 hover:border-[#0055FF] transition-colors"
                           aria-label={`Image précédente`}
                         >
@@ -308,6 +351,7 @@ const ProjectDetailPage: React.FC<ProjectDetailPageProps> = ({ project, onBack }
                         <button
                           type="button"
                           onClick={() => goToRelativeImage(1)}
+                          data-static-motion="lift"
                           className="absolute right-2 top-1/2 -translate-y-1/2 z-10 w-9 h-9 flex items-center justify-center bg-black/80 hover:bg-[#0055FF] text-white border border-white/50 hover:border-[#0055FF] transition-colors"
                           aria-label={`Image suivante`}
                         >
@@ -316,16 +360,34 @@ const ProjectDetailPage: React.FC<ProjectDetailPageProps> = ({ project, onBack }
                       </>
                     )}
                   </div>
+                  {hasImageCarousel && !showVideo && !reducedMotion && (
+                    <div className="h-1 bg-[#E2E8F0]" aria-hidden="true">
+                      <span ref={progressRef} className="block h-full bg-[#0055FF] origin-left scale-x-0" />
+                    </div>
+                  )}
                 </div>
 
                 {/* Carousel thumbnail pills */}
                 {hasImageCarousel && !showVideo && (
-                  <div className="flex items-center justify-end gap-2 font-mono text-xs">
+                  <div className="flex flex-wrap items-center justify-end gap-2 font-mono text-xs">
+                    {!reducedMotion && (
+                      <button type="button" onClick={() => setCarouselPaused((paused) => !paused)}
+                        data-carousel-playback
+                        data-static-motion="nudge"
+                        className="mr-auto px-2.5 py-1 border border-black bg-white text-black flex items-center gap-1.5"
+                        aria-label={carouselPaused ? 'Activer le défilement automatique' : 'Mettre le défilement en pause'}>
+                        {carouselPaused ? <Play size={12} /> : <Pause size={12} />}
+                        {carouselPaused ? 'LECTURE' : 'PAUSE'}
+                      </button>
+                    )}
                     {projectImages.map((_, index) => (
                       <button
                         key={`${project.id}-detail-dot-${index}`}
                         type="button"
                         onClick={() => goToImage(index)}
+                        data-static-motion="lift"
+                        aria-label={`Afficher l’image ${index + 1}`}
+                        aria-current={currentImageIndex === index ? 'true' : undefined}
                         className={`px-2.5 py-1 border transition-colors ${
                           currentImageIndex === index
                             ? 'bg-[#0055FF] text-white border-black font-bold shadow-[2px_2px_0px_#000000]'
@@ -344,8 +406,8 @@ const ProjectDetailPage: React.FC<ProjectDetailPageProps> = ({ project, onBack }
           {/* Secondary Grid: Technologies & Features */}
           <div className="grid gap-6 lg:grid-cols-2">
             {/* Technologies Used */}
-            <section className="bg-white border border-black p-6 shadow-[4px_4px_0px_#000000]">
-              <h2 className="text-lg font-mono font-bold text-black uppercase tracking-wider mb-4 flex items-center gap-2 border-b border-black/15 pb-3">
+            <section data-anim data-static-motion="lift" className="bg-white border border-black p-6 shadow-[4px_4px_0px_#000000]">
+              <h2 className="text-sm sm:text-lg font-mono font-bold text-black uppercase tracking-wider mb-4 flex items-center gap-2 border-b border-black/15 pb-3">
                 <Calendar size={18} className="text-[#0055FF]" />
                 [01 // STACK_TECHNIQUE]
               </h2>
@@ -353,6 +415,8 @@ const ProjectDetailPage: React.FC<ProjectDetailPageProps> = ({ project, onBack }
                 {project.technologies.map((tech, index) => (
                   <span
                     key={`${project.id}-tech-${index}`}
+                    data-anim-chip
+                    data-static-motion="nudge"
                     className="px-3 py-1 bg-[#F1F5F9] border border-black/20 text-xs font-mono text-[#0A0A0E] font-medium"
                   >
                     {tech}
@@ -365,10 +429,10 @@ const ProjectDetailPage: React.FC<ProjectDetailPageProps> = ({ project, onBack }
             </section>
 
             {/* Features */}
-            <section className="bg-white border border-black p-6 shadow-[4px_4px_0px_#000000]">
-              <h2 className="text-lg font-mono font-bold text-black uppercase tracking-wider mb-4 flex items-center gap-2 border-b border-black/15 pb-3">
+            <section data-anim data-static-motion="lift" className="bg-white border border-black p-6 shadow-[4px_4px_0px_#000000]">
+              <h2 className="text-sm sm:text-lg font-mono font-bold text-black uppercase tracking-wider mb-4 flex items-center gap-2 border-b border-black/15 pb-3">
                 <Code size={18} className="text-[#0055FF]" />
-                [02 // SPECIFICATIONS_FONCTIONNELLES]
+                [02 // FONCTIONNALITÉS]
               </h2>
               <ul className="space-y-2.5">
                 {(project.features || [
@@ -377,8 +441,8 @@ const ProjectDetailPage: React.FC<ProjectDetailPageProps> = ({ project, onBack }
                   'Design responsive',
                   "Intégration d'APIs",
                 ]).map((feature, index) => (
-                  <li key={`${project.id}-feature-${index}`} className="flex items-start gap-2.5 text-sm text-[#475569] font-body">
-                    <span className="text-[#0055FF] font-mono font-bold text-xs mt-0.5">■</span>
+                  <li data-anim data-static-motion="nudge" key={`${project.id}-feature-${index}`} className="flex items-start gap-2.5 text-sm text-[#475569] font-body">
+                    <span data-motion-mark className="text-[#0055FF] font-mono font-bold text-xs mt-0.5">■</span>
                     <span className="leading-relaxed">{feature}</span>
                   </li>
                 ))}
@@ -388,13 +452,13 @@ const ProjectDetailPage: React.FC<ProjectDetailPageProps> = ({ project, onBack }
 
           {/* Live Preview Section if Available */}
           {hasLivePreview ? (
-            <section className="mt-8 bg-white border border-black shadow-[6px_6px_0px_#000000] overflow-hidden">
+            <section data-anim className="mt-8 bg-white border border-black shadow-[6px_6px_0px_#000000] overflow-hidden">
               <div className="flex flex-wrap items-center justify-between gap-3 border-b border-black px-5 py-3 bg-[#EEF2F7]">
                 <div className="flex items-center gap-2">
                   <div className="w-3 h-3 bg-[#FF3366] border border-black" />
                   <div className="w-3 h-3 bg-[#FFE500] border border-black" />
                   <div className="w-3 h-3 bg-[#0055FF] border border-black" />
-                  <span className="font-mono text-xs text-black ml-2 font-bold">
+                  <span className="font-mono text-xs text-black ml-2 font-bold break-all">
                     BROWSER_VIEW // {project.demo}
                   </span>
                 </div>
@@ -405,7 +469,6 @@ const ProjectDetailPage: React.FC<ProjectDetailPageProps> = ({ project, onBack }
               <div className="p-4 sm:p-6 bg-[#F4F5F8]">
                 <div className="relative h-[80vh] min-h-[640px] w-full overflow-hidden border border-black shadow-[4px_4px_0px_#000000]">
                   <iframe
-                    ref={iframeRef}
                     src={project.demo}
                     className="h-full w-full bg-white"
                     style={{ zoom: 0.8 }}

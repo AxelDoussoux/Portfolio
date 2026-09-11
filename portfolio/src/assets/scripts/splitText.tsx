@@ -1,6 +1,8 @@
 import React, { useEffect, useRef } from 'react';
 import { animate, stagger } from 'animejs';
 
+import { useReducedMotion } from './useReducedMotion';
+
 interface SplitTextProps {
   text: string;
   play?: boolean;
@@ -9,6 +11,7 @@ interface SplitTextProps {
 }
 
 const SplitText: React.FC<SplitTextProps> = ({ text, play = true, staggerDelay = 30, className }) => {
+  const reducedMotion = useReducedMotion();
   const ref = useRef<HTMLSpanElement>(null);
 
   useEffect(() => {
@@ -18,7 +21,7 @@ const SplitText: React.FC<SplitTextProps> = ({ text, play = true, staggerDelay =
     const chars = Array.from(root.querySelectorAll<HTMLElement>('[data-char]'));
     if (chars.length === 0) return;
 
-    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+    if (reducedMotion) {
       chars.forEach((char) => {
         char.style.opacity = '1';
         char.style.transform = 'none';
@@ -36,9 +39,9 @@ const SplitText: React.FC<SplitTextProps> = ({ text, play = true, staggerDelay =
     });
 
     return () => {
-      animation.cancel();
+      animation.revert();
     };
-  }, [play, staggerDelay]);
+  }, [text, play, staggerDelay, reducedMotion]);
 
   const words = text.trim().split(/\s+/);
 
@@ -51,7 +54,7 @@ const SplitText: React.FC<SplitTextProps> = ({ text, play = true, staggerDelay =
               key={`${char}-${charIndex}`}
               data-char
               className="inline-block"
-              style={{ opacity: 0 }}
+              style={{ opacity: !play && !reducedMotion ? 0 : 1 }}
             >
               {char}
             </span>

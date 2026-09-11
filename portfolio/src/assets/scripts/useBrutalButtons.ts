@@ -1,110 +1,76 @@
 import { useEffect } from 'react';
 import { animate } from 'animejs';
-
-interface ShadowState {
-  offset: number;
-  r: number;
-  g: number;
-  b: number;
-  a: number;
-}
-
-const BASE_SHADOW: ShadowState = { offset: 4, r: 0, g: 0, b: 0, a: 1 };
-const HOVER_SHADOW: ShadowState = { offset: 6, r: 0, g: 85, b: 255, a: 1 };
-const ACTIVE_SHADOW: ShadowState = { offset: 0, r: 0, g: 0, b: 0, a: 0 };
-
-const shadowStates = new WeakMap<HTMLElement, ShadowState>();
-const shadowAnimations = new WeakMap<HTMLElement, { cancel: () => void }>();
-
-const renderShadow = (button: HTMLElement, state: ShadowState) => {
-  button.style.boxShadow = `${state.offset}px ${state.offset}px 0px rgba(${Math.round(state.r)}, ${Math.round(state.g)}, ${Math.round(state.b)}, ${state.a})`;
-};
-
-const animateShadow = (
-  button: HTMLElement,
-  target: ShadowState,
-  duration: number,
-  ease: string,
-) => {
-  const state = shadowStates.get(button) ?? { ...BASE_SHADOW };
-  shadowStates.set(button, state);
-
-  shadowAnimations.get(button)?.cancel();
-  const animation = animate(state, {
-    offset: target.offset,
-    r: target.r,
-    g: target.g,
-    b: target.b,
-    a: target.a,
-    duration,
-    ease,
-    onUpdate: () => renderShadow(button, state),
-  });
-  shadowAnimations.set(button, animation);
-};
+import { useReducedMotion } from './useReducedMotion';
 
 export function useBrutalButtons() {
+  const reducedMotion = useReducedMotion();
+
   useEffect(() => {
-    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
-
+    if (reducedMotion) return;
+    const animations = new Map<HTMLElement, ReturnType<typeof animate>>();
+    const touched = new Set<HTMLElement>();
     let pressed: HTMLElement | null = null;
+    document.documentElement.dataset.buttonMotion = 'on';
 
-    const findButton = (target: EventTarget | null): HTMLElement | null => {
-      if (!(target instanceof Element)) return null;
-      return target.closest<HTMLElement>('.brutal-btn');
+    const find = (target: EventTarget | null) => target instanceof Element
+      ? target.closest<HTMLElement>('.brutal-btn, [data-anim-chip]') : null;
+    const move = (element: HTMLElement, offset: number, down = false) => {
+      animations.get(element)?.cancel();
+      touched.add(element);
+      animations.set(element, animate(element, {
+        '--press-x': `${offset}px`, '--press-y': `${offset}px`,
+        duration: down ? 90 : 240, ease: down ? 'outQuad' : 'outBack(1.4)',
+      }));
     };
-
-    const handlePointerOver = (event: PointerEvent) => {
-      const button = findButton(event.target);
-      if (!button) return;
-      const related = event.relatedTarget;
-      if (related instanceof Node && button.contains(related)) return;
-      animate(button, { x: -2, y: -2, duration: 160, ease: 'outQuad' });
-      animateShadow(button, HOVER_SHADOW, 160, 'outQuad');
+    const over = (event: PointerEvent) => {
+      if (event.pointerType !== 'mouse') return;
+      const element = find(event.target);
+      if (!element || (event.relatedTarget instanceof Node && element.contains(event.relatedTarget))) return;
+      move(element, -2);
     };
-
-    const handlePointerOut = (event: PointerEvent) => {
-      const button = findButton(event.target);
-      if (!button) return;
-      const related = event.relatedTarget;
-      if (related instanceof Node && button.contains(related)) return;
-      if (pressed === button) return;
-      animate(button, { x: 0, y: 0, duration: 220, ease: 'outQuad' });
-      animateShadow(button, BASE_SHADOW, 220, 'outQuad');
+    const out = (event: PointerEvent) => {
+      const element = find(event.target);
+      if (!element || (event.relatedTarget instanceof Node && element.contains(event.relatedTarget))) return;
+      if (element !== pressed) move(element, 0);
     };
-
-    const handlePointerDown = (event: PointerEvent) => {
-      const button = findButton(event.target);
-      if (!button) return;
-      pressed = button;
-      animate(button, { x: 2, y: 2, duration: 90, ease: 'outQuad' });
-      animateShadow(button, ACTIVE_SHADOW, 90, 'outQuad');
+    const down = (event: PointerEvent) => {
+      const element = find(event.target);
+      if (!element?.matches('.brutal-btn') || event.button !== 0) return;
+      pressed = element;
+      move(element, 2, true);
     };
-
-    const handlePointerUp = (event: PointerEvent) => {
-      const button = pressed ?? findButton(event.target);
-      if (!button) return;
+    const release = (event?: Event) => {
+      if (!pressed) return;
+      move(pressed, event instanceof PointerEvent && event.type === 'pointerup' && event.pointerType === 'mouse' && pressed.matches(':hover') ? -2 : 0);
       pressed = null;
-      const hovering = button.matches(':hover');
-      animate(button, {
-        x: hovering ? -2 : 0,
-        y: hovering ? -2 : 0,
-        duration: 260,
-        ease: 'outBack(3)',
-      });
-      animateShadow(button, hovering ? HOVER_SHADOW : BASE_SHADOW, 260, 'outBack(3)');
     };
-
-    document.addEventListener('pointerover', handlePointerOver);
-    document.addEventListener('pointerout', handlePointerOut);
-    document.addEventListener('pointerdown', handlePointerDown);
-    document.addEventListener('pointerup', handlePointerUp);
-
+    const focus = (event: FocusEvent) => {
+      const element = find(event.target);
+      if (element && element !== pressed) move(element, event.type === 'focusin' ? -2 : 0);
+    };
+    document.addEventListener('pointerover', over);
+    document.addEventListener('pointerout', out);
+    document.addEventListener('pointerdown', down);
+    window.addEventListener('pointerup', release);
+    window.addEventListener('pointercancel', release);
+    window.addEventListener('blur', release);
+    document.addEventListener('focusin', focus);
+    document.addEventListener('focusout', focus);
     return () => {
-      document.removeEventListener('pointerover', handlePointerOver);
-      document.removeEventListener('pointerout', handlePointerOut);
-      document.removeEventListener('pointerdown', handlePointerDown);
-      document.removeEventListener('pointerup', handlePointerUp);
+      document.removeEventListener('pointerover', over);
+      document.removeEventListener('pointerout', out);
+      document.removeEventListener('pointerdown', down);
+      window.removeEventListener('pointerup', release);
+      window.removeEventListener('pointercancel', release);
+      window.removeEventListener('blur', release);
+      document.removeEventListener('focusin', focus);
+      document.removeEventListener('focusout', focus);
+      animations.forEach((animation) => animation.cancel());
+      touched.forEach((element) => {
+        element.style.removeProperty('--press-x');
+        element.style.removeProperty('--press-y');
+      });
+      delete document.documentElement.dataset.buttonMotion;
     };
-  }, []);
+  }, [reducedMotion]);
 }

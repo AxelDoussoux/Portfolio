@@ -1,6 +1,8 @@
 import React, { useEffect, useRef } from 'react';
 import { createTimeline, stagger } from 'animejs';
 
+import { useReducedMotion } from './useReducedMotion';
+
 interface IntroCurtainProps {
   play?: boolean;
   onCovered?: () => void;
@@ -14,6 +16,7 @@ const IntroCurtain: React.FC<IntroCurtainProps> = ({
   onComplete,
   slats = 8,
 }) => {
+  const reducedMotion = useReducedMotion();
   const ref = useRef<HTMLDivElement>(null);
   const onCoveredRef = useRef(onCovered);
   const onCompleteRef = useRef(onComplete);
@@ -31,7 +34,7 @@ const IntroCurtain: React.FC<IntroCurtainProps> = ({
     const bars = Array.from(root.querySelectorAll<HTMLElement>('[data-curtain-slat]'));
     if (bars.length === 0) return;
 
-    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+    if (reducedMotion) {
       onCoveredRef.current?.();
       onCompleteRef.current?.();
       return;
@@ -46,9 +49,9 @@ const IntroCurtain: React.FC<IntroCurtainProps> = ({
       .call(() => onCompleteRef.current?.());
 
     return () => {
-      timeline.cancel();
+      timeline.revert();
     };
-  }, [play, slats]);
+  }, [play, slats, reducedMotion]);
 
   return (
     <div

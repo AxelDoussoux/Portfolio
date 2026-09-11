@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef, useCallback } from 'react';
-import { animate, stagger, steps } from 'animejs';
+import { animate, createTimeline, stagger, steps } from 'animejs';
 import {
   FiChevronDown as ChevronDown,
   FiCode as Code,
@@ -26,6 +26,9 @@ import SplitText from './splitText';
 import AnimatedCounter from './animatedCounter';
 import IntroCurtain from './introCurtain';
 import TypewriterText from './typewriterText';
+import { useReducedMotion } from './useReducedMotion';
+import { useRevealMotion } from './useRevealMotion';
+import { useStaticInteractions } from './useStaticInteractions';
 
 const getProjectIdFromHash = () => {
   if (typeof window === 'undefined') return null;
@@ -35,7 +38,22 @@ const getProjectIdFromHash = () => {
   if (!match) return null;
 
   const projectId = Number(match[1]);
-  return Number.isFinite(projectId) ? projectId : null;
+  return PORTFOLIO_CONFIG.projects.some((project) => project.id === projectId) ? projectId : null;
+};
+
+const SECTION_IDS = ['hero', 'about', 'portfolio', 'experience', 'skills', 'contact'] as const;
+type SectionId = typeof SECTION_IDS[number];
+
+const getAnchorTop = (sectionId: SectionId) => {
+  if (sectionId === 'hero') return 0;
+  const section = document.getElementById(sectionId);
+  if (!section) return null;
+  const headerHeight = document.querySelector('header')?.getBoundingClientRect().height ?? 72;
+  const maximumScroll = document.documentElement.scrollHeight - window.innerHeight;
+  return Math.min(
+    maximumScroll,
+    Math.max(0, section.getBoundingClientRect().top + window.scrollY - headerHeight - 16),
+  );
 };
 
 const MARQUEE_TECHNOLOGIES = Array.from(
@@ -58,7 +76,14 @@ const BOOT_LOG = [
 ];
 
 const Portfolio: React.FC = () => {
-  const [activeSection, setActiveSection] = useState('hero');
+  const reducedMotion = useReducedMotion();
+  const mainRef = useRef<HTMLDivElement>(null);
+  const menuRef = useRef<HTMLDivElement>(null);
+  const menuButtonRef = useRef<HTMLButtonElement>(null);
+  const copyTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const glitchRef = useRef<ReturnType<typeof animate> | null>(null);
+  const [copyError, setCopyError] = useState(false);
+  const [activeSection, setActiveSection] = useState<SectionId>('hero');
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [scrollProgress, setScrollProgress] = useState(0);
   const [showBackToTop, setShowBackToTop] = useState(false);
@@ -68,11 +93,14 @@ const Portfolio: React.FC = () => {
   const [curtainActive, setCurtainActive] = useState(false);
   const [introDone, setIntroDone] = useState(() => getProjectIdFromHash() !== null);
   const [roleIndex, setRoleIndex] = useState(0);
-  const navClickLockRef = useRef<{ sectionId: string; until: number } | null>(null);
+  const navScrollRef = useRef<{ sectionId: SectionId; targetY: number } | null>(null);
   const navRef = useRef<HTMLElement>(null);
   const navIndicatorRef = useRef<HTMLSpanElement>(null);
   const heroTitleRef = useRef<HTMLHeadingElement>(null);
   const clockRef = useRef<HTMLSpanElement>(null);
+
+  useRevealMotion(mainRef, introDone && !curtainActive && selectedProjectId === null);
+  useStaticInteractions(mainRef);
 
   const [firstName, ...lastNameParts] = PORTFOLIO_CONFIG.name.trim().split(/\s+/);
   const lastName = lastNameParts.join(' ');
@@ -86,21 +114,16 @@ const Portfolio: React.FC = () => {
     if (selectedProjectId !== null) return;
 
     const handleScroll = () => {
-      const sections = ['hero', 'about', 'portfolio', 'experience', 'skills', 'contact'];
-      const rootStyle = window.getComputedStyle(document.documentElement);
-      const scrollPaddingTop = Number.parseFloat(rootStyle.scrollPaddingTop || '0');
-      const baseOffset = Number.isFinite(scrollPaddingTop) ? scrollPaddingTop + 16 : 120;
-      const viewportOffset = Math.min(window.innerHeight * 0.35, 320);
-      const activationOffset = Math.max(baseOffset, viewportOffset);
-      const scrollPosition = window.scrollY + activationOffset;
+      const headerHeight = document.querySelector('header')?.getBoundingClientRect().height ?? 72;
+      const scrollPosition = window.scrollY + headerHeight + Math.min(window.innerHeight * 0.24, 220);
 
       const totalHeight = document.documentElement.scrollHeight - window.innerHeight;
       const progress = totalHeight > 0 ? (window.scrollY / totalHeight) * 100 : 0;
       setScrollProgress(progress);
       setShowBackToTop(window.scrollY > 600);
 
-      let currentSection = sections[0];
-      for (const section of sections) {
+      let currentSection: SectionId = SECTION_IDS[0];
+      for (const section of SECTION_IDS) {
         const element = document.getElementById(section);
         if (element) {
           if (scrollPosition >= element.offsetTop) {
@@ -109,28 +132,53 @@ const Portfolio: React.FC = () => {
         }
       }
 
-      const lock = navClickLockRef.current;
-      if (lock) {
-        if (performance.now() < lock.until) {
-          setActiveSection(lock.sectionId);
+      const navigation = navScrollRef.current;
+      if (navigation) {
+        if (Math.abs(window.scrollY - navigation.targetY) > 3) {
+          setActiveSection(navigation.sectionId);
           return;
         }
-        navClickLockRef.current = null;
+        navScrollRef.current = null;
       }
 
       setActiveSection(currentSection);
     };
 
-    window.addEventListener('scroll', handleScroll);
+    let frame = 0;
+    const requestUpdate = () => {
+      if (frame) return;
+      frame = window.requestAnimationFrame(() => {
+        frame = 0;
+        handleScroll();
+      });
+    };
+    const cancelNavigation = () => { navScrollRef.current = null; };
+    window.addEventListener('scroll', requestUpdate, { passive: true });
+    window.addEventListener('wheel', cancelNavigation, { passive: true });
+    window.addEventListener('touchstart', cancelNavigation, { passive: true });
     handleScroll();
-    return () => window.removeEventListener('scroll', handleScroll);
+    return () => {
+      window.cancelAnimationFrame(frame);
+      window.removeEventListener('scroll', requestUpdate);
+      window.removeEventListener('wheel', cancelNavigation);
+      window.removeEventListener('touchstart', cancelNavigation);
+    };
   }, [selectedProjectId]);
 
   useEffect(() => {
+    const clearLegacySectionHash = () => {
+      const legacyHash = window.location.hash.slice(1);
+      if (SECTION_IDS.includes(legacyHash as SectionId)) {
+        window.history.replaceState(null, '', `${window.location.pathname}${window.location.search}`);
+      }
+    };
+
     const syncSelectedProject = () => {
+      clearLegacySectionHash();
       setSelectedProjectId(getProjectIdFromHash());
     };
 
+    syncSelectedProject();
     window.addEventListener('hashchange', syncSelectedProject);
     window.addEventListener('popstate', syncSelectedProject);
 
@@ -147,7 +195,7 @@ const Portfolio: React.FC = () => {
       return;
     }
 
-    const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    if (!showIntro) return;
 
     if (reducedMotion) {
       const hideIntro = window.setTimeout(() => {
@@ -167,7 +215,7 @@ const Portfolio: React.FC = () => {
     return () => {
       window.clearTimeout(exitIntro);
     };
-  }, [selectedProjectId]);
+  }, [selectedProjectId, showIntro, reducedMotion]);
 
   const handleCurtainCovered = useCallback(() => {
     setShowIntro(false);
@@ -196,70 +244,42 @@ const Portfolio: React.FC = () => {
     const handleEscape = (event: KeyboardEvent) => {
       if (event.key === 'Escape') {
         setIsMobileMenuOpen(false);
+        if (isMobileMenuOpen) menuButtonRef.current?.focus();
       }
     };
 
     window.addEventListener('keydown', handleEscape);
     return () => window.removeEventListener('keydown', handleEscape);
+  }, [isMobileMenuOpen]);
+
+  useEffect(() => {
+    const desktop = window.matchMedia('(min-width: 1024px)');
+    const closeOnDesktop = () => { if (desktop.matches) setIsMobileMenuOpen(false); };
+    desktop.addEventListener('change', closeOnDesktop);
+    return () => desktop.removeEventListener('change', closeOnDesktop);
+  }, []);
+
+  useEffect(() => {
+    const menu = menuRef.current;
+    if (!isMobileMenuOpen || !menu) return;
+    if (reducedMotion) return;
+    const timeline = createTimeline()
+      .add(menu, { opacity: [0, 1], y: [-12, 0], duration: 250, ease: 'outCubic' })
+      .add(menu.querySelectorAll('button, a'), {
+        opacity: [0, 1], x: [-14, 0], delay: stagger(35), duration: 320, ease: 'outExpo',
+      }, 60);
+    return () => { timeline.revert(); };
+  }, [isMobileMenuOpen, reducedMotion]);
+
+  useEffect(() => () => {
+    if (copyTimerRef.current) clearTimeout(copyTimerRef.current);
+    glitchRef.current?.revert();
   }, []);
 
   useEffect(() => {
     if (selectedProjectId !== null) return;
 
-    const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-    if (reducedMotion) return;
-
-    const sections = Array.from(document.querySelectorAll<HTMLElement>('[data-section-transition]'));
-    if (sections.length === 0) return;
-
-    const observer = new IntersectionObserver(
-      (entries) => {
-        entries.forEach((entry) => {
-          if (!entry.isIntersecting) return;
-          const section = entry.target as HTMLElement;
-          observer.unobserve(section);
-
-          animate(section, {
-            opacity: [0, 1],
-            y: [20, 0],
-            duration: 450,
-            ease: 'outCubic',
-          });
-
-          const items = Array.from(section.querySelectorAll<HTMLElement>('[data-anim]'));
-          if (items.length > 0) {
-            animate(items, {
-              opacity: [0, 1],
-              y: [26, 0],
-              duration: 620,
-              delay: stagger(65),
-              ease: 'outExpo',
-            });
-          }
-
-          const chips = Array.from(section.querySelectorAll<HTMLElement>('[data-anim-chip]'));
-          if (chips.length > 0) {
-            animate(chips, {
-              opacity: [0, 1],
-              y: [14, 0],
-              duration: 420,
-              delay: stagger(22),
-              ease: 'outExpo',
-            });
-          }
-        });
-      },
-      { threshold: 0.15, rootMargin: '0px 0px -5% 0px' }
-    );
-
-    sections.forEach((section) => observer.observe(section));
-
-    return () => observer.disconnect();
-  }, [selectedProjectId]);
-
-  useEffect(() => {
-    if (selectedProjectId !== null) return;
-
+    let indicatorAnimation: ReturnType<typeof animate> | undefined;
     const updateIndicator = () => {
       const nav = navRef.current;
       const indicator = navIndicatorRef.current;
@@ -268,10 +288,11 @@ const Portfolio: React.FC = () => {
       const button = nav.querySelector<HTMLElement>(`[data-nav-item="${activeSection}"]`);
       if (!button) return;
 
-      animate(indicator, {
+      indicatorAnimation?.cancel();
+      indicatorAnimation = animate(indicator, {
         x: button.offsetLeft,
         width: button.offsetWidth,
-        duration: 380,
+        duration: reducedMotion ? 0 : 380,
         ease: 'outExpo',
       });
     };
@@ -280,10 +301,11 @@ const Portfolio: React.FC = () => {
     window.addEventListener('resize', updateIndicator);
 
     return () => {
+      indicatorAnimation?.cancel();
       window.cancelAnimationFrame(frameId);
       window.removeEventListener('resize', updateIndicator);
     };
-  }, [activeSection, selectedProjectId]);
+  }, [activeSection, selectedProjectId, reducedMotion]);
 
   useEffect(() => {
     const updateClock = () => {
@@ -295,18 +317,17 @@ const Portfolio: React.FC = () => {
     const clockInterval = window.setInterval(updateClock, 1000);
 
     return () => window.clearInterval(clockInterval);
-  }, []);
+  }, [selectedProjectId]);
 
   useEffect(() => {
-    if (!introDone) return;
-    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+    if (!introDone || reducedMotion || selectedProjectId !== null) return;
 
     const rotation = window.setInterval(() => {
       setRoleIndex((index) => (index + 1) % HERO_ROLES.length);
     }, 2800);
 
     return () => window.clearInterval(rotation);
-  }, [introDone]);
+  }, [introDone, reducedMotion, selectedProjectId]);
 
   useEffect(() => {
     if (selectedProjectId === null) return;
@@ -321,7 +342,8 @@ const Portfolio: React.FC = () => {
     const chars = title.querySelectorAll<HTMLElement>('[data-char]');
     if (chars.length === 0) return;
 
-    animate(chars, {
+    glitchRef.current?.revert();
+    glitchRef.current = animate(chars, {
       translateX: [0, -3, 3, -1, 0],
       duration: 320,
       delay: stagger(18),
@@ -348,31 +370,33 @@ const Portfolio: React.FC = () => {
     setSelectedProjectId(null);
   };
 
-  const scrollToSection = (sectionId: string) => {
-    const element = document.getElementById(sectionId);
-    if (element) {
-      navClickLockRef.current = {
-        sectionId,
-        until: performance.now() + 800,
-      };
-      setActiveSection(sectionId);
-      element.scrollIntoView({ behavior: 'smooth' });
-      setIsMobileMenuOpen(false);
-    }
+  const scrollToSection = (sectionId: SectionId) => {
+    const targetY = getAnchorTop(sectionId);
+    if (targetY === null) return;
+    navScrollRef.current = { sectionId, targetY };
+    setActiveSection(sectionId);
+    window.scrollTo({ top: targetY, behavior: reducedMotion ? 'auto' : 'smooth' });
+    setIsMobileMenuOpen(false);
   };
 
   const toggleMobileMenu = () => {
     setIsMobileMenuOpen(!isMobileMenuOpen);
   };
 
-  const handleCopyEmail = () => {
+  const handleCopyEmail = async () => {
     if (!PORTFOLIO_CONFIG.email) return;
-    navigator.clipboard.writeText(PORTFOLIO_CONFIG.email);
-    setCopiedEmail(true);
-    setTimeout(() => setCopiedEmail(false), 2000);
+    try {
+      await navigator.clipboard.writeText(PORTFOLIO_CONFIG.email);
+      setCopiedEmail(true);
+      setCopyError(false);
+      if (copyTimerRef.current) clearTimeout(copyTimerRef.current);
+      copyTimerRef.current = setTimeout(() => setCopiedEmail(false), 2000);
+    } catch {
+      setCopyError(true);
+    }
   };
 
-  const navigationItems = [
+  const navigationItems: { id: SectionId; label: string }[] = [
     { id: 'hero', label: 'ACCUEIL' },
     { id: 'about', label: 'A_PROPOS' },
     { id: 'portfolio', label: 'PROJETS' },
@@ -384,11 +408,11 @@ const Portfolio: React.FC = () => {
   const currentYear = new Date().getFullYear();
 
   if (selectedProject) {
-    return <ProjectDetailPage project={selectedProject} onBack={closeProjectPage} />;
+    return <ProjectDetailPage key={selectedProject.id} project={selectedProject} onBack={closeProjectPage} />;
   }
 
   return (
-    <div className="min-h-screen text-[#0A0A0E] relative overflow-x-hidden bg-[#F4F5F8]">
+    <div ref={mainRef} className="portfolio-page min-h-screen text-[#0A0A0E] relative overflow-x-hidden bg-[#F4F5F8]">
       {/* Intro Boot Screen */}
       {showIntro && (
         <div
@@ -466,11 +490,14 @@ const Portfolio: React.FC = () => {
       </div>
 
       {/* Main Top Wireframe Header */}
-      <header className="fixed left-0 right-0 top-1 z-50 bg-[#F4F5F8]/95 border-b border-black py-3 px-4 sm:px-8">
+      <header inert={showIntro} className="fixed left-0 right-0 top-1 z-50 bg-[#F4F5F8] border-b border-black py-3 px-4 sm:px-8">
         <div className="max-w-7xl mx-auto flex items-center justify-between">
           {/* Logo & Live Status */}
           <div className="flex items-center gap-4">
-            <div
+            <button
+              type="button"
+              aria-label="Retour à l’accueil"
+              data-static-motion="nudge"
               onClick={() => scrollToSection('hero')}
               className={`font-display font-extrabold text-lg sm:text-xl tracking-tight text-black flex items-center gap-2 cursor-pointer transition-opacity duration-500 ${
                 showIntro ? 'opacity-0' : 'opacity-100'
@@ -478,13 +505,13 @@ const Portfolio: React.FC = () => {
             >
               <span>{PORTFOLIO_CONFIG.name}</span>
               <span className="text-[#0055FF] font-mono text-xs">// DEV</span>
-            </div>
+            </button>
           </div>
 
           {/* Desktop Navigation Links */}
           <nav
             ref={navRef}
-            className="hidden md:flex items-center gap-1 relative"
+            className="hidden lg:flex items-center gap-1 relative"
             aria-label="Navigation principale"
           >
             <span
@@ -496,7 +523,9 @@ const Portfolio: React.FC = () => {
             {navigationItems.map((item, index) => (
               <button
                 key={item.id}
+                type="button"
                 data-nav-item={item.id}
+                data-static-motion="lift"
                 onClick={() => scrollToSection(item.id)}
                 aria-current={activeSection === item.id ? 'page' : undefined}
                 className={`relative z-10 px-3 py-1 font-mono text-xs tracking-wider uppercase transition-colors ${
@@ -512,9 +541,11 @@ const Portfolio: React.FC = () => {
 
           {/* Burger Menu Button for Mobile */}
           <button
+            ref={menuButtonRef}
             onClick={toggleMobileMenu}
-            className="md:hidden p-2 bg-white border border-black text-black shadow-[2px_2px_0px_#000000]"
-            aria-label="Toggle mobile menu"
+            data-static-motion="lift"
+            className="lg:hidden p-2 bg-white border border-black text-black shadow-[2px_2px_0px_#000000]"
+            aria-label={isMobileMenuOpen ? "Fermer le menu" : "Ouvrir le menu"}
             aria-expanded={isMobileMenuOpen}
             aria-controls="mobile-navigation"
           >
@@ -525,12 +556,16 @@ const Portfolio: React.FC = () => {
         {/* Mobile Navigation Drawer */}
         {isMobileMenuOpen && (
           <div
+            ref={menuRef}
             id="mobile-navigation"
-            className="md:hidden absolute top-full left-0 right-0 bg-white border-b border-black shadow-[0_12px_0_#000000] p-4 flex flex-col space-y-2"
+            role="navigation"
+            aria-label="Navigation mobile"
+            className="lg:hidden absolute top-full left-0 right-0 bg-white border-b border-black shadow-[0_12px_0_#000000] p-4 flex flex-col space-y-2 max-h-[calc(100dvh-5rem)] overflow-y-auto"
           >
             {navigationItems.map((item, index) => (
               <button
                 key={item.id}
+                type="button"
                 onClick={() => scrollToSection(item.id)}
                 className={`w-full text-left px-4 py-3 font-mono text-xs uppercase border transition-colors ${
                   activeSection === item.id
@@ -567,23 +602,23 @@ const Portfolio: React.FC = () => {
       {/* Overlay to close mobile menu */}
       {isMobileMenuOpen && (
         <div
-          className="fixed inset-0 bg-black/40 z-40 md:hidden"
+          className="fixed inset-0 bg-black/40 z-40 lg:hidden"
           onClick={() => setIsMobileMenuOpen(false)}
           aria-hidden="true"
         />
       )}
 
-      <main id="main-content" tabIndex={-1}>
+      <main id="main-content" tabIndex={-1} inert={isMobileMenuOpen || showIntro}>
         {/* Hero Section */}
-        <section id="hero" className="min-h-svh flex flex-col justify-center relative z-10 pt-[clamp(4rem,9vh,5.5rem)] pb-[clamp(1rem,2.5vh,2.5rem)] scroll-mt-24">
+        <section id="hero" className="min-h-svh flex flex-col justify-center relative z-10 pt-[clamp(4rem,9vh,5.5rem)] pb-[clamp(1rem,2.5vh,2.5rem)]">
           <div className="max-w-6xl mx-auto px-4 sm:px-6 w-full">
             {/* Terminal Coordinate Badge + Live Status */}
-            <div className="mb-[clamp(0.75rem,1.8vh,1.25rem)] flex flex-wrap items-center gap-2.5">
-              <div className="inline-flex max-w-full items-center gap-2 font-mono text-xs text-[#0055FF] bg-white border border-black px-3 py-1.5 shadow-[3px_3px_0px_#000000] font-bold">
-                <Activity size={14} className="text-[#0055FF] shrink-0" />
+            <div data-hero-anim className="mb-[clamp(0.75rem,1.8vh,1.25rem)] flex flex-wrap items-center gap-2.5">
+              <div data-static-motion="lift" className="inline-flex max-w-full items-center gap-2 font-mono text-xs text-[#0055FF] bg-white border border-black px-3 py-1.5 shadow-[3px_3px_0px_#000000] font-bold">
+                <Activity data-motion-icon size={14} className="text-[#0055FF] shrink-0" />
                 <span className="min-w-0">GEO: LYON_FR (45.7640° N, 4.8357° E) // SYS_VER: 2026.04</span>
               </div>
-              <div className="inline-flex items-center gap-2 font-mono text-xs text-black bg-white border border-black px-3 py-1.5 shadow-[3px_3px_0px_#000000] font-bold">
+              <div data-static-motion="lift" className="inline-flex items-center gap-2 font-mono text-xs text-black bg-white border border-black px-3 py-1.5 shadow-[3px_3px_0px_#000000] font-bold">
                 <span className="w-2 h-2 bg-[#22C55E] border border-black animate-pulse" aria-hidden="true" />
                 <span>
                   SYSTEM_ONLINE // <span ref={clockRef}>--:--:--</span>
@@ -597,51 +632,50 @@ const Portfolio: React.FC = () => {
                 ref={heroTitleRef}
                 onMouseEnter={handleTitleGlitch}
                 aria-label={PORTFOLIO_CONFIG.name}
-                className="hero-glitch text-[clamp(2rem,min(9vw,12vh),8rem)] font-black font-display tracking-tight text-black uppercase leading-[0.95]"
+                className="hero-glitch text-[clamp(1.75rem,min(8.4vw,11.5vh),7rem)] font-black font-display tracking-tight text-black uppercase leading-[0.95]"
               >
-                <SplitText text={PORTFOLIO_CONFIG.name} play={introDone} />
+                <SplitText text={PORTFOLIO_CONFIG.name} play={introDone && !curtainActive} />
               </h1>
             </div>
 
             {/* Subtitle with Neo-Brutalist highlight */}
-            <div className="mb-[clamp(0.75rem,2vh,1.5rem)] flex flex-wrap items-center gap-3">
+            <div data-hero-anim className="mb-[clamp(0.75rem,2vh,1.5rem)] flex flex-wrap items-center gap-3">
               <span className="font-mono text-base sm:text-xl font-bold text-white bg-[#0055FF] px-3 py-1 border border-black shadow-[3px_3px_0px_#000000]">
                 {PORTFOLIO_CONFIG.title}
               </span>
               <TypewriterText
-                key={roleIndex}
                 text={HERO_ROLES[roleIndex]}
-                play={introDone}
+                play={introDone && !curtainActive}
                 speed={28}
                 className="font-mono text-xs sm:text-sm text-[#475569] font-semibold"
               />
             </div>
 
             {/* Bio statement */}
-            <p className="text-base sm:text-lg text-[#475569] font-body max-w-3xl leading-relaxed mb-[clamp(1rem,2.6vh,2.5rem)]">
+            <p data-hero-anim className="text-base sm:text-lg text-[#475569] font-body max-w-3xl leading-relaxed mb-[clamp(1rem,2.6vh,2.5rem)]">
               {PORTFOLIO_CONFIG.bio}
             </p>
 
             {/* Asymmetric Technical Spec Badges */}
-            <div className="grid grid-cols-2 sm:grid-cols-4 gap-2.5 max-w-3xl mb-[clamp(1rem,2.6vh,2.5rem)] font-mono text-xs">
-              <div className="p-3 bg-white border border-black shadow-[2px_2px_0px_#000000]">
+            <div data-hero-anim className="grid grid-cols-2 sm:grid-cols-3 gap-2.5 max-w-3xl mb-[clamp(1rem,2.6vh,2.5rem)] font-mono text-xs">
+              <div data-static-motion="lift" className="p-3 bg-white border border-black shadow-[2px_2px_0px_#000000]">
                 <span className="block text-[10px] text-[#64748B] uppercase">SPÉCIALISATION</span>
                 <span className="font-bold text-black">WEB FULLSTACK</span>
               </div>
-              <div className="p-3 bg-white border border-black shadow-[2px_2px_0px_#000000]">
+              <div data-static-motion="lift" className="p-3 bg-white border border-black shadow-[2px_2px_0px_#000000]">
                 <span className="block text-[10px] text-[#64748B] uppercase">EXPÉRIENCE</span>
                 <span className="font-bold text-[#0055FF]">
-                  <AnimatedCounter value={2} suffix="+ ANS PRO" play={introDone} />
+                  <AnimatedCounter value={2} suffix="+ ANS PRO" play={introDone && !curtainActive} />
                 </span>
               </div>
-              <div className="p-3 bg-white border border-black shadow-[2px_2px_0px_#000000]">
+              <div data-static-motion="lift" className="col-span-2 sm:col-span-1 p-3 bg-white border border-black shadow-[2px_2px_0px_#000000]">
                 <span className="block text-[10px] text-[#64748B] uppercase">FORMATION</span>
                 <span className="font-bold text-black">MASTER INFORMATIQUE</span>
               </div>
             </div>
 
             {/* Hero Action Buttons */}
-            <div className="flex flex-wrap items-center gap-4">
+            <div data-hero-anim className="flex flex-wrap items-center gap-4">
               <a
                 href="/cv.pdf"
                 target="_blank"
@@ -680,7 +714,9 @@ const Portfolio: React.FC = () => {
           {/* Scroll down hint */}
           <div className="mt-[clamp(1rem,3vh,3.5rem)] flex justify-center">
             <button
+              type="button"
               onClick={() => scrollToSection('about')}
+              data-static-motion="lift"
               className="p-3 bg-white border border-black text-[#0055FF] hover:bg-[#0055FF] hover:border-[#0055FF] hover:text-white shadow-[2px_2px_0px_#000000] transition-colors"
               aria-label="Descendre vers la section À propos"
             >
@@ -693,7 +729,7 @@ const Portfolio: React.FC = () => {
             <div className="animate-marquee font-mono text-xs sm:text-sm tracking-widest text-[#475569] uppercase">
               {[0, 1].map((loop) =>
                 MARQUEE_TECHNOLOGIES.map((tech, index) => (
-                  <span key={`marquee-${loop}-${tech}`} className="flex items-center shrink-0">
+                  <span key={`marquee-${loop}-${tech}`} aria-hidden={loop === 1 ? true : undefined} className="flex items-center shrink-0">
                     <span className="mx-4 text-[#0055FF]">✦</span>
                     <span className={index % 2 === 0 ? 'text-black font-bold' : ''}>{tech}</span>
                   </span>
@@ -704,10 +740,10 @@ const Portfolio: React.FC = () => {
         </section>
 
         {/* About Section */}
-        <section id="about" data-section-transition className="py-24 relative z-10 section-transition scroll-mt-24">
+        <section id="about" data-section-transition className="py-24 relative z-10 section-transition">
           <div className="max-w-6xl mx-auto px-4 sm:px-6">
             {/* Section Index Header */}
-            <div data-anim className="flex items-center gap-3 mb-8">
+            <div data-motion-heading className="flex items-center gap-3 mb-8">
               <span className="font-mono text-sm font-bold text-white bg-[#0055FF] px-2 py-0.5 border border-black shadow-[2px_2px_0px_#000000]">
                 [01]
               </span>
@@ -745,7 +781,7 @@ const Portfolio: React.FC = () => {
 
               {/* Side Specs Grid */}
               <div className="space-y-4">
-                <div data-anim className="bg-white border border-black p-5 shadow-[4px_4px_0px_#000000]">
+                <div data-anim data-static-motion="lift" className="bg-white border border-black p-5 shadow-[4px_4px_0px_#000000]">
                   <span className="block text-[11px] font-mono text-[#0055FF] font-bold uppercase tracking-wider mb-1">
                     [01 // PARCOURS ACADÉMIQUE]
                   </span>
@@ -756,7 +792,7 @@ const Portfolio: React.FC = () => {
                   </p>
                 </div>
 
-                <div data-anim className="bg-white border border-black p-5 shadow-[4px_4px_0px_#000000]">
+                <div data-anim data-static-motion="lift" className="bg-white border border-black p-5 shadow-[4px_4px_0px_#000000]">
                   <span className="block text-[11px] font-mono text-[#0055FF] font-bold uppercase tracking-wider mb-1">
                     [02 // BUT MMI]
                   </span>
@@ -767,7 +803,7 @@ const Portfolio: React.FC = () => {
                   </p>
                 </div>
 
-                <div data-anim className="bg-[#E0EBFF] border border-[#0055FF] p-4 text-xs font-mono text-black flex items-center justify-between shadow-[2px_2px_0px_#000000]">
+                <div data-anim data-static-motion="nudge" className="bg-[#E0EBFF] border border-[#0055FF] p-4 text-xs font-mono text-black flex items-center justify-between shadow-[2px_2px_0px_#000000]">
                   <span className="font-bold">EXPÉRIENCE CUMULÉE</span>
                   <span className="text-[#0055FF] font-bold text-sm">
                     <AnimatedCounter value={2} suffix="+ ANS" />
@@ -779,9 +815,9 @@ const Portfolio: React.FC = () => {
         </section>
 
         {/* Portfolio Section */}
-        <section id="portfolio" data-section-transition className="py-24 relative z-10 section-transition scroll-mt-24">
+        <section id="portfolio" data-section-transition className="py-24 relative z-10 section-transition">
           <div className="max-w-7xl mx-auto px-4 sm:px-6">
-            <div data-anim className="flex flex-wrap items-baseline justify-between gap-4 mb-10 border-b border-black/15 pb-5">
+            <div data-motion-heading className="flex flex-wrap items-baseline justify-between gap-4 mb-10 border-b border-black/15 pb-5">
               <div className="flex items-center gap-3">
                 <span className="font-mono text-sm font-bold text-white bg-[#0055FF] px-2 py-0.5 border border-black shadow-[2px_2px_0px_#000000]">
                   [02]
@@ -810,9 +846,9 @@ const Portfolio: React.FC = () => {
         </section>
 
         {/* Experience Section */}
-        <section id="experience" data-section-transition className="py-24 relative z-10 section-transition scroll-mt-24">
+        <section id="experience" data-section-transition className="py-24 relative z-10 section-transition">
           <div className="max-w-6xl mx-auto px-4 sm:px-6">
-            <div data-anim className="flex items-center gap-3 mb-10 border-b border-black/15 pb-5">
+            <div data-motion-heading className="flex items-center gap-3 mb-10 border-b border-black/15 pb-5">
               <span className="font-mono text-sm font-bold text-white bg-[#0055FF] px-2 py-0.5 border border-black shadow-[2px_2px_0px_#000000]">
                 [03]
               </span>
@@ -826,6 +862,7 @@ const Portfolio: React.FC = () => {
                 <article
                   key={experience.id}
                   data-anim
+                  data-static-motion="lift"
                   className="bg-white border border-black shadow-[6px_6px_0px_#000000] p-6 sm:p-8"
                 >
                   <div className="grid md:grid-cols-3 gap-6">
@@ -908,9 +945,9 @@ const Portfolio: React.FC = () => {
         </section>
 
         {/* Skills Section */}
-        <section id="skills" data-section-transition className="py-24 relative z-10 section-transition scroll-mt-24">
+        <section id="skills" data-section-transition className="py-24 relative z-10 section-transition">
           <div className="max-w-6xl mx-auto px-4 sm:px-6">
-            <div data-anim className="flex items-center gap-3 mb-10 border-b border-black/15 pb-5">
+            <div data-motion-heading className="flex items-center gap-3 mb-10 border-b border-black/15 pb-5">
               <span className="font-mono text-sm font-bold text-white bg-[#0055FF] px-2 py-0.5 border border-black shadow-[2px_2px_0px_#000000]">
                 [04]
               </span>
@@ -921,9 +958,9 @@ const Portfolio: React.FC = () => {
 
             <div className="space-y-8">
               {/* Primary Skills Box */}
-              <div data-anim className="bg-white border border-black p-6 sm:p-8 shadow-[6px_6px_0px_#000000]">
-                <h3 className="text-lg font-mono font-bold text-black uppercase tracking-wider mb-6 flex items-center gap-2 border-b border-black/15 pb-3">
-                  <Code size={18} className="text-[#0055FF]" />
+              <div data-anim data-static-motion="lift" className="bg-white border border-black p-6 sm:p-8 shadow-[6px_6px_0px_#000000]">
+                <h3 className="technical-heading text-sm sm:text-lg font-mono font-bold text-black uppercase tracking-wider mb-6 flex items-center gap-2 border-b border-black/15 pb-3">
+                  <Code data-motion-icon size={18} className="text-[#0055FF]" />
                   [STACK_PRINCIPALE // PRODUCTION_READY]
                 </h3>
 
@@ -962,9 +999,9 @@ const Portfolio: React.FC = () => {
               </div>
 
               {/* Learning / Exploration Box */}
-              <div data-anim className="bg-white border border-black p-6 sm:p-8 shadow-[6px_6px_0px_#000000]">
-                <h3 className="text-lg font-mono font-bold text-black uppercase tracking-wider mb-6 flex items-center gap-2 border-b border-black/15 pb-3">
-                  <Zap size={18} className="text-[#0055FF]" />
+              <div data-anim data-static-motion="lift" className="bg-white border border-black p-6 sm:p-8 shadow-[6px_6px_0px_#000000]">
+                <h3 className="technical-heading text-sm sm:text-lg font-mono font-bold text-black uppercase tracking-wider mb-6 flex items-center gap-2 border-b border-black/15 pb-3">
+                  <Zap data-motion-icon size={18} className="text-[#0055FF]" />
                   [VEILLE_ACTIVE & EN APPRENTISSAGE]
                 </h3>
 
@@ -992,21 +1029,21 @@ const Portfolio: React.FC = () => {
         </section>
 
         {/* Contact Section */}
-        <section id="contact" data-section-transition className="py-24 relative z-10 section-transition scroll-mt-24">
+        <section id="contact" data-section-transition className="py-24 relative z-10 section-transition">
           <div className="max-w-5xl mx-auto px-4 sm:px-6">
-            <div data-anim className="bg-white border-2 border-black shadow-[8px_8px_0px_#0055FF] p-6 sm:p-10">
+            <div data-anim data-static-motion="lift" className="bg-white border-2 border-black shadow-[8px_8px_0px_#0055FF] p-6 sm:p-10">
               {/* Terminal Title Bar */}
-              <div className="flex items-center justify-between border-b border-black pb-4 mb-8 font-mono text-xs">
+              <div className="terminal-heading flex flex-wrap items-center justify-between gap-3 border-b border-black pb-4 mb-8 font-mono text-[10px] sm:text-xs">
                 <div className="flex items-center gap-2">
                   <span className="w-3 h-3 bg-[#FF3366] border border-black" />
                   <span className="w-3 h-3 bg-[#FFE500] border border-black" />
                   <span className="w-3 h-3 bg-[#0055FF] border border-black" />
-                  <span className="text-black ml-2 font-bold">TERMINAL_CONTACT // INITIALISE_LINK</span>
+                  <span className="min-w-0 text-black ml-2 font-bold">TERMINAL_CONTACT // INITIALISE_LINK</span>
                 </div>
                 <span className="text-[#0055FF] font-bold">[CHANNEL: SECURE]</span>
               </div>
 
-              <div className="text-center max-w-2xl mx-auto mb-10">
+              <div data-anim className="text-center max-w-2xl mx-auto mb-10">
                 <h2 className="text-[clamp(1rem,4.8vw,3rem)] font-black font-display uppercase tracking-tight text-black mb-4">
                   PRÊT À COLLABORER ?
                 </h2>
@@ -1017,9 +1054,9 @@ const Portfolio: React.FC = () => {
 
               {/* Direct email quick-copy card */}
               {PORTFOLIO_CONFIG.email && (
-                <div className="mb-8 p-4 bg-[#F8FAFC] border border-black flex flex-wrap items-center justify-between gap-4">
+                <div data-anim className="contact-email mb-8 p-4 bg-[#F8FAFC] border border-black flex flex-wrap items-center justify-between gap-4">
                   <div className="flex items-center gap-3">
-                    <Mail size={20} className="text-[#0055FF]" />
+                    <Mail data-motion-icon size={20} className="text-[#0055FF]" />
                     <div>
                       <span className="block text-[10px] font-mono text-[#64748B] uppercase font-bold">ADRESSE COURRIEL DIRECTE</span>
                       <TypewriterText
@@ -1033,6 +1070,7 @@ const Portfolio: React.FC = () => {
                     onClick={handleCopyEmail}
                     className="brutal-btn px-4 py-2 bg-[#0055FF] text-white hover:bg-black hover:text-white border border-black text-xs font-mono shadow-[2px_2px_0px_#000000]"
                   >
+                    <span className="sr-only" role="status">{copiedEmail ? "Adresse e-mail copiée" : ""}</span>
                     {copiedEmail ? (
                       <>
                         <Check size={14} className="mr-1.5" />
@@ -1048,8 +1086,10 @@ const Portfolio: React.FC = () => {
                 </div>
               )}
 
+              {copyError && <p role="status" className="mb-4 font-mono text-xs text-[#475569]">Copie indisponible. Vous pouvez sélectionner l’adresse ci-dessus.</p>}
+
               {/* External CTA Links */}
-              <div className="grid sm:grid-cols-2 gap-4">
+              <div data-anim className="grid sm:grid-cols-2 gap-4">
                 <a
                   href={PORTFOLIO_CONFIG.linkedin}
                   target="_blank"
@@ -1077,6 +1117,7 @@ const Portfolio: React.FC = () => {
         {/* Back to top fixed button */}
         {showBackToTop && (
           <button
+            type="button"
             onClick={() => scrollToSection('hero')}
             className="fixed bottom-6 right-6 z-40 px-3.5 py-2.5 bg-[#0055FF] text-white border border-black shadow-[3px_3px_0px_#000000] hover:bg-black hover:text-white transition-all font-mono font-bold text-xs"
             aria-label="Retour en haut"
@@ -1087,13 +1128,13 @@ const Portfolio: React.FC = () => {
         )}
 
         {/* Footer */}
-        <footer className="py-8 border-t border-black bg-[#F4F5F8] text-center font-mono text-xs text-[#64748B] relative z-10">
+        <footer data-anim className="py-8 border-t border-black bg-[#F4F5F8] text-center font-mono text-xs text-[#64748B] relative z-10">
           <div className="max-w-6xl mx-auto px-4 flex flex-col sm:flex-row items-center justify-between gap-4">
             <div>
               © {currentYear} {PORTFOLIO_CONFIG.name}. TOUS DROITS RÉSERVÉS.
             </div>
             <div className="text-[11px] text-[#64748B]">
-              BUILD // REACT 19 + TYPESCRIPT + LIGHT NEO-BRUTALISM + TAILWIND V4
+              CONÇU AVEC RIGUEUR. DÉVELOPPÉ AVEC PASSION.
             </div>
           </div>
         </footer>
