@@ -1,18 +1,8 @@
-import {
-  FiPenTool as Palette,
-  FiZap as Zap,
-  FiCpu as Atom,
-  FiGitBranch as GitBranch,
-  FiGlobe as Globe,
-  FiServer as Server,
-  FiDatabase as Database,
-  FiLayers as Layers,
-  FiWind as Waves,
-  FiLayout as LayoutTemplate,
-  FiBox as Box,
-  FiDisc as Disc,
-  FiList as List,
-} from 'react-icons/fi';
+import { FaDocker } from 'react-icons/fa';
+import {  FiServer as Server,  FiList as List,  FiGithub} from 'react-icons/fi';
+import { LiaAdobe } from 'react-icons/lia';
+import { PiIslandLight } from 'react-icons/pi';
+import { SiBlender, SiCanva, SiCloudflare, SiExpress, SiFigma, SiFirebase, SiFramer, SiGit, SiGithubactions, SiNextdotjs, SiNodedotjs, SiPostgresql, SiReact, SiRust, SiStrapi, SiSupabase, SiTailwindcss, SiThreedotjs, SiTypescript, SiUnity, SiVite, SiWordpress } from 'react-icons/si';
 
 // Configuration du portfolio
 
@@ -25,59 +15,40 @@ const PORTFOLIO_CONFIG = {
   bio: "Etudiant en développement informatique, je conçois des applications performantes, évolutives et intuitives, avec une attention forte au design, à la qualité du code et à l'expérience utilisateur.",
 
   skills: [
-    { name: "React", icon: Atom, category: "Frontend" },
-    { name: "TypeScript", icon: Zap, category: "Frontend" },
-    { name: "TailWindCSS", icon: Waves, category: "Frontend" },
-    { name: "Three.js", icon: Globe, category: "Frontend" },
-    { name: "Next.js", icon: Globe, category: "Frontend" },
-    { name: "Vite", icon: Zap, category: "Frontend" },
-    { name: "Supabase", icon: Database, category: "Backend & Données" },
-    { name: "PostgreSQL", icon: Database, category: "Backend & Données" },
-    { name: "Strapi", icon: LayoutTemplate, category: "Backend & Données" },
+    { name: "React", icon: SiReact, category: "Frontend" },
+    { name: "TypeScript", icon: SiTypescript, category: "Frontend" },
+    { name: "TailWindCSS", icon: SiTailwindcss, category: "Frontend" },
+    { name: "Three.js", icon: SiThreedotjs, category: "Frontend" },
+    { name: "Next.js", icon: SiNextdotjs, category: "Frontend" },
+    { name: "Vite", icon: SiVite, category: "Frontend" },
+    { name: "PostgreSQL", icon: SiPostgresql, category: "Backend & Données" },
+    { name: "Strapi", icon: SiStrapi, category: "Backend & Données" },
     { name: "API REST", icon: Server, category: "Backend & Données" },
-    { name: "Express", icon: Server, category: "Backend & Données" },
-    { name: "Git", icon: GitBranch, category: "Outils" },
-    { name: "Docker", icon: Box, category: "Outils" },
+    { name: "Express", icon: SiExpress, category: "Backend & Données" },
+    { name: "Supabase", icon: SiSupabase, category: "Backend & Données" },
+    { name: "Cloudflare Workers", icon: SiCloudflare, category: "Backend & Données" },
+    { name: "Firebase", icon: SiFirebase, category: "Backend & Données" },
+    { name: "Git", icon: SiGit, category: "Outils" },
+    { name: "GitHub", icon: FiGithub, category: "Outils" },
+    { name: "Docker", icon: FaDocker, category: "Outils" },
     { name: "Jira / Notion", icon: List, category: "Outils" },
-    { name: "Blender", icon: Palette, category: "Création 3D" },
-    { name: "Unity", icon: Disc, category: "Création 3D" },
-    { name: "Figma", icon: LayoutTemplate, category: "Design" },
-    { name: "Adobe Suite", icon: Layers, category: "Design" },
-    { name: "WordPress", icon: LayoutTemplate, category: "Design" },
-    { name: "Canva", icon: Palette, category: "Design" },
-    { name: "Framer", icon: LayoutTemplate, category: "Design" },
+    { name: "Blender", icon: SiBlender, category: "Création 3D" },
+    { name: "Unity", icon: SiUnity, category: "Création 3D" },
+    { name: "Figma", icon: SiFigma, category: "Design" },
+    { name: "Adobe Suite", icon: LiaAdobe, category: "Design" },
+    { name: "WordPress", icon: SiWordpress, category: "Design" },
+    { name: "Canva", icon: SiCanva, category: "Design" },
+    { name: "Framer", icon: SiFramer, category: "Design" },
   ],
 
   learningSkills: [
-    { name: "Rust", icon: GitBranch, category: "En cours d'apprentissage" },
-    { name: "Node.js", icon: Server, category: "En cours d'apprentissage" },
-    { name: "GitHub Actions", icon: GitBranch, category: "En cours d'apprentissage" },
+    { name: "Rust", icon: SiRust, category: "En cours d'apprentissage" },
+    { name: "Node.js", icon: SiNodedotjs, category: "En cours d'apprentissage" },
+    { name: "GitHub Actions", icon: SiGithubactions, category: "En cours d'apprentissage" },
+    { name: "TanStack Start", icon: PiIslandLight, category: "En cours d'apprentissage" },
   ],
 
   projects: [
-    {
-      id: 4,
-      title: "Les Enfants Du Rhône",
-      description: "Site vitrine de la webradio lyonnaise Les Enfants Du Rhône : lecteur radio en direct, programmation des émissions, podcasts et ateliers, le tout alimenté par un back-office Strapi.",
-      image: "/images/enfantsduRhone_1.png",
-      images: ["/images/enfantsduRhone_1.png", "/images/enfantsduRhone_2.png", "/images/enfantsduRhone_3.png"],
-      video: "",
-      technologies: ["React", "TypeScript", "TailwindCSS", "Strapi", "API REST"],
-      github: "",
-      demo: "https://les-enfants-du-rhone.fr",
-      featured: true,
-      year: "2026",
-      duration: "3 mois",
-      type: "Site vitrine - Webradio",
-      status: "Terminé",
-      features: [
-        "Lecteur radio en direct intégré",
-        "Programmation des émissions et fiches podcasts",
-        "Back-office Strapi pour la gestion des contenus",
-        "Outil type Linktree pour partager les podcasts"
-      ],
-      challenges: "Le défi principal était de couvrir un contenu éditorial riche (émissions, podcasts, ateliers) avec un lecteur radio fonctionnel en direct, le tout géré dynamiquement via un back-office Strapi, sans sacrifier la fluidité ni la clarté de l'interface."
-    },
     {
       id: 1,
       title: "FlowSync",
@@ -146,6 +117,29 @@ const PORTFOLIO_CONFIG = {
         "Graphe de chaîne et indicateurs KPI"
       ],
       challenges: "Le principal défi a été de structurer un calculateur complexe tout en gardant une interface lisible, rapide à manipuler et suffisamment claire pour comparer plusieurs scénarios de production."
+    },
+    {
+      id: 4,
+      title: "Les Enfants Du Rhône",
+      description: "Site vitrine de la webradio lyonnaise Les Enfants Du Rhône : lecteur radio en direct, programmation des émissions, podcasts et ateliers, le tout alimenté par un back-office Strapi.",
+      image: "/images/enfantsduRhone_1.png",
+      images: ["/images/enfantsduRhone_1.png", "/images/enfantsduRhone_2.png", "/images/enfantsduRhone_3.png"],
+      video: "",
+      technologies: ["React", "TypeScript", "TailwindCSS", "Strapi", "API REST"],
+      github: "",
+      demo: "https://les-enfants-du-rhone.fr",
+      featured: true,
+      year: "2026",
+      duration: "3 mois",
+      type: "Site vitrine - Webradio",
+      status: "Terminé",
+      features: [
+        "Lecteur radio en direct intégré",
+        "Programmation des émissions et fiches podcasts",
+        "Back-office Strapi pour la gestion des contenus",
+        "Outil type Linktree pour partager les podcasts"
+      ],
+      challenges: "Le défi principal était de couvrir un contenu éditorial riche (émissions, podcasts, ateliers) avec un lecteur radio fonctionnel en direct, le tout géré dynamiquement via un back-office Strapi, sans sacrifier la fluidité ni la clarté de l'interface."
     }
   ],
 

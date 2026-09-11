@@ -1,4 +1,5 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef, useCallback } from 'react';
+import { animate, stagger, steps } from 'animejs';
 import {
   FiChevronDown as ChevronDown,
   FiCode as Code,
@@ -21,6 +22,10 @@ import PORTFOLIO_CONFIG from './portfolioData';
 import GalaxyBackground from './galaxyBackground';
 import ProjectCard from './projectCard';
 import ProjectDetailPage from './projectDetailPage';
+import SplitText from './splitText';
+import AnimatedCounter from './animatedCounter';
+import IntroCurtain from './introCurtain';
+import TypewriterText from './typewriterText';
 
 const getProjectIdFromHash = () => {
   if (typeof window === 'undefined') return null;
@@ -33,18 +38,41 @@ const getProjectIdFromHash = () => {
   return Number.isFinite(projectId) ? projectId : null;
 };
 
+const MARQUEE_TECHNOLOGIES = Array.from(
+  new Set(PORTFOLIO_CONFIG.skills.map((skill) => skill.name))
+);
+
+const HERO_ROLES = [
+  '// CONCEPTION LOGICIELLE',
+  '// INTERFACES HAUTE PERFORMANCE',
+  '// ARCHITECTURES SCALABLES',
+  '// 3D TEMPS RÉEL & WEBGL',
+];
+
+const BOOT_LOG = [
+  'INITIALIZING_CORE_SYS',
+  'LOADING_ASSETS',
+  'COMPILING_COMPONENTS',
+  'MOUNTING_INTERFACE',
+  'SYSTEM_READY',
+];
+
 const Portfolio: React.FC = () => {
   const [activeSection, setActiveSection] = useState('hero');
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [scrollProgress, setScrollProgress] = useState(0);
   const [showBackToTop, setShowBackToTop] = useState(false);
-  const [introPhase, setIntroPhase] = useState<'center' | 'expand' | 'move' | 'exit'>('center');
   const [showIntro, setShowIntro] = useState(() => getProjectIdFromHash() === null);
-  const [introTarget, setIntroTarget] = useState({ x: 0, y: 0 });
   const [selectedProjectId, setSelectedProjectId] = useState<number | null>(() => getProjectIdFromHash());
   const [copiedEmail, setCopiedEmail] = useState(false);
+  const [curtainActive, setCurtainActive] = useState(false);
+  const [introDone, setIntroDone] = useState(() => getProjectIdFromHash() !== null);
+  const [roleIndex, setRoleIndex] = useState(0);
   const navClickLockRef = useRef<{ sectionId: string; until: number } | null>(null);
-  const navLogoRef = useRef<HTMLDivElement>(null);
+  const navRef = useRef<HTMLElement>(null);
+  const navIndicatorRef = useRef<HTMLSpanElement>(null);
+  const heroTitleRef = useRef<HTMLHeadingElement>(null);
+  const clockRef = useRef<HTMLSpanElement>(null);
 
   const [firstName, ...lastNameParts] = PORTFOLIO_CONFIG.name.trim().split(/\s+/);
   const lastName = lastNameParts.join(' ');
@@ -113,41 +141,18 @@ const Portfolio: React.FC = () => {
   }, []);
 
   useEffect(() => {
-    if (!showIntro || selectedProjectId !== null) return;
-
-    const updateTarget = () => {
-      const navLogo = navLogoRef.current;
-      if (!navLogo) return;
-
-      const navRect = navLogo.getBoundingClientRect();
-      const x = navRect.left + navRect.width / 2 - window.innerWidth / 2;
-      const y = navRect.top + navRect.height / 2 - window.innerHeight / 2;
-
-      setIntroTarget({ x, y });
-    };
-
-    const frameId = window.requestAnimationFrame(updateTarget);
-    window.addEventListener('resize', updateTarget);
-
-    return () => {
-      window.cancelAnimationFrame(frameId);
-      window.removeEventListener('resize', updateTarget);
-    };
-  }, [showIntro, selectedProjectId]);
-
-  useEffect(() => {
     if (selectedProjectId !== null) {
-      setIntroPhase('exit');
       setShowIntro(false);
+      setIntroDone(true);
       return;
     }
 
     const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
     if (reducedMotion) {
-      setIntroPhase('exit');
       const hideIntro = window.setTimeout(() => {
         setShowIntro(false);
+        setIntroDone(true);
       }, 200);
 
       return () => {
@@ -155,29 +160,23 @@ const Portfolio: React.FC = () => {
       };
     }
 
-    const expandName = window.setTimeout(() => {
-      setIntroPhase('expand');
-    }, 900);
-
-    const moveToLogo = window.setTimeout(() => {
-      setIntroPhase('move');
+    const exitIntro = window.setTimeout(() => {
+      setCurtainActive(true);
     }, 2200);
 
-    const exitIntro = window.setTimeout(() => {
-      setIntroPhase('exit');
-    }, 3400);
-
-    const hideIntro = window.setTimeout(() => {
-      setShowIntro(false);
-    }, 4000);
-
     return () => {
-      window.clearTimeout(expandName);
-      window.clearTimeout(moveToLogo);
       window.clearTimeout(exitIntro);
-      window.clearTimeout(hideIntro);
     };
   }, [selectedProjectId]);
+
+  const handleCurtainCovered = useCallback(() => {
+    setShowIntro(false);
+    setIntroDone(true);
+  }, []);
+
+  const handleCurtainComplete = useCallback(() => {
+    setCurtainActive(false);
+  }, []);
 
   useEffect(() => {
     if (selectedProjectId !== null) {
@@ -216,31 +215,124 @@ const Portfolio: React.FC = () => {
     const observer = new IntersectionObserver(
       (entries) => {
         entries.forEach((entry) => {
-          if (entry.isIntersecting) {
-            entry.target.classList.add('section-visible');
-            observer.unobserve(entry.target);
+          if (!entry.isIntersecting) return;
+          const section = entry.target as HTMLElement;
+          observer.unobserve(section);
+
+          animate(section, {
+            opacity: [0, 1],
+            y: [20, 0],
+            duration: 450,
+            ease: 'outCubic',
+          });
+
+          const items = Array.from(section.querySelectorAll<HTMLElement>('[data-anim]'));
+          if (items.length > 0) {
+            animate(items, {
+              opacity: [0, 1],
+              y: [26, 0],
+              duration: 620,
+              delay: stagger(65),
+              ease: 'outExpo',
+            });
+          }
+
+          const chips = Array.from(section.querySelectorAll<HTMLElement>('[data-anim-chip]'));
+          if (chips.length > 0) {
+            animate(chips, {
+              opacity: [0, 1],
+              y: [14, 0],
+              duration: 420,
+              delay: stagger(22),
+              ease: 'outExpo',
+            });
           }
         });
       },
       { threshold: 0.15, rootMargin: '0px 0px -5% 0px' }
     );
 
-    sections.forEach((section, index) => {
-      section.style.transitionDelay = `${Math.min(index * 60, 240)}ms`;
-      observer.observe(section);
-    });
+    sections.forEach((section) => observer.observe(section));
 
     return () => observer.disconnect();
   }, [selectedProjectId]);
+
+  useEffect(() => {
+    if (selectedProjectId !== null) return;
+
+    const updateIndicator = () => {
+      const nav = navRef.current;
+      const indicator = navIndicatorRef.current;
+      if (!nav || !indicator) return;
+
+      const button = nav.querySelector<HTMLElement>(`[data-nav-item="${activeSection}"]`);
+      if (!button) return;
+
+      animate(indicator, {
+        x: button.offsetLeft,
+        width: button.offsetWidth,
+        duration: 380,
+        ease: 'outExpo',
+      });
+    };
+
+    const frameId = window.requestAnimationFrame(updateIndicator);
+    window.addEventListener('resize', updateIndicator);
+
+    return () => {
+      window.cancelAnimationFrame(frameId);
+      window.removeEventListener('resize', updateIndicator);
+    };
+  }, [activeSection, selectedProjectId]);
+
+  useEffect(() => {
+    const updateClock = () => {
+      if (!clockRef.current) return;
+      clockRef.current.textContent = new Date().toLocaleTimeString('fr-FR');
+    };
+
+    updateClock();
+    const clockInterval = window.setInterval(updateClock, 1000);
+
+    return () => window.clearInterval(clockInterval);
+  }, []);
+
+  useEffect(() => {
+    if (!introDone) return;
+    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+
+    const rotation = window.setInterval(() => {
+      setRoleIndex((index) => (index + 1) % HERO_ROLES.length);
+    }, 2800);
+
+    return () => window.clearInterval(rotation);
+  }, [introDone]);
 
   useEffect(() => {
     if (selectedProjectId === null) return;
     setIsMobileMenuOpen(false);
   }, [selectedProjectId]);
 
+  const handleTitleGlitch = () => {
+    const title = heroTitleRef.current;
+    if (!title) return;
+    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+
+    const chars = title.querySelectorAll<HTMLElement>('[data-char]');
+    if (chars.length === 0) return;
+
+    animate(chars, {
+      translateX: [0, -3, 3, -1, 0],
+      duration: 320,
+      delay: stagger(18),
+      ease: steps(4),
+    });
+  };
+
   const openProjectPage = (projectId: number) => {
     setIsMobileMenuOpen(false);
     setShowIntro(false);
+    setCurtainActive(false);
     window.history.pushState({ projectId }, '', `#project-${projectId}`);
     setSelectedProjectId(projectId);
     window.scrollTo({ top: 0, left: 0, behavior: 'auto' });
@@ -297,56 +389,62 @@ const Portfolio: React.FC = () => {
 
   return (
     <div className="min-h-screen text-[#0A0A0E] relative overflow-x-hidden bg-[#F4F5F8]">
-      {/* Intro Animation Overlay */}
+      {/* Intro Boot Screen */}
       {showIntro && (
         <div
-          className={`fixed inset-0 z-[1200] px-6 overflow-hidden pointer-events-none transition-opacity duration-500 bg-[#F4F5F8] flex items-center justify-center ${
-            introPhase === 'exit' ? 'opacity-0' : 'opacity-100'
-          }`}
+          className="fixed inset-0 z-[1200] px-6 overflow-hidden pointer-events-none bg-[#F4F5F8] flex items-center justify-center"
           aria-hidden="true"
         >
           <div className="absolute inset-0 blueprint-grid opacity-75" />
 
-          <div
-            className="fixed left-1/2 top-1/2"
-            style={{
-              transform:
-                introPhase === 'move' || introPhase === 'exit'
-                  ? `translate(calc(-50% + ${introTarget.x}px), calc(-50% + ${introTarget.y}px))`
-                  : 'translate(-50%, -50%)',
-              transformOrigin: 'center center',
-              transition: 'transform 980ms cubic-bezier(0.16, 1, 0.3, 1)',
-            }}
-          >
-            <div
-              className={`flex flex-col items-center justify-center font-display font-black uppercase tracking-tight text-black transition-transform duration-[980ms] ease-out ${
-                introPhase === 'move' || introPhase === 'exit'
-                  ? 'scale-100'
-                  : 'scale-[1.8] sm:scale-[3] md:scale-[4]'
-              }`}
-            >
-              <div className="flex items-center whitespace-nowrap">
-                <span className="text-black">{firstName}</span>
-                {hasLastName && (
-                  <span
-                    className={`overflow-hidden text-[#0055FF] transition-all duration-1000 ease-in-out ${
-                      introPhase === 'center'
-                        ? 'max-w-0 opacity-0 ml-0'
-                        : 'max-w-[90vw] sm:max-w-[1000px] opacity-100 ml-2 sm:ml-4'
-                    }`}
-                  >
-                    {lastName}
-                  </span>
-                )}
+          <div className="relative w-full max-w-2xl border-2 border-black bg-white shadow-[10px_10px_0px_#0055FF]">
+            <div className="flex items-center justify-between gap-4 border-b-2 border-black bg-[#0A0A0E] px-4 py-2">
+              <span className="font-mono text-[10px] tracking-[0.3em] text-[#0055FF]">SYS_BOOT // AXEL_DO</span>
+              <span className="font-mono text-[10px] tracking-[0.3em] text-[#F4F5F8]">V.2026</span>
+            </div>
+
+            <div className="px-6 py-10 sm:px-12 sm:py-14 text-center">
+              <div className="font-display font-black uppercase tracking-tight text-black text-2xl sm:text-5xl md:text-6xl leading-[0.95]">
+                <span className="block">{firstName}</span>
+                {hasLastName && <span className="block text-[#0055FF]">{lastName}</span>}
               </div>
-              {introPhase !== 'move' && introPhase !== 'exit' && (
-                <span className="font-mono text-[10px] tracking-[0.3em] text-[#64748B] mt-2">
-                  [INITIALIZING_CORE_SYS...]
+              <div className="mt-6 mx-auto max-w-xs space-y-1.5 text-left font-mono text-[10px] tracking-[0.2em] text-[#64748B]">
+                {BOOT_LOG.map((line, index) => {
+                  const isReady = line === 'SYSTEM_READY';
+                  return (
+                    <div
+                      key={line}
+                      className={`boot-line flex items-center justify-between gap-3${isReady ? ' text-[#0055FF] font-bold' : ''}`}
+                      style={{ animationDelay: `${140 + index * 340}ms` }}
+                    >
+                      <span className="min-w-0 truncate">› {line}</span>
+                      {!isReady && <span className="shrink-0 font-bold text-[#0055FF]">OK</span>}
+                    </div>
+                  );
+                })}
+              </div>
+            </div>
+
+            <div className="flex items-center justify-between gap-4 border-t-2 border-black px-4 py-2">
+              <span className="font-mono text-[10px] tracking-[0.2em] text-[#64748B]">[LOADING_ASSETS]</span>
+              <span className="flex items-center gap-2">
+                <span className="font-mono text-[10px] tracking-[0.2em] text-[#0055FF]">[BUILD]</span>
+                <span className="h-2 w-20 border border-black bg-[#E2E8F0] overflow-hidden">
+                  <span className="boot-progress block h-full w-full bg-[#0055FF]" />
                 </span>
-              )}
+              </span>
             </div>
           </div>
         </div>
+      )}
+
+      {/* Brutalist Curtain Transition */}
+      {curtainActive && (
+        <IntroCurtain
+          play={curtainActive}
+          onCovered={handleCurtainCovered}
+          onComplete={handleCurtainComplete}
+        />
       )}
 
       {/* Background Tactile Paper Grain & Blueprint Grid */}
@@ -373,32 +471,37 @@ const Portfolio: React.FC = () => {
           {/* Logo & Live Status */}
           <div className="flex items-center gap-4">
             <div
-              ref={navLogoRef}
               onClick={() => scrollToSection('hero')}
               className={`font-display font-extrabold text-lg sm:text-xl tracking-tight text-black flex items-center gap-2 cursor-pointer transition-opacity duration-500 ${
-                showIntro && introPhase !== 'move' && introPhase !== 'exit' ? 'opacity-0' : 'opacity-100'
+                showIntro ? 'opacity-0' : 'opacity-100'
               }`}
             >
               <span>{PORTFOLIO_CONFIG.name}</span>
               <span className="text-[#0055FF] font-mono text-xs">// DEV</span>
             </div>
-
-            <div className="hidden lg:flex items-center gap-1.5 px-2 py-0.5 bg-[#E0EBFF] border border-[#0055FF] text-[11px] font-mono text-[#0055FF] font-bold">
-              <span className="w-2 h-2 bg-[#0055FF] inline-block animate-pulse" />
-              <span>DISPONIBLE MISSIONS</span>
-            </div>
           </div>
 
           {/* Desktop Navigation Links */}
-          <nav className="hidden md:flex items-center gap-1" aria-label="Navigation principale">
+          <nav
+            ref={navRef}
+            className="hidden md:flex items-center gap-1 relative"
+            aria-label="Navigation principale"
+          >
+            <span
+              ref={navIndicatorRef}
+              aria-hidden="true"
+              className="absolute left-0 top-0 h-full bg-[#0055FF] border border-black shadow-[2px_2px_0px_#000000] pointer-events-none"
+              style={{ width: 0, transform: 'translateX(0px)' }}
+            />
             {navigationItems.map((item, index) => (
               <button
                 key={item.id}
+                data-nav-item={item.id}
                 onClick={() => scrollToSection(item.id)}
                 aria-current={activeSection === item.id ? 'page' : undefined}
-                className={`px-3 py-1 font-mono text-xs tracking-wider uppercase transition-all ${
+                className={`relative z-10 px-3 py-1 font-mono text-xs tracking-wider uppercase transition-colors ${
                   activeSection === item.id
-                    ? 'bg-[#0055FF] text-white font-bold border border-black shadow-[2px_2px_0px_#000000]'
+                    ? 'text-white font-bold border border-transparent'
                     : 'text-[#475569] hover:text-black hover:bg-[#E2E8F0] border border-transparent'
                 }`}
               >
@@ -472,53 +575,68 @@ const Portfolio: React.FC = () => {
 
       <main id="main-content" tabIndex={-1}>
         {/* Hero Section */}
-        <section id="hero" className="min-h-screen flex flex-col justify-center relative z-10 pt-32 pb-16 scroll-mt-24">
+        <section id="hero" className="min-h-svh flex flex-col justify-center relative z-10 pt-[clamp(4rem,9vh,5.5rem)] pb-[clamp(1rem,2.5vh,2.5rem)] scroll-mt-24">
           <div className="max-w-6xl mx-auto px-4 sm:px-6 w-full">
-            {/* Terminal Coordinate Badge */}
-            <div className="mb-5 inline-flex items-center gap-2 font-mono text-xs text-[#0055FF] bg-white border border-black px-3 py-1.5 shadow-[3px_3px_0px_#000000] font-bold">
-              <Activity size={14} className="text-[#0055FF]" />
-              <span>GEO: LYON_FR (45.7640° N, 4.8357° E) // SYS_VER: 2026.04</span>
+            {/* Terminal Coordinate Badge + Live Status */}
+            <div className="mb-[clamp(0.75rem,1.8vh,1.25rem)] flex flex-wrap items-center gap-2.5">
+              <div className="inline-flex max-w-full items-center gap-2 font-mono text-xs text-[#0055FF] bg-white border border-black px-3 py-1.5 shadow-[3px_3px_0px_#000000] font-bold">
+                <Activity size={14} className="text-[#0055FF] shrink-0" />
+                <span className="min-w-0">GEO: LYON_FR (45.7640° N, 4.8357° E) // SYS_VER: 2026.04</span>
+              </div>
+              <div className="inline-flex items-center gap-2 font-mono text-xs text-black bg-white border border-black px-3 py-1.5 shadow-[3px_3px_0px_#000000] font-bold">
+                <span className="w-2 h-2 bg-[#22C55E] border border-black animate-pulse" aria-hidden="true" />
+                <span>
+                  SYSTEM_ONLINE // <span ref={clockRef}>--:--:--</span>
+                </span>
+              </div>
             </div>
 
             {/* Monumental Headline */}
-            <div className="relative mb-6">
-              <h1 className="text-5xl sm:text-7xl md:text-8xl lg:text-9xl font-black font-display tracking-tight text-black uppercase leading-[0.95]">
-                {PORTFOLIO_CONFIG.name}
+            <div className="relative mb-[clamp(0.75rem,2vh,1.5rem)]">
+              <h1
+                ref={heroTitleRef}
+                onMouseEnter={handleTitleGlitch}
+                aria-label={PORTFOLIO_CONFIG.name}
+                className="hero-glitch text-[clamp(2rem,min(9vw,12vh),8rem)] font-black font-display tracking-tight text-black uppercase leading-[0.95]"
+              >
+                <SplitText text={PORTFOLIO_CONFIG.name} play={introDone} />
               </h1>
             </div>
 
             {/* Subtitle with Neo-Brutalist highlight */}
-            <div className="mb-6 flex flex-wrap items-center gap-3">
+            <div className="mb-[clamp(0.75rem,2vh,1.5rem)] flex flex-wrap items-center gap-3">
               <span className="font-mono text-base sm:text-xl font-bold text-white bg-[#0055FF] px-3 py-1 border border-black shadow-[3px_3px_0px_#000000]">
                 {PORTFOLIO_CONFIG.title}
               </span>
-              <span className="font-mono text-xs sm:text-sm text-[#475569] font-semibold">
-                // CONCEPTION LOGICIELLE & INTERFACES HAUTE PERFORMANCE
-              </span>
+              <TypewriterText
+                key={roleIndex}
+                text={HERO_ROLES[roleIndex]}
+                play={introDone}
+                speed={28}
+                className="font-mono text-xs sm:text-sm text-[#475569] font-semibold"
+              />
             </div>
 
             {/* Bio statement */}
-            <p className="text-base sm:text-lg text-[#475569] font-body max-w-3xl leading-relaxed mb-8 sm:mb-10">
+            <p className="text-base sm:text-lg text-[#475569] font-body max-w-3xl leading-relaxed mb-[clamp(1rem,2.6vh,2.5rem)]">
               {PORTFOLIO_CONFIG.bio}
             </p>
 
             {/* Asymmetric Technical Spec Badges */}
-            <div className="grid grid-cols-2 sm:grid-cols-4 gap-2.5 max-w-3xl mb-10 font-mono text-xs">
+            <div className="grid grid-cols-2 sm:grid-cols-4 gap-2.5 max-w-3xl mb-[clamp(1rem,2.6vh,2.5rem)] font-mono text-xs">
               <div className="p-3 bg-white border border-black shadow-[2px_2px_0px_#000000]">
                 <span className="block text-[10px] text-[#64748B] uppercase">SPÉCIALISATION</span>
                 <span className="font-bold text-black">WEB FULLSTACK</span>
               </div>
               <div className="p-3 bg-white border border-black shadow-[2px_2px_0px_#000000]">
                 <span className="block text-[10px] text-[#64748B] uppercase">EXPÉRIENCE</span>
-                <span className="font-bold text-[#0055FF]">2+ ANS PRO</span>
+                <span className="font-bold text-[#0055FF]">
+                  <AnimatedCounter value={2} suffix="+ ANS PRO" play={introDone} />
+                </span>
               </div>
               <div className="p-3 bg-white border border-black shadow-[2px_2px_0px_#000000]">
                 <span className="block text-[10px] text-[#64748B] uppercase">FORMATION</span>
-                <span className="font-bold text-black">MASTER INFO</span>
-              </div>
-              <div className="p-3 bg-white border border-black shadow-[2px_2px_0px_#000000]">
-                <span className="block text-[10px] text-[#64748B] uppercase">DISPONIBILITÉ</span>
-                <span className="font-bold text-[#0055FF]">OUVERT MISSIONS</span>
+                <span className="font-bold text-black">MASTER INFORMATIQUE</span>
               </div>
             </div>
 
@@ -560,51 +678,27 @@ const Portfolio: React.FC = () => {
           </div>
 
           {/* Scroll down hint */}
-          <div className="mt-14 flex justify-center">
+          <div className="mt-[clamp(1rem,3vh,3.5rem)] flex justify-center">
             <button
               onClick={() => scrollToSection('about')}
-              className="p-3 bg-white border border-black hover:border-[#0055FF] text-[#0055FF] shadow-[2px_2px_0px_#000000] transition-colors"
+              className="p-3 bg-white border border-black text-[#0055FF] hover:bg-[#0055FF] hover:border-[#0055FF] hover:text-white shadow-[2px_2px_0px_#000000] transition-colors"
               aria-label="Descendre vers la section À propos"
             >
-              <ChevronDown size={20} className="animate-bounce text-[#0055FF]" />
+              <ChevronDown size={20} className="animate-bounce" />
             </button>
           </div>
 
           {/* Kinetic Marquee Ticker */}
-          <div className="mt-16 w-full border-y border-black bg-white py-3 overflow-hidden select-none shadow-sm">
+          <div className="mt-[clamp(1rem,3vh,4rem)] w-full border-y border-black bg-white py-3 overflow-hidden select-none shadow-sm">
             <div className="animate-marquee font-mono text-xs sm:text-sm tracking-widest text-[#475569] uppercase">
-              <span className="mx-4 text-[#0055FF]">✦</span>
-              <span className="text-black font-bold">REACT 19</span>
-              <span className="mx-4 text-[#0055FF]">✦</span>
-              <span>TYPESCRIPT</span>
-              <span className="mx-4 text-[#0055FF]">✦</span>
-              <span className="text-black font-bold">NEXT.JS & VITE</span>
-              <span className="mx-4 text-[#0055FF]">✦</span>
-              <span>TAILWIND CSS</span>
-              <span className="mx-4 text-[#0055FF]">✦</span>
-              <span className="text-black font-bold">SUPABASE & POSTGRESQL</span>
-              <span className="mx-4 text-[#0055FF]">✦</span>
-              <span>STRAPI CMS</span>
-              <span className="mx-4 text-[#0055FF]">✦</span>
-              <span className="text-black font-bold">THREE.JS WEBGL</span>
-              <span className="mx-4 text-[#0055FF]">✦</span>
-              <span>DOCKER & CI/CD</span>
-              <span className="mx-4 text-[#0055FF]">✦</span>
-              <span className="text-black font-bold">REACT 19</span>
-              <span className="mx-4 text-[#0055FF]">✦</span>
-              <span>TYPESCRIPT</span>
-              <span className="mx-4 text-[#0055FF]">✦</span>
-              <span className="text-black font-bold">NEXT.JS & VITE</span>
-              <span className="mx-4 text-[#0055FF]">✦</span>
-              <span>TAILWIND CSS</span>
-              <span className="mx-4 text-[#0055FF]">✦</span>
-              <span className="text-black font-bold">SUPABASE & POSTGRESQL</span>
-              <span className="mx-4 text-[#0055FF]">✦</span>
-              <span>STRAPI CMS</span>
-              <span className="mx-4 text-[#0055FF]">✦</span>
-              <span className="text-black font-bold">THREE.JS WEBGL</span>
-              <span className="mx-4 text-[#0055FF]">✦</span>
-              <span>DOCKER & CI/CD</span>
+              {[0, 1].map((loop) =>
+                MARQUEE_TECHNOLOGIES.map((tech, index) => (
+                  <span key={`marquee-${loop}-${tech}`} className="flex items-center shrink-0">
+                    <span className="mx-4 text-[#0055FF]">✦</span>
+                    <span className={index % 2 === 0 ? 'text-black font-bold' : ''}>{tech}</span>
+                  </span>
+                ))
+              )}
             </div>
           </div>
         </section>
@@ -613,18 +707,18 @@ const Portfolio: React.FC = () => {
         <section id="about" data-section-transition className="py-24 relative z-10 section-transition scroll-mt-24">
           <div className="max-w-6xl mx-auto px-4 sm:px-6">
             {/* Section Index Header */}
-            <div className="flex items-center gap-3 mb-8">
+            <div data-anim className="flex items-center gap-3 mb-8">
               <span className="font-mono text-sm font-bold text-white bg-[#0055FF] px-2 py-0.5 border border-black shadow-[2px_2px_0px_#000000]">
                 [01]
               </span>
-              <h2 className="text-3xl sm:text-5xl font-black font-display uppercase tracking-tight text-black">
+              <h2 className="text-[clamp(1rem,4.8vw,3rem)] font-black font-display uppercase tracking-tight text-black">
                 À PROPOS DE MOI
               </h2>
             </div>
 
             <div className="grid lg:grid-cols-[1.2fr_0.8fr] gap-6">
               {/* Main Bio Panel */}
-              <div className="bg-white border border-black p-6 sm:p-8 shadow-[6px_6px_0px_#000000]">
+              <div data-anim className="bg-white border border-black p-6 sm:p-8 shadow-[6px_6px_0px_#000000]">
                 <div className="flex items-center justify-between border-b border-black/15 pb-3 mb-6 font-mono text-xs">
                   <span className="text-[#0055FF] font-bold flex items-center gap-2">
                     <Terminal size={16} />
@@ -651,7 +745,7 @@ const Portfolio: React.FC = () => {
 
               {/* Side Specs Grid */}
               <div className="space-y-4">
-                <div className="bg-white border border-black p-5 shadow-[4px_4px_0px_#000000]">
+                <div data-anim className="bg-white border border-black p-5 shadow-[4px_4px_0px_#000000]">
                   <span className="block text-[11px] font-mono text-[#0055FF] font-bold uppercase tracking-wider mb-1">
                     [01 // PARCOURS ACADÉMIQUE]
                   </span>
@@ -662,7 +756,7 @@ const Portfolio: React.FC = () => {
                   </p>
                 </div>
 
-                <div className="bg-white border border-black p-5 shadow-[4px_4px_0px_#000000]">
+                <div data-anim className="bg-white border border-black p-5 shadow-[4px_4px_0px_#000000]">
                   <span className="block text-[11px] font-mono text-[#0055FF] font-bold uppercase tracking-wider mb-1">
                     [02 // BUT MMI]
                   </span>
@@ -673,9 +767,11 @@ const Portfolio: React.FC = () => {
                   </p>
                 </div>
 
-                <div className="bg-[#E0EBFF] border border-[#0055FF] p-4 text-xs font-mono text-black flex items-center justify-between shadow-[2px_2px_0px_#000000]">
+                <div data-anim className="bg-[#E0EBFF] border border-[#0055FF] p-4 text-xs font-mono text-black flex items-center justify-between shadow-[2px_2px_0px_#000000]">
                   <span className="font-bold">EXPÉRIENCE CUMULÉE</span>
-                  <span className="text-[#0055FF] font-bold text-sm">2+ ANS</span>
+                  <span className="text-[#0055FF] font-bold text-sm">
+                    <AnimatedCounter value={2} suffix="+ ANS" />
+                  </span>
                 </div>
               </div>
             </div>
@@ -685,27 +781,29 @@ const Portfolio: React.FC = () => {
         {/* Portfolio Section */}
         <section id="portfolio" data-section-transition className="py-24 relative z-10 section-transition scroll-mt-24">
           <div className="max-w-7xl mx-auto px-4 sm:px-6">
-            <div className="flex flex-wrap items-baseline justify-between gap-4 mb-10 border-b border-black/15 pb-5">
+            <div data-anim className="flex flex-wrap items-baseline justify-between gap-4 mb-10 border-b border-black/15 pb-5">
               <div className="flex items-center gap-3">
                 <span className="font-mono text-sm font-bold text-white bg-[#0055FF] px-2 py-0.5 border border-black shadow-[2px_2px_0px_#000000]">
                   [02]
                 </span>
-                <h2 className="text-3xl sm:text-5xl font-black font-display uppercase tracking-tight text-black">
+                <h2 className="text-[clamp(1rem,4.8vw,3rem)] font-black font-display uppercase tracking-tight text-black">
                   PROJETS SÉLECTIONNÉS
                 </h2>
               </div>
               <span className="font-mono text-xs text-[#64748B] font-bold">
-                INDEX_TOTAL: [{PORTFOLIO_CONFIG.projects.length} PROJETS DOCUMENTÉS]
+                INDEX_TOTAL: [
+                <AnimatedCounter key="index-total-counter" value={PORTFOLIO_CONFIG.projects.length} />
+                {' '}PROJETS DOCUMENTÉS]
               </span>
             </div>
 
-            <p className="mb-10 text-[#475569] font-body text-base max-w-3xl leading-relaxed">
+            <p data-anim className="mb-10 text-[#475569] font-body text-base max-w-3xl leading-relaxed">
               Chaque réalisation technique propose un cas d'étude détaillé, les contraintes d'architecture résolues et un accès direct aux dépôts GitHub ainsi qu'aux aperçus en production.
             </p>
 
             <div className="flex flex-wrap justify-center gap-6">
-              {PORTFOLIO_CONFIG.projects.map((project) => (
-                <ProjectCard key={project.id} project={project} onOpenProject={openProjectPage} />
+              {PORTFOLIO_CONFIG.projects.map((project, index) => (
+                <ProjectCard key={project.id} project={project} index={index} onOpenProject={openProjectPage} />
               ))}
             </div>
           </div>
@@ -714,11 +812,11 @@ const Portfolio: React.FC = () => {
         {/* Experience Section */}
         <section id="experience" data-section-transition className="py-24 relative z-10 section-transition scroll-mt-24">
           <div className="max-w-6xl mx-auto px-4 sm:px-6">
-            <div className="flex items-center gap-3 mb-10 border-b border-black/15 pb-5">
+            <div data-anim className="flex items-center gap-3 mb-10 border-b border-black/15 pb-5">
               <span className="font-mono text-sm font-bold text-white bg-[#0055FF] px-2 py-0.5 border border-black shadow-[2px_2px_0px_#000000]">
                 [03]
               </span>
-              <h2 className="text-3xl sm:text-5xl font-black font-display uppercase tracking-tight text-black">
+              <h2 className="text-[clamp(1rem,4.8vw,3rem)] font-black font-display uppercase tracking-tight text-black">
                 PARCOURS PROFESSIONNEL
               </h2>
             </div>
@@ -727,14 +825,15 @@ const Portfolio: React.FC = () => {
               {PORTFOLIO_CONFIG.experiences.map((experience, expIndex) => (
                 <article
                   key={experience.id}
-                  className="bg-white border border-black shadow-[6px_6px_0px_#000000] p-6 sm:p-8 transition-all duration-150"
+                  data-anim
+                  className="bg-white border border-black shadow-[6px_6px_0px_#000000] p-6 sm:p-8"
                 >
                   <div className="grid md:grid-cols-3 gap-6">
                     <div className="md:col-span-2 space-y-4">
                       {/* Header info */}
-                      <div className="flex items-start justify-between gap-4">
+                      <div className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
                         <div>
-                          <div className="flex items-center gap-2 mb-1">
+                          <div className="flex flex-wrap items-center gap-2 mb-1">
                             <span className="font-mono text-xs font-bold text-[#0055FF]">
                               LOG_0{expIndex + 1} //
                             </span>
@@ -811,18 +910,18 @@ const Portfolio: React.FC = () => {
         {/* Skills Section */}
         <section id="skills" data-section-transition className="py-24 relative z-10 section-transition scroll-mt-24">
           <div className="max-w-6xl mx-auto px-4 sm:px-6">
-            <div className="flex items-center gap-3 mb-10 border-b border-black/15 pb-5">
+            <div data-anim className="flex items-center gap-3 mb-10 border-b border-black/15 pb-5">
               <span className="font-mono text-sm font-bold text-white bg-[#0055FF] px-2 py-0.5 border border-black shadow-[2px_2px_0px_#000000]">
                 [04]
               </span>
-              <h2 className="text-3xl sm:text-5xl font-black font-display uppercase tracking-tight text-black">
+              <h2 className="text-[clamp(1rem,4.8vw,3rem)] font-black font-display uppercase tracking-tight text-black">
                 STACK TECHNIQUE
               </h2>
             </div>
 
             <div className="space-y-8">
               {/* Primary Skills Box */}
-              <div className="bg-white border border-black p-6 sm:p-8 shadow-[6px_6px_0px_#000000]">
+              <div data-anim className="bg-white border border-black p-6 sm:p-8 shadow-[6px_6px_0px_#000000]">
                 <h3 className="text-lg font-mono font-bold text-black uppercase tracking-wider mb-6 flex items-center gap-2 border-b border-black/15 pb-3">
                   <Code size={18} className="text-[#0055FF]" />
                   [STACK_PRINCIPALE // PRODUCTION_READY]
@@ -848,6 +947,7 @@ const Portfolio: React.FC = () => {
                           return (
                             <div
                               key={`${category}-${skillIndex}`}
+                              data-anim-chip
                               className="flex items-center gap-3 px-3.5 py-2.5 bg-[#F8FAFC] border border-black/20 hover:border-black hover:bg-[#0055FF] hover:text-white transition-colors group cursor-default shadow-sm"
                             >
                               <IconComponent size={18} className="text-[#0055FF] group-hover:text-white transition-colors" />
@@ -862,7 +962,7 @@ const Portfolio: React.FC = () => {
               </div>
 
               {/* Learning / Exploration Box */}
-              <div className="bg-white border border-black p-6 sm:p-8 shadow-[6px_6px_0px_#000000]">
+              <div data-anim className="bg-white border border-black p-6 sm:p-8 shadow-[6px_6px_0px_#000000]">
                 <h3 className="text-lg font-mono font-bold text-black uppercase tracking-wider mb-6 flex items-center gap-2 border-b border-black/15 pb-3">
                   <Zap size={18} className="text-[#0055FF]" />
                   [VEILLE_ACTIVE & EN APPRENTISSAGE]
@@ -874,6 +974,7 @@ const Portfolio: React.FC = () => {
                     return (
                       <div
                         key={index}
+                        data-anim-chip
                         className="flex items-center gap-3 px-4 py-3 bg-[#F8FAFC] border border-[#0055FF]/40 hover:border-[#0055FF] hover:bg-[#0055FF] hover:text-white transition-colors group cursor-default"
                       >
                         <IconComponent size={20} className="text-[#0055FF] group-hover:text-white transition-colors" />
@@ -893,7 +994,7 @@ const Portfolio: React.FC = () => {
         {/* Contact Section */}
         <section id="contact" data-section-transition className="py-24 relative z-10 section-transition scroll-mt-24">
           <div className="max-w-5xl mx-auto px-4 sm:px-6">
-            <div className="bg-white border-2 border-black shadow-[8px_8px_0px_#0055FF] p-6 sm:p-10">
+            <div data-anim className="bg-white border-2 border-black shadow-[8px_8px_0px_#0055FF] p-6 sm:p-10">
               {/* Terminal Title Bar */}
               <div className="flex items-center justify-between border-b border-black pb-4 mb-8 font-mono text-xs">
                 <div className="flex items-center gap-2">
@@ -906,7 +1007,7 @@ const Portfolio: React.FC = () => {
               </div>
 
               <div className="text-center max-w-2xl mx-auto mb-10">
-                <h2 className="text-3xl sm:text-5xl font-black font-display uppercase tracking-tight text-black mb-4">
+                <h2 className="text-[clamp(1rem,4.8vw,3rem)] font-black font-display uppercase tracking-tight text-black mb-4">
                   PRÊT À COLLABORER ?
                 </h2>
                 <p className="text-sm sm:text-base text-[#475569] font-body leading-relaxed">
@@ -921,7 +1022,10 @@ const Portfolio: React.FC = () => {
                     <Mail size={20} className="text-[#0055FF]" />
                     <div>
                       <span className="block text-[10px] font-mono text-[#64748B] uppercase font-bold">ADRESSE COURRIEL DIRECTE</span>
-                      <span className="font-mono text-sm sm:text-base font-bold text-black">{PORTFOLIO_CONFIG.email}</span>
+                      <TypewriterText
+                        text={PORTFOLIO_CONFIG.email}
+                        className="font-mono text-sm sm:text-base font-bold text-black"
+                      />
                     </div>
                   </div>
 

@@ -147,7 +147,7 @@ h6 {
 	font-weight: 700;
 	border: 1px solid var(--border-wire);
 	box-shadow: 4px 4px 0px #000000;
-	transition: transform 120ms cubic-bezier(0.2, 0, 0, 1), box-shadow 120ms cubic-bezier(0.2, 0, 0, 1), background-color 150ms ease, color 150ms ease;
+	transition: background-color 150ms ease, color 150ms ease;
 }
 
 .brutal-btn:hover {
@@ -233,19 +233,53 @@ h6 {
 	animation-play-state: paused;
 }
 
+/* Boot sequence build log */
+@keyframes boot-line-in {
+	from {
+		opacity: 0;
+		transform: translateX(-8px);
+	}
+	to {
+		opacity: 1;
+		transform: translateX(0);
+	}
+}
+
+.boot-line {
+	opacity: 0;
+	animation: boot-line-in 260ms ease-out forwards;
+}
+
+@keyframes boot-progress {
+	from {
+		transform: scaleX(0);
+	}
+	to {
+		transform: scaleX(1);
+	}
+}
+
+.boot-progress {
+	transform: scaleX(0);
+	transform-origin: left;
+	animation: boot-progress 2200ms linear forwards;
+}
+
+.hero-glitch:hover {
+	text-shadow: 3px 0 0 rgba(0, 85, 255, 0.9), -3px 0 0 rgba(255, 51, 102, 0.7);
+}
+
 /* Section reveal animation with crisp brutalist snap */
 .section-transition {
 	opacity: 0;
 	transform: translateY(20px);
-	transition-property: opacity, transform;
-	transition-duration: 400ms;
-	transition-timing-function: cubic-bezier(0.16, 1, 0.3, 1);
 	will-change: opacity, transform;
 }
 
-.section-visible {
-	opacity: 1;
-	transform: translateY(0);
+[data-anim],
+[data-anim-chip],
+[data-card-anim] {
+	opacity: 0;
 }
 
 /* Accessibility: respect prefers-reduced-motion */
@@ -258,11 +292,27 @@ h6 {
 		animation: none !important;
 	}
 
-	.section-transition,
-	.section-visible {
+	.boot-line,
+	.boot-progress {
+		animation: none !important;
+		opacity: 1;
+		transform: none;
+	}
+
+	.hero-glitch:hover {
+		text-shadow: none;
+	}
+
+	.section-transition {
 		opacity: 1 !important;
 		transform: none !important;
 		transition: none !important;
+	}
+
+	[data-anim],
+	[data-anim-chip],
+	[data-card-anim] {
+		opacity: 1 !important;
 	}
 
 	.brutal-btn:hover,

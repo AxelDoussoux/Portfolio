@@ -142,7 +142,7 @@ const ProjectDetailPage: React.FC<ProjectDetailPageProps> = ({ project, onBack }
               aria-label="Retour au portfolio"
             >
               <ArrowLeft size={16} className="mr-2" />
-              [← RETOUR_PORTFOLIO]
+              [ RETOUR_PORTFOLIO ]
             </button>
 
             {/* Breadcrumb / System path */}

@@ -1,4 +1,5 @@
-import React, { useRef, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
+import { animate } from 'animejs';
 import type PORTFOLIO_CONFIG from './portfolioData';
 import {
   FiExternalLink as ExternalLink,
@@ -27,14 +28,73 @@ const isYouTubeUrl = (url: string): boolean => {
 
 interface ProjectCardProps {
   project: Project;
+  index?: number;
   onOpenProject: (projectId: number) => void;
 }
 
-const ProjectCard: React.FC<ProjectCardProps> = ({ project, onOpenProject }) => {
+const ProjectCard: React.FC<ProjectCardProps> = ({ project, index = 0, onOpenProject }) => {
   const [isVideoPlaying, setIsVideoPlaying] = useState(false);
   const [showVideo, setShowVideo] = useState(false);
   const videoRef = useRef<HTMLVideoElement>(null);
   const iframeRef = useRef<HTMLIFrameElement>(null);
+  const cardRef = useRef<HTMLElement>(null);
+
+  useEffect(() => {
+    const card = cardRef.current;
+    if (!card) return;
+
+    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+      card.style.opacity = '1';
+      return;
+    }
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (!entry.isIntersecting) return;
+          observer.disconnect();
+          animate(card, {
+            opacity: [0, 1],
+            y: [26, 0],
+            duration: 620,
+            delay: index * 90,
+            ease: 'outExpo',
+          });
+        });
+      },
+      { threshold: 0.15 },
+    );
+
+    observer.observe(card);
+    return () => observer.disconnect();
+  }, [index]);
+
+  const handleCardMouseMove = (event: React.MouseEvent<HTMLElement>) => {
+    const card = cardRef.current;
+    if (!card) return;
+    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+    const rect = card.getBoundingClientRect();
+    const px = (event.clientX - rect.left) / rect.width - 0.5;
+    const py = (event.clientY - rect.top) / rect.height - 0.5;
+    animate(card, {
+      rotateX: -py * 7,
+      rotateY: px * 7,
+      perspective: 900,
+      duration: 400,
+      ease: 'outQuad',
+    });
+  };
+
+  const handleCardMouseLeave = () => {
+    const card = cardRef.current;
+    if (!card) return;
+    animate(card, {
+      rotateX: 0,
+      rotateY: 0,
+      duration: 500,
+      ease: 'outQuad',
+    });
+  };
 
   const isYouTube = Boolean(project.video && isYouTubeUrl(project.video));
   const youtubeEmbedUrl = isYouTube && project.video ? getYouTubeEmbedUrl(project.video) : null;
@@ -75,7 +135,13 @@ const ProjectCard: React.FC<ProjectCardProps> = ({ project, onOpenProject }) => 
   const formattedId = String(project.id).padStart(2, '0');
 
   return (
-    <article className="group relative h-full w-full md:w-[calc(50%-1rem)] lg:w-[calc(33.333%-1.334rem)] bg-white border border-black shadow-[4px_4px_0px_#000000] hover:shadow-[6px_6px_0px_#0055FF] transition-all duration-150 flex flex-col">
+    <article
+      ref={cardRef}
+      data-card-anim
+      onMouseMove={handleCardMouseMove}
+      onMouseLeave={handleCardMouseLeave}
+      className="group relative h-full w-full md:w-[calc(50%-1rem)] lg:w-[calc(33.333%-1.334rem)] bg-white border border-black shadow-[4px_4px_0px_#000000] hover:shadow-[6px_6px_0px_#0055FF] transition-shadow duration-150 flex flex-col"
+    >
       {/* Top wireframe header bar */}
       <div className="flex items-center justify-between px-4 py-2 border-b border-black bg-[#EEF2F7] text-xs font-mono">
         <span className="text-[#0055FF] font-bold">
