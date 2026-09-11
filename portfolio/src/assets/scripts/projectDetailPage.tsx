@@ -16,7 +16,7 @@ import { useReducedMotion } from './useReducedMotion';
 import { useRevealMotion } from './useRevealMotion';
 import { useStaticInteractions } from './useStaticInteractions';
 import type PORTFOLIO_CONFIG from './portfolioData';
-import GalaxyBackground from './galaxyBackground';
+import Background from './background';
 
 type Project = typeof PORTFOLIO_CONFIG.projects[number];
 
@@ -160,7 +160,7 @@ const ProjectDetailPage: React.FC<ProjectDetailPageProps> = ({ project, onBack }
 
   return (
     <div ref={pageRef} className="project-page min-h-screen text-[#0A0A0E] relative overflow-x-hidden bg-[#F4F5F8]">
-      <GalaxyBackground />
+      <Background />
 
       <main id="main-content" className="relative z-10 pt-24 pb-20">
         <div className="max-w-7xl mx-auto px-4 sm:px-6">

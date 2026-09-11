@@ -3,7 +3,7 @@ import { animate, stagger } from 'animejs';
 import { useReducedMotion } from './useReducedMotion';
 
 /** Tactile blueprint background with slow GPU-composited ambient motion. */
-const GalaxyBackground: React.FC = () => {
+const Background: React.FC = () => {
   const rootRef = useRef<HTMLDivElement>(null);
   const reducedMotion = useReducedMotion();
 
@@ -47,10 +47,10 @@ const GalaxyBackground: React.FC = () => {
       <div className="absolute top-0 bottom-0 right-6 sm:right-12 border-r border-black/[0.06]" />
       <div className="absolute top-4 left-4 font-mono text-[10px] text-black/35 select-none">+ [0,0]</div>
       <div className="absolute top-4 right-4 font-mono text-[10px] text-black/35 select-none">+ [X_MAX]</div>
-      <div className="absolute bottom-4 left-4 font-mono text-[10px] text-black/35 select-none">+ [Y_MAX]</div>
-      <div className="absolute bottom-4 right-4 font-mono text-[10px] text-black/35 select-none">SYS_GRID // 36PX</div>
+      <div className="absolute bottom-1 left-4 font-mono text-[10px] text-black/35 select-none">+ [Y_MAX]</div>
+      <div className="absolute bottom-1 right-4 font-mono text-[10px] text-black/35 select-none">SYS_GRID // 36PX</div>
     </div>
   );
 };
 
-export default GalaxyBackground;
+export default Background;

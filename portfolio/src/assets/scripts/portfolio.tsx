@@ -19,7 +19,7 @@ import {
   FiTerminal as Terminal,
 } from 'react-icons/fi';
 import PORTFOLIO_CONFIG from './portfolioData';
-import GalaxyBackground from './galaxyBackground';
+import Background from './background';
 import ProjectCard from './projectCard';
 import ProjectDetailPage from './projectDetailPage';
 import SplitText from './splitText';
@@ -64,13 +64,13 @@ const HERO_ROLES = [
   '// CONCEPTION LOGICIELLE',
   '// INTERFACES HAUTE PERFORMANCE',
   '// ARCHITECTURES SCALABLES',
-  '// 3D TEMPS RÉEL & WEBGL',
 ];
 
 const BOOT_LOG = [
   'INITIALIZING_CORE_SYS',
   'LOADING_ASSETS',
   'COMPILING_COMPONENTS',
+  'MAKING_COFFEE',
   'MOUNTING_INTERFACE',
   'SYSTEM_READY',
 ];
@@ -423,7 +423,7 @@ const Portfolio: React.FC = () => {
 
           <div className="relative w-full max-w-2xl border-2 border-black bg-white shadow-[10px_10px_0px_#0055FF]">
             <div className="flex items-center justify-between gap-4 border-b-2 border-black bg-[#0A0A0E] px-4 py-2">
-              <span className="font-mono text-[10px] tracking-[0.3em] text-[#0055FF]">SYS_BOOT // AXEL_DO</span>
+              <span className="font-mono text-[10px] tracking-[0.3em] text-[#0055FF]">SYS_BOOT // AXEL_DOUSSOUX</span>
               <span className="font-mono text-[10px] tracking-[0.3em] text-[#F4F5F8]">V.2026</span>
             </div>
 
@@ -472,7 +472,7 @@ const Portfolio: React.FC = () => {
       )}
 
       {/* Background Tactile Paper Grain & Blueprint Grid */}
-      <GalaxyBackground />
+      <Background />
 
       <a
         href="#main-content"
@@ -744,9 +744,6 @@ const Portfolio: React.FC = () => {
           <div className="max-w-6xl mx-auto px-4 sm:px-6">
             {/* Section Index Header */}
             <div data-motion-heading className="flex items-center gap-3 mb-8">
-              <span className="font-mono text-sm font-bold text-white bg-[#0055FF] px-2 py-0.5 border border-black shadow-[2px_2px_0px_#000000]">
-                [01]
-              </span>
               <h2 className="text-[clamp(1rem,4.8vw,3rem)] font-black font-display uppercase tracking-tight text-black">
                 À PROPOS DE MOI
               </h2>
@@ -782,23 +779,20 @@ const Portfolio: React.FC = () => {
               {/* Side Specs Grid */}
               <div className="space-y-4">
                 <div data-anim data-static-motion="lift" className="bg-white border border-black p-5 shadow-[4px_4px_0px_#000000]">
-                  <span className="block text-[11px] font-mono text-[#0055FF] font-bold uppercase tracking-wider mb-1">
-                    [01 // PARCOURS ACADÉMIQUE]
+                  <span className="block text-[13px] font-mono text-[#0055FF] font-bold uppercase tracking-wider mb-1">
+                    [// PARCOURS ACADÉMIQUE]<br/><br/>
                   </span>
                   <h3 className="font-display font-bold text-black text-lg mb-1">Master Informatique</h3>
-                  <p className="text-xs font-mono text-[#64748B]">Université Lyon 2 • 2024 - 2026</p>
+                  <p className="text-xs font-mono text-[#64748B]">Université Lumière Lyon 2 • 2025 - 2027</p>
                   <p className="text-xs text-[#475569] mt-2 leading-relaxed">
-                    Spécialisation architecture logicielle, bases de données relationnelles & NoSQL, sécurité et développement web avancé.
+                    Spécialisation <b>Conception et Integration Multimédia</b><br/>
+                    Développement web avancé, architecture logicielle, bases de données relationnelles et sécurité.
                   </p>
-                </div>
-
-                <div data-anim data-static-motion="lift" className="bg-white border border-black p-5 shadow-[4px_4px_0px_#000000]">
-                  <span className="block text-[11px] font-mono text-[#0055FF] font-bold uppercase tracking-wider mb-1">
-                    [02 // BUT MMI]
-                  </span>
-                  <h3 className="font-display font-bold text-black text-lg mb-1">Développement Web & Interactif</h3>
-                  <p className="text-xs font-mono text-[#64748B]">IUT • 2021 - 2024</p>
+                  <br/>
+                  <h3 className="font-display font-bold text-black text-lg mb-1">BUT Métier du Multimédia et de l'Internet</h3>
+                  <p className="text-xs font-mono text-[#64748B]">Université Clermont Auvergne • 2022 - 2025</p>
                   <p className="text-xs text-[#475569] mt-2 leading-relaxed">
+                    Spécialisation <b>Développement Web & Dispositif Intéractif</b><br />
                     Conception UX/UI, frameworks JavaScript, APIs RESTful et gestion de projets agiles.
                   </p>
                 </div>
@@ -819,9 +813,6 @@ const Portfolio: React.FC = () => {
           <div className="max-w-7xl mx-auto px-4 sm:px-6">
             <div data-motion-heading className="flex flex-wrap items-baseline justify-between gap-4 mb-10 border-b border-black/15 pb-5">
               <div className="flex items-center gap-3">
-                <span className="font-mono text-sm font-bold text-white bg-[#0055FF] px-2 py-0.5 border border-black shadow-[2px_2px_0px_#000000]">
-                  [02]
-                </span>
                 <h2 className="text-[clamp(1rem,4.8vw,3rem)] font-black font-display uppercase tracking-tight text-black">
                   PROJETS SÉLECTIONNÉS
                 </h2>
@@ -849,9 +840,6 @@ const Portfolio: React.FC = () => {
         <section id="experience" data-section-transition className="py-24 relative z-10 section-transition">
           <div className="max-w-6xl mx-auto px-4 sm:px-6">
             <div data-motion-heading className="flex items-center gap-3 mb-10 border-b border-black/15 pb-5">
-              <span className="font-mono text-sm font-bold text-white bg-[#0055FF] px-2 py-0.5 border border-black shadow-[2px_2px_0px_#000000]">
-                [03]
-              </span>
               <h2 className="text-[clamp(1rem,4.8vw,3rem)] font-black font-display uppercase tracking-tight text-black">
                 PARCOURS PROFESSIONNEL
               </h2>
@@ -948,9 +936,6 @@ const Portfolio: React.FC = () => {
         <section id="skills" data-section-transition className="py-24 relative z-10 section-transition">
           <div className="max-w-6xl mx-auto px-4 sm:px-6">
             <div data-motion-heading className="flex items-center gap-3 mb-10 border-b border-black/15 pb-5">
-              <span className="font-mono text-sm font-bold text-white bg-[#0055FF] px-2 py-0.5 border border-black shadow-[2px_2px_0px_#000000]">
-                [04]
-              </span>
               <h2 className="text-[clamp(1rem,4.8vw,3rem)] font-black font-display uppercase tracking-tight text-black">
                 STACK TECHNIQUE
               </h2>
