@@ -152,6 +152,27 @@ const PORTFOLIO_CONFIG = {
 
 
 
+  education: [
+    {
+      id: 1,
+      degree: "BUT Métiers du Multimédia et de l'Internet",
+      school: "Université Clermont Auvergne",
+      period: "2022 - 2025",
+      start: "2022-09",
+      specialty: "Développement Web & Dispositifs Interactifs",
+      description: "Conception UX/UI, frameworks JavaScript, APIs RESTful et gestion de projets agiles.",
+    },
+    {
+      id: 2,
+      degree: "Master Informatique",
+      school: "Université Lumière Lyon 2",
+      period: "2025 - 2027",
+      start: "2025-09",
+      specialty: "Conception et Intégration Multimédia",
+      description: "Développement web avancé, architecture logicielle, bases de données relationnelles et sécurité.",
+    },
+  ],
+
   experiences: [
     {
       id: 4,
@@ -159,6 +180,7 @@ const PORTFOLIO_CONFIG = {
       company: "Les Enfants Du Rhône",
       logo: "/images/LEDR_logo.png",
       period: "Avril - Juillet 2026",
+      start: "2026-04",
       description: "Stage de développement web : création d'un site vitrine en React, TypeScript et Tailwind CSS, mise en place d'un back-office Strapi et développement d'un outil type Linktree pour partager les podcasts.",
       technologies: ["React", "TypeScript", "TailwindCSS", "Strapi", "Git"],
       achievements: [
@@ -173,6 +195,7 @@ const PORTFOLIO_CONFIG = {
       company: "MusicBrainTraining Company",
       logo: "/images/MBTC_logo.png",
       period: "Mars - Mai 2025",
+      start: "2025-03",
       description: "Refonte fullstack d'une plateforme web : modernisation du front-end, structuration de la logique métier et intégration d'interactions avancées.",
       technologies: ["TypeScript", "React", "Pixi.js", "API REST", "Git"],
       achievements: [
@@ -187,6 +210,7 @@ const PORTFOLIO_CONFIG = {
       company: "BD CRAFT",
       logo: "/images/bdcraft_logo.png",
       period: "Mai - Juillet 2025",
+      start: "2025-05",
       description: "Aide au développement d'un jeu vidéo indie multijoueur utilisant Unity et C#.",
       technologies: ["Unity", "C#", "Blender", "Git", "Game Design Document", ],
       achievements: [
@@ -201,6 +225,7 @@ const PORTFOLIO_CONFIG = {
       company: "MOBIVIE - Transdev Vichy",
       logo: "/images/mobivie_logo.png",
       period: "Janvier - Mars 2024",
+      start: "2024-01",
       description: "Concepteur de support de communication pour la promotion des services de transport public de la communauté de commune de Vichy, incluant la création de visuels et de vidéos.",
       technologies: ["Suite Adobe", "DaVinci Resolve", "Captation photo et vidéo"],
       achievements: [

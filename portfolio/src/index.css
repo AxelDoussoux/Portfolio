@@ -69,9 +69,18 @@ body {
 	-moz-osx-font-smoothing: grayscale;
 }
 
-/* 2.5D Parallax & Stacking Stage Stability */
-.deck-stack-container {
+/* Pinned scrollytelling chapters: keep scroll anchoring from fighting scroll-linked transforms */
+#hero,
+#portfolio {
 	overflow-anchor: none;
+}
+
+/* White blueprint grid for the drenched cobalt and ink chapters */
+.statement-grid {
+	background-size: 48px 48px;
+	background-image:
+		linear-gradient(to right, rgba(255, 255, 255, 0.09) 1px, transparent 1px),
+		linear-gradient(to bottom, rgba(255, 255, 255, 0.09) 1px, transparent 1px);
 }
 
 h1,

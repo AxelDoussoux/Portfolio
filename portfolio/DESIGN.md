@@ -56,7 +56,11 @@
 
 ## Composants Clés
 
-1. **Sticky Stacking Cards** : Cartes de projets phares s'empilant de façon sticky avec échelle subtile lors du défilement, alternance d'ombres portées Cobalt et Violet, et aperçu immersif.
+1. **Parcours scrollytelling** : cinq chapitres dans l'ordre Accueil → Projets → Parcours → Stack → Contact. Sur les écrans ≥ 1024×620 sans `prefers-reduced-motion` (`useScrollytelling`), les chapitres Accueil et Projets sont épinglés et pilotés par le scroll ; ailleurs, le même contenu s'affiche en flux vertical simple.
+   - **Prologue** (`heroPrologue.tsx`) : l'identité recule, puis un panneau Cobalt plein écran remonte en `clip-path` et le manifeste s'allume mot à mot.
+   - **Reel de projets** (`projectReel.tsx`) : piste horizontale épinglée (1 px de scroll vertical = 1 px de déplacement latéral), compteur `01 / 04`, barre de progression, parallaxe des captures. Le focus clavier fait défiler jusqu'au projet visé.
+   - **Frise Parcours** (`journeyTimeline.tsx`) : formations et expériences triées par date, rail qui se remplit au scroll, année active géante dans une colonne sticky.
+   - **Finale Contact** : chapitre plein écran sur fond encre `#0A0A0E`, qui répond au panneau Cobalt du prologue.
 2. **Brutal Buttons** : Boutons tactiles avec déplacement physique immédiat au clic (`translate(2px, 2px)` et annihilation d'ombre) et inversion de contraste au survol.
 3. **Hub d'Onglets Technique** : Barre de sélection instantanée à puces filtrantes réorganisant les compétences avec transition fluide de disposition.
 4. **Scroll Indicator Cinétique** : Rail d'amorce de défilement guidant l'utilisateur de manière intuitive vers les projets.
