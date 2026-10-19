@@ -108,6 +108,7 @@ const ProjectCard: React.FC<ProjectCardProps> = ({ project, index = 0, onOpenPro
     card.addEventListener('pointerenter', enter);
     card.addEventListener('pointerleave', leave);
     card.addEventListener('pointercancel', leave);
+    window.addEventListener('blur', leave);
     return () => {
       cancelAnimationFrame(frame);
       animation?.cancel();
@@ -116,6 +117,7 @@ const ProjectCard: React.FC<ProjectCardProps> = ({ project, index = 0, onOpenPro
       card.removeEventListener('pointerenter', enter);
       card.removeEventListener('pointerleave', leave);
       card.removeEventListener('pointercancel', leave);
+      window.removeEventListener('blur', leave);
       card.style.removeProperty('--tilt-x');
       card.style.removeProperty('--tilt-y');
     };

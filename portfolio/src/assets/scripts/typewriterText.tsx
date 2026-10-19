@@ -24,7 +24,7 @@ const TypewriterText: React.FC<TypewriterTextProps> = ({ text, play = true, spee
       if (!entry.isIntersecting) return;
       setInView(true);
       observer.disconnect();
-    }, { threshold: 0.35 });
+    }, { threshold: 0.1, rootMargin: '0px 0px -10px 0px' });
     observer.observe(element);
     return () => observer.disconnect();
   }, []);
@@ -76,7 +76,7 @@ const TypewriterText: React.FC<TypewriterTextProps> = ({ text, play = true, spee
       },
     });
     return () => {
-      timeline.pause();
+      timeline.revert();
       cursorAnimation?.revert();
     };
   }, [text, play, inView, speed, reducedMotion]);

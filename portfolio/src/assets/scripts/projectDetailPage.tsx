@@ -71,13 +71,6 @@ const ProjectDetailPage: React.FC<ProjectDetailPageProps> = ({ project, onBack }
   }, [project.id]);
 
   useEffect(() => {
-    setCurrentImageIndex(0);
-    setShowVideo(false);
-    setIsVideoPlaying(false);
-    setCarouselResetKey(0);
-  }, [project.id]);
-
-  useEffect(() => {
     const handleEscape = (event: KeyboardEvent) => {
       if (event.key === 'Escape') {
         onBack();
@@ -159,7 +152,7 @@ const ProjectDetailPage: React.FC<ProjectDetailPageProps> = ({ project, onBack }
   const formattedId = String(project.id).padStart(2, '0');
 
   return (
-    <div ref={pageRef} className="project-page min-h-screen text-[#0A0A0E] relative overflow-x-hidden bg-[#F4F5F8]">
+    <div ref={pageRef} className="project-page min-h-screen text-[#0A0A0E] relative overflow-x-clip bg-[#F4F5F8]">
       <Background />
 
       <main id="main-content" className="relative z-10 pt-24 pb-20">

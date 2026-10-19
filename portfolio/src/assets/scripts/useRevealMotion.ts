@@ -10,38 +10,66 @@ export function useRevealMotion(root: RefObject<HTMLElement | null>, enabled = t
     if (!root.current || !enabled || reducedMotion) return;
     const scope = createScope({ root }).add((self) => {
       if (!self) return;
+
       const hero = root.current!.querySelectorAll<HTMLElement>('[data-hero-anim]');
-      if (hero.length) createTimeline().add(hero, {
-        opacity: [0, 1], y: [18, 0], duration: 650,
-        delay: stagger(85), ease: 'outExpo',
-      });
+      if (hero.length) {
+        createTimeline().add(hero, {
+          opacity: [0, 1],
+          y: [18, 0],
+          duration: 680,
+          delay: stagger(75, { start: 40 }),
+          ease: 'outExpo',
+        });
+      }
 
       const items = root.current!.querySelectorAll<HTMLElement>(
         '[data-anim], [data-anim-chip], [data-card-anim], [data-motion-heading]',
       );
-      // Content is visible by default. Only a running observer can hide it.
-      utils.set(items, { opacity: 0, '--reveal-y': '20px' });
+
+      // Content is visible by default in CSS. Only an active observer hides it before reveal.
+      utils.set(items, { opacity: 0, '--reveal-y': '20px', '--rule-progress': '0' });
       const pending = new Set(items);
+
       self.add('reveal', (element: HTMLElement, delay: number) => {
         if (!pending.delete(element)) return;
-        animate(element, { opacity: [0, 1], '--reveal-y': ['20px', '0px'], duration: 620, delay, ease: 'outExpo' });
+
+        animate(element, {
+          opacity: [0, 1],
+          '--reveal-y': ['20px', '0px'],
+          duration: 620,
+          delay,
+          ease: 'outExpo',
+        });
+
         if (element.hasAttribute('data-motion-heading')) {
           animate(element, {
-            '--rule-progress': [0, 1], duration: 850, delay: delay + 120, ease: 'outExpo',
+            '--rule-progress': [0, 1],
+            duration: 850,
+            delay: delay + 100,
+            ease: 'outExpo',
           });
-          const badge = element.querySelector('span');
-          if (badge) animate(badge, {
-            rotate: [-9, 0], scale: [0.85, 1], duration: 550, delay, ease: 'outBack',
-          });
+          const badge = element.querySelector<HTMLElement>('[data-heading-badge]');
+          if (badge) {
+            animate(badge, {
+              rotate: [-9, 0],
+              scale: [0.85, 1],
+              duration: 550,
+              delay,
+              ease: 'outBack(1.4)',
+            });
+          }
         }
       });
+
       const observer = new IntersectionObserver((entries) => {
         entries.filter((entry) => entry.isIntersecting).forEach((entry, index) => {
           observer.unobserve(entry.target);
           self.methods.reveal(entry.target, Math.min(index * 45, 180));
         });
       }, { threshold: 0, rootMargin: '0px 0px -24px 0px' });
+
       items.forEach((item) => observer.observe(item));
+
       const revealFocused = (event: FocusEvent) => {
         if (!(event.target instanceof Element)) return;
         for (const item of items) {
@@ -51,13 +79,16 @@ export function useRevealMotion(root: RefObject<HTMLElement | null>, enabled = t
           }
         }
       };
+
       const element = root.current!;
       element.addEventListener('focusin', revealFocused);
+
       return () => {
         observer.disconnect();
         element.removeEventListener('focusin', revealFocused);
       };
     });
+
     return () => scope.revert();
   }, [root, enabled, reducedMotion]);
 }

@@ -13,6 +13,9 @@
 	
 	--neon-blue: #0055ff;
 	--neon-blue-light: #e0ebff;
+	--neon-purple: #7c3aed;
+	--neon-purple-light: #f3e8ff;
+	--neon-purple-dim: #6d28d9;
 	--neon-pink: #ff3366;
 	--neon-cyan: #00b4d8;
 	--neon-yellow: #ffe500;
@@ -49,13 +52,13 @@ body::-webkit-scrollbar {
 }
 
 html {
-	overflow-x: hidden;
+	overflow-x: clip;
 }
 
 body {
 	margin: 0;
 	min-height: 100vh;
-	overflow-x: hidden;
+	overflow-x: clip;
 	scrollbar-width: none;
 	-ms-overflow-style: none;
 	color: var(--text-primary);
@@ -64,6 +67,11 @@ body {
 	text-rendering: optimizeLegibility;
 	-webkit-font-smoothing: antialiased;
 	-moz-osx-font-smoothing: grayscale;
+}
+
+/* 2.5D Parallax & Stacking Stage Stability */
+.deck-stack-container {
+	overflow-anchor: none;
 }
 
 h1,
@@ -121,20 +129,20 @@ h6 {
 	box-shadow: 4px 4px 0px #000000;
 }
 
+.brutal-shadow-lg {
+	box-shadow: 6px 6px 0px #000000;
+}
+
+.brutal-shadow-xl {
+	box-shadow: 8px 8px 0px #000000;
+}
+
 .brutal-shadow-blue {
 	box-shadow: 4px 4px 0px var(--neon-blue);
 }
 
-.brutal-shadow-pink {
-	box-shadow: 4px 4px 0px var(--neon-pink);
-}
-
 .brutal-shadow-white {
 	box-shadow: 4px 4px 0px #ffffff;
-}
-
-.brutal-shadow-lg {
-	box-shadow: 6px 6px 0px #000000;
 }
 
 /* Tactile Brutal Button */
@@ -145,14 +153,19 @@ h6 {
 	justify-content: center;
 	font-family: var(--font-mono);
 	font-weight: 700;
-	border: 1px solid var(--border-wire);
+	border: 2px solid var(--border-wire);
 	box-shadow: 4px 4px 0px #000000;
-	transition: background-color 150ms ease, color 150ms ease;
+	transition: background-color 150ms ease, color 150ms ease, box-shadow 150ms ease, transform 150ms ease;
+}
+
+.brutal-btn.fixed,
+.brutal-btn[style*="position: fixed"] {
+	position: fixed !important;
 }
 
 .brutal-btn:hover {
 	transform: translate(-2px, -2px);
-	box-shadow: 6px 6px 0px var(--neon-blue);
+	box-shadow: 6px 6px 0px #000000;
 }
 
 .brutal-btn:active {
@@ -160,47 +173,55 @@ h6 {
 	box-shadow: 0px 0px 0px transparent;
 }
 
-.brutal-btn-blue {
-	box-shadow: 4px 4px 0px var(--neon-blue);
+.brutal-btn-primary {
+	background-color: var(--neon-blue);
+	color: #ffffff;
+	border: 2px solid #000000;
+	box-shadow: 4px 4px 0px #000000;
 }
 
-.brutal-btn-blue:hover {
+.brutal-btn-primary:hover {
+	background-color: #0044cc;
 	transform: translate(-2px, -2px);
 	box-shadow: 6px 6px 0px #000000;
 }
 
-.brutal-btn-blue:active {
-	transform: translate(2px, 2px);
-	box-shadow: 0px 0px 0px transparent;
+.brutal-btn-secondary {
+	background-color: #ffffff;
+	color: #000000;
+	border: 2px solid #000000;
+	box-shadow: 4px 4px 0px #000000;
 }
 
-.brutal-btn-pink {
-	box-shadow: 4px 4px 0px var(--neon-pink);
-}
-
-.brutal-btn-pink:hover {
+.brutal-btn-secondary:hover {
+	background-color: #f1f5f9;
 	transform: translate(-2px, -2px);
-	box-shadow: 6px 6px 0px var(--neon-pink);
-}
-
-.brutal-btn-pink:active {
-	transform: translate(2px, 2px);
-	box-shadow: 0px 0px 0px transparent;
+	box-shadow: 6px 6px 0px var(--neon-blue);
 }
 
 /* Wireframe Card */
 .brutal-card {
 	background-color: var(--bg-surface);
-	border: 1px solid var(--border-wire);
-	box-shadow: 4px 4px 0px #000000;
+	border: 2px solid var(--border-wire);
+	box-shadow: 5px 5px 0px #000000;
 	transition: border-color 180ms ease, box-shadow 180ms ease, transform 180ms ease;
 }
 
 .brutal-card:hover {
-	border-color: var(--border-wire-strong);
-	box-shadow: 6px 6px 0px var(--neon-blue);
+	box-shadow: 7px 7px 0px #000000;
 	transform: translate(-2px, -2px);
 }
+
+/* Scrollytelling Telemetry & Depth Elements */
+.telemetry-rail {
+	backdrop-filter: blur(8px);
+	background: rgba(255, 255, 255, 0.92);
+}
+
+.depth-layer-0 { transform: translateZ(0px); }
+.depth-layer-1 { transform: translateZ(10px); }
+.depth-layer-2 { transform: translateZ(20px); }
+.depth-layer-3 { transform: translateZ(30px); }
 
 /* Monospace Utility Tag */
 .brutal-tag {
@@ -227,10 +248,35 @@ h6 {
 	display: flex;
 	width: max-content;
 	animation: marquee 22s linear infinite;
+	will-change: transform;
 }
 
 .animate-marquee:hover {
 	animation-play-state: paused;
+}
+
+/* Kinetic Scroll Indicator Rail */
+@keyframes scroll-pill {
+	0% {
+		transform: translateY(0);
+		opacity: 1;
+	}
+	60% {
+		transform: translateY(16px);
+		opacity: 0.15;
+	}
+	61% {
+		transform: translateY(0);
+		opacity: 0;
+	}
+	100% {
+		transform: translateY(0);
+		opacity: 1;
+	}
+}
+
+.animate-scroll-pill {
+	animation: scroll-pill 1.9s cubic-bezier(0.65, 0, 0.35, 1) infinite;
 }
 
 /* Boot sequence build log */
@@ -247,7 +293,7 @@ h6 {
 
 .boot-line {
 	opacity: 0;
-	animation: boot-line-in 260ms ease-out forwards;
+	animation: boot-line-in 220ms ease-out forwards;
 }
 
 @keyframes boot-progress {
@@ -262,7 +308,7 @@ h6 {
 .boot-progress {
 	transform: scaleX(0);
 	transform-origin: left;
-	animation: boot-progress 2200ms linear forwards;
+	animation: boot-progress 1000ms cubic-bezier(0.4, 0, 0.2, 1) forwards;
 }
 
 .hero-glitch:hover {
@@ -336,6 +382,22 @@ section[id] {
   transform: perspective(900px) rotateX(var(--tilt-x)) rotateY(var(--tilt-y));
 }
 
+[data-ambient-glow] {
+  will-change: transform, opacity;
+  transform: translateZ(0);
+}
+
+[data-motion-icon],
+[data-card-arrow] {
+  transform-origin: center;
+  transform-box: fill-box;
+}
+
+[data-hero-anim] {
+  opacity: 0;
+  transform: translateY(18px);
+}
+
 [data-motion-heading] {
   position: relative;
   padding-bottom: 1.25rem;
@@ -349,7 +411,7 @@ section[id] {
   height: 3px;
   width: min(10rem, 32%);
   background: var(--neon-blue);
-  transform: scaleX(var(--rule-progress, 1));
+  transform: scaleX(var(--rule-progress, 0));
   transform-origin: left;
 }
 
@@ -408,6 +470,7 @@ button { cursor: pointer; }
     transform: none !important;
   }
   [data-char], [data-type-char] { opacity: 1 !important; transform: none !important; }
+  [data-motion-heading]::after { transform: none !important; }
   .project-card, .brutal-btn, .brutal-btn:active { transform: none !important; translate: none !important; }
   .type-cursor { display: none; }
   .group:hover img { transform: none !important; }
@@ -416,7 +479,8 @@ button { cursor: pointer; }
 		scroll-behavior: auto;
 	}
 
-	.animate-marquee {
+	.animate-marquee,
+	.animate-scroll-pill {
 		animation: none !important;
 	}
 

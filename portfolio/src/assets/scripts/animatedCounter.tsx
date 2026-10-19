@@ -35,7 +35,7 @@ const AnimatedCounter: React.FC<AnimatedCounterProps> = ({
           observer.disconnect();
         }
       },
-      { threshold: 0.4 }
+      { threshold: 0.1, rootMargin: '0px 0px -10px 0px' }
     );
 
     observer.observe(element);
@@ -62,10 +62,9 @@ const AnimatedCounter: React.FC<AnimatedCounterProps> = ({
       },
       onComplete: () => {
         emphasis = animate(element, {
-          scale: [1, 1.12, 1],
-          color: ['#0055FF', '#0A0A0E', '#0055FF'],
-          duration: 420,
-          ease: 'outCubic',
+          scale: [1, 1.14, 1],
+          duration: 360,
+          ease: 'outBack(1.5)',
         });
       },
     });
@@ -76,9 +75,15 @@ const AnimatedCounter: React.FC<AnimatedCounterProps> = ({
     };
   }, [play, inView, value, duration, prefix, suffix, reducedMotion]);
 
+  const displayInitial = reducedMotion ? value : 0;
+
   return (
-    <span ref={ref} className={className} aria-label={`${prefix}${value}${suffix}`}>
-      {`${prefix}${value}${suffix}`}
+    <span
+      ref={ref}
+      className={`inline-block origin-center ${className ?? ''}`}
+      aria-label={`${prefix}${value}${suffix}`}
+    >
+      {`${prefix}${displayInitial}${suffix}`}
     </span>
   );
 };

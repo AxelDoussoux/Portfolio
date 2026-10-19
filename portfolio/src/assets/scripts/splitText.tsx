@@ -1,5 +1,5 @@
-import React, { useEffect, useRef } from 'react';
-import { animate, stagger } from 'animejs';
+import React, { useEffect, useRef, useState } from 'react';
+import { animate, stagger, utils } from 'animejs';
 
 import { useReducedMotion } from './useReducedMotion';
 
@@ -10,32 +10,35 @@ interface SplitTextProps {
   className?: string;
 }
 
-const SplitText: React.FC<SplitTextProps> = ({ text, play = true, staggerDelay = 30, className }) => {
+const SplitText: React.FC<SplitTextProps> = ({ text, play = true, staggerDelay = 26, className }) => {
   const reducedMotion = useReducedMotion();
   const ref = useRef<HTMLSpanElement>(null);
+  const [hasAnimated, setHasAnimated] = useState(false);
 
   useEffect(() => {
     const root = ref.current;
-    if (!root || !play) return;
+    if (!root || !play || reducedMotion) return;
 
     const chars = Array.from(root.querySelectorAll<HTMLElement>('[data-char]'));
     if (chars.length === 0) return;
 
-    if (reducedMotion) {
-      chars.forEach((char) => {
-        char.style.opacity = '1';
-        char.style.transform = 'none';
-      });
-      return;
-    }
+    // Explicitly lock initial poses across all characters to prevent stagger snapping
+    utils.set(chars, {
+      opacity: 0,
+      y: 48,
+      rotate: 4,
+    });
 
     const animation = animate(chars, {
       opacity: [0, 1],
       y: [48, 0],
       rotate: [4, 0],
-      duration: 800,
+      duration: 750,
       delay: stagger(staggerDelay),
       ease: 'outExpo',
+      onComplete: () => {
+        setHasAnimated(true);
+      },
     });
 
     return () => {
@@ -54,7 +57,11 @@ const SplitText: React.FC<SplitTextProps> = ({ text, play = true, staggerDelay =
               key={`${char}-${charIndex}`}
               data-char
               className="inline-block"
-              style={{ opacity: !play && !reducedMotion ? 0 : 1 }}
+              style={
+                reducedMotion || hasAnimated
+                  ? { opacity: 1, transform: 'none' }
+                  : { opacity: 0, transform: 'translateY(48px) rotate(4deg)' }
+              }
             >
               {char}
             </span>

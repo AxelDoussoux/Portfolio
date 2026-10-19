@@ -1,7 +1,7 @@
 # AGENTS.md
 
 ## Project Overview
-Vite + React + TypeScript portfolio with 3D Galaxy background.
+Vite 8 + React 19 + TypeScript portfolio with tactile blueprint wireframe background and Anime.js animations.
 
 - Repo root is the parent dir `Portfolio S6`; the entire app lives in this `portfolio/` subfolder — run all commands here.
 - Entry: `src/main.tsx`
@@ -9,7 +9,7 @@ Vite + React + TypeScript portfolio with 3D Galaxy background.
 - Main: `src/assets/scripts/portfolio.tsx`
 - Data: `src/assets/scripts/portfolioData.tsx`
 - Styles: `src/index.css`
-- Components: `src/assets/scripts/` (projectCard, projectDetailPage, galaxyBackground, etc.)
+- Components: `src/assets/scripts/` (projectCard, projectDetailPage, background, introCurtain, etc.)
 
 ## Commands
 - `npm run dev` — dev server
@@ -18,11 +18,11 @@ Vite + React + TypeScript portfolio with 3D Galaxy background.
 - `npm run preview` — preview build
 
 ## Architecture
-- Intro animation system: `introPhase` state controls transitions ('center' → 'expand' → 'move' → 'exit')
-- GalaxyBackground: Three.js animated spiral galaxy with mobile performance optimization (reduced particles/DPR/FPS on mobile, respects prefers-reduced-motion)
-- Animations: `motion` (v12) used for transitions — not CSS-only, reach for it before adding another anim lib
+- Intro sequence: boot sequence and IntroCurtain transitions
+- Background: Tactile blueprint wireframe grid with GPU-composited ambient glow (Anime.js driven, respects prefers-reduced-motion)
+- Animations: `animejs` (v4) used for transitions, tactile button physics, counters, split/typewriter text and reveals
 - Projects: defined in `portfolioData.tsx`, rendered via `ProjectCard` and `ProjectDetailPage`
-- Color palette: CSS variables in `index.css` (cozy/blue/test palettes; test palette active by default)
+- Color palette: CSS variables in `index.css` (Light Neo-Brutalism tokens)
 - Mobile: burger menu, scroll progress bar, back-to-top button
 
 ## CSS Fixes Applied
@@ -38,3 +38,9 @@ Vite + React + TypeScript portfolio with 3D Galaxy background.
 ## Windows
 - PowerShell environment
 - Search: `Select-String` or `grep` tool
+
+## Design Context
+- Register: Brand (Portfolio)
+- Philosophy: Light Neo-Brutalism + Blueprint Grid + Electric Cobalt (`#0055FF`) & Hyper-Violet (`#7C3AED`) duo palette
+- Core Specs: see [PRODUCT.md](PRODUCT.md), [DESIGN.md](DESIGN.md), [GLOSSARY.md](GLOSSARY.md) and [docs/adr/](docs/adr/)
+
