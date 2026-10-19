@@ -58,26 +58,26 @@ const PORTFOLIO_CONFIG = {
   projects: [
     {
       id: 1,
-      title: "FlowSync",
-      description: "Landing page de démonstration pour un faux SaaS orienté productivité, avec narration produit, preuve sociale et sections de conversion.",
-      image: "/images/landing_1.png",
-      images: ["/images/landing_1.png", "/images/landing_2.png"],
+      title: "Season Job",
+      description: "Web app mobile de recrutement saisonnier : recherche géolocalisée, candidature en un clic, réponse employeur garantie sous 48 h, messagerie et contrat signé en ligne. Projet de Master mené en équipe de quatre.",
+      image: "/images/seasonjob_1.png",
+      images: ["/images/seasonjob_1.png", "/images/seasonjob_2.png"],
       video: "",
-      technologies: ["TypeScript", "React", "TailwindCSS", "Vite"],
-      github: "https://github.com/AxelDoussoux/Landing-project-1",
-      demo: "https://axeldoussoux.github.io/Landing-project-1/",
+      technologies: ["TypeScript", "React", "TanStack Start", "TailwindCSS", "Supabase", "Cloudflare Workers", "Leaflet", "Playwright"],
+      github: "",
+      demo: "https://season-jobs.axeldoussoux.workers.dev",
       featured: true,
       year: "2026",
-      duration: "Quelques jours",
-      type: "Landing page SaaS",
+      duration: "5 semaines",
+      type: "Web app mobile",
       status: "Terminé",
       features: [
-        "Collaboration en temps réel mise en avant",
-        "Automatisation intelligente et rappels",
-        "Dashboard décisionnel pour suivre l'avancement",
-        "Mode focus et structure orientée conversion"
+        "Recherche multicritères sur 120 annonces, en liste ou sur carte Leaflet",
+        "Candidature en un clic et garantie de réponse sous 48 h",
+        "Messagerie directe et contrat signé électroniquement",
+        "Interface mobile-first : navigation au pouce, PWA installable"
       ],
-      challenges: "Le principal défi était de rendre la proposition de valeur évidente dès le premier écran, tout en gardant une hiérarchie visuelle claire, un rythme calme et une page orientée conversion."
+      challenges: "Le défi était de faire tenir un parcours complet, de la recherche d'annonce au contrat signé, sur un écran de téléphone, tout en migrant le backend de Firebase vers Supabase en cours de projet et en couvrant les parcours critiques par des tests Playwright."
     },
     {
       id: 2,
