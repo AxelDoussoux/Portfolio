@@ -30,7 +30,6 @@ const PORTFOLIO_CONFIG = {
     { name: "Next.js", icon: SiNextdotjs, category: "Frontend" },
     { name: "Vite", icon: SiVite, category: "Frontend" },
     { name: "Java", icon: FaJava, category: "Backend & Données" },
-    { name: "Spring Boot", icon: SiSpringboot, category: "Backend & Données" },
     { name: "PostgreSQL", icon: SiPostgresql, category: "Backend & Données" },
     { name: "Strapi", icon: SiStrapi, category: "Backend & Données" },
     { name: "API REST", icon: Server, category: "Backend & Données" },
@@ -52,6 +51,7 @@ const PORTFOLIO_CONFIG = {
   ],
 
   learningSkills: [
+    { name: "Spring Boot", icon: SiSpringboot, category: "En cours d'apprentissage" },
     { name: "Rust", icon: SiRust, category: "En cours d'apprentissage" },
     { name: "Node.js", icon: SiNodedotjs, category: "En cours d'apprentissage" },
     { name: "GitHub Actions", icon: SiGithubactions, category: "En cours d'apprentissage" },
