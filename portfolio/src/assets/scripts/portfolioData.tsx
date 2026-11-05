@@ -88,7 +88,7 @@ const PORTFOLIO_CONFIG = {
       video: "",
       technologies: ["Java", "Spring Boot", "Spring Security", "PostgreSQL", "Flyway", "Angular", "TypeScript", "Docker", "Testcontainers"],
       github: "https://github.com/AxelDoussoux/creneau",
-      demo: "",
+      demo: "https://axeldoussoux.github.io/creneau/",
       featured: true,
       year: "2026",
       type: "Application web fullstack",
