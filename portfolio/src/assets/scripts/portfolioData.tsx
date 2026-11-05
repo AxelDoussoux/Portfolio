@@ -80,6 +80,28 @@ const PORTFOLIO_CONFIG = {
       challenges: "Le défi était de faire tenir un parcours complet, de la recherche d'annonce au contrat signé, sur un écran de téléphone, tout en migrant le backend de Firebase vers Supabase en cours de projet et en couvrant les parcours critiques par des tests Playwright."
     },
     {
+      id: 5,
+      title: "Créneau",
+      description: "Application de réservation de salles de réunion : recherche des salles libres par horaire, capacité et équipement, planning du jour et administration du parc. API REST Java / Spring Boot sécurisée par JWT, front Angular.",
+      image: "/images/creneau_1.png",
+      images: ["/images/creneau_1.png", "/images/creneau_2.png"],
+      video: "",
+      technologies: ["Java", "Spring Boot", "Spring Security", "PostgreSQL", "Flyway", "Angular", "TypeScript", "Docker", "Testcontainers"],
+      github: "https://github.com/AxelDoussoux/creneau",
+      demo: "",
+      featured: true,
+      year: "2026",
+      type: "Application web fullstack",
+      status: "Terminé",
+      features: [
+        "Recherche des salles libres sur toute une plage horaire, par capacité et équipement",
+        "Planning du jour par salle et réservation en deux clics",
+        "Rôles utilisateur et administrateur, authentification JWT",
+        "Administration des salles et planning global de la semaine"
+      ],
+      challenges: "Le défi était de rendre la double réservation impossible, même quand deux personnes valident le même créneau à la même seconde. La garantie repose sur une contrainte d'exclusion PostgreSQL, vérifiée par un test qui envoie huit réservations simultanées : une seule passe."
+    },
+    {
       id: 2,
       title: "3D World Viewer",
       description: "Visualiseur web 3D permettant d'explorer des environnements interactifs directement dans le navigateur.",

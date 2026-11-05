@@ -210,7 +210,7 @@ const ProjectDetailPage: React.FC<ProjectDetailPageProps> = ({ project, onBack }
                   </div>
                   <div data-static-motion="lift" className="p-3 bg-[#F8FAFC] border border-black/20">
                     <span className="block text-[10px] font-mono uppercase tracking-wider text-[#64748B]">Durée</span>
-                    <span className="font-mono font-bold text-black text-sm">{project.duration || '2-3 mois'}</span>
+                    <span className="font-mono font-bold text-black text-sm">{project.duration || '—'}</span>
                   </div>
                   <div data-static-motion="lift" className="p-3 bg-[#F8FAFC] border border-black/20">
                     <span className="block text-[10px] font-mono uppercase tracking-wider text-[#64748B]">Type</span>
