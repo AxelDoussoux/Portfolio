@@ -1,9 +1,9 @@
-import { FaDocker } from 'react-icons/fa';
+import { FaDocker, FaJava } from 'react-icons/fa';
 import {  FiServer as Server,  FiList as List,  FiGithub} from 'react-icons/fi';
 import { LiaAdobe } from 'react-icons/lia';
 import { PiIslandLight } from 'react-icons/pi';
 import type { IconType } from 'react-icons';
-import { SiBlender, SiCloudflare, SiExpress, SiFigma, SiFirebase, SiFramer, SiGit, SiGithubactions, SiNextdotjs, SiNodedotjs, SiPostgresql, SiReact, SiRust, SiStrapi, SiSupabase, SiTailwindcss, SiThreedotjs, SiTypescript, SiUnity, SiVite, SiWordpress } from 'react-icons/si';
+import { SiAngular, SiBlender, SiCloudflare, SiExpress, SiFigma, SiFirebase, SiFramer, SiGit, SiGithubactions, SiNextdotjs, SiNodedotjs, SiPostgresql, SiReact, SiRust, SiSpringboot, SiStrapi, SiSupabase, SiTailwindcss, SiThreedotjs, SiTypescript, SiUnity, SiVite, SiWordpress } from 'react-icons/si';
 
 const SiCanva: IconType = (props) => (
   <svg stroke="currentColor" fill="currentColor" strokeWidth="0" role="img" viewBox="0 0 24 24" height="1em" width="1em" xmlns="http://www.w3.org/2000/svg" {...props}>
@@ -23,11 +23,14 @@ const PORTFOLIO_CONFIG = {
 
   skills: [
     { name: "React", icon: SiReact, category: "Frontend" },
+    { name: "Angular", icon: SiAngular, category: "Frontend" },
     { name: "TypeScript", icon: SiTypescript, category: "Frontend" },
     { name: "TailWindCSS", icon: SiTailwindcss, category: "Frontend" },
     { name: "Three.js", icon: SiThreedotjs, category: "Frontend" },
     { name: "Next.js", icon: SiNextdotjs, category: "Frontend" },
     { name: "Vite", icon: SiVite, category: "Frontend" },
+    { name: "Java", icon: FaJava, category: "Backend & Données" },
+    { name: "Spring Boot", icon: SiSpringboot, category: "Backend & Données" },
     { name: "PostgreSQL", icon: SiPostgresql, category: "Backend & Données" },
     { name: "Strapi", icon: SiStrapi, category: "Backend & Données" },
     { name: "API REST", icon: Server, category: "Backend & Données" },
